@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 import { env } from '$env/dynamic/private';
 import SignupError from './SignupError';
 import { Prisma } from '@prisma/client';
+import { AUTH_COOKIE_OPTIONS, JWT_SIGN_OPTIONS } from '$lib/constants';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (locals.user) {
@@ -28,8 +29,8 @@ export const actions: Actions = {
 				data: { email, password: await bcrypt.hash(password, 10) }
 			});
 			const jwtUser: JwtUser = { id: user.id, email: user.email };
-			const token = jwt.sign(jwtUser, env.JWT_ACCESS_SECRET, { expiresIn: '14d' });
-			cookies.set('AuthorizationToken', token, { path: '/', maxAge: 60 * 60 * 24 * 14 });
+			const token = jwt.sign(jwtUser, env.JWT_ACCESS_SECRET, JWT_SIGN_OPTIONS);
+			cookies.set('AuthorizationToken', token, AUTH_COOKIE_OPTIONS);
 		} catch (error) {
 			console.error(error);
 			switch (true) {

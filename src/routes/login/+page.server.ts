@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { invalid, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import LoginError from './LoginError';
+import { AUTH_COOKIE_OPTIONS, JWT_SIGN_OPTIONS } from '$lib/constants';
 
 import { env } from '$env/dynamic/private';
 
@@ -38,11 +39,8 @@ export const actions: Actions = {
 				id: user.id,
 				email: user.email
 			};
-			const token = jwt.sign(jwtUser, env.JWT_ACCESS_SECRET, {
-				expiresIn: '14d'
-			});
-
-			cookies.set('AuthorizationToken', token, { path: '/', maxAge: 60 * 60 * 24 * 14 });
+			const token = jwt.sign(jwtUser, env.JWT_ACCESS_SECRET, JWT_SIGN_OPTIONS);
+			cookies.set('AuthorizationToken', token, AUTH_COOKIE_OPTIONS);
 		} catch (error) {
 			console.error(error);
 			return invalid(400, { email, error: LoginError.UNKNOWN });
