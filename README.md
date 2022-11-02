@@ -14,7 +14,7 @@ Hopefully this all works, but it's very possibly missing something. Let me know 
    ```
 
    For DATABASE_URL, you'll have to create an empty postgres database.
-   If your default template uses extensions, it may give you issues (it gave me issues), in which case create your database using template0. If that's the case, you'll probably also need to manually create the shadow database prisma uses to detect issues with any schema changes. If you know how to do this without issue go for it and ignore the following. Here's how I did it, possibly badly, using psql from the command line and TablePlus.
+   If your default template uses extensions, it may give you issues (it gave me issues), in which case create your database using template0. If that's the case, you'll probably also need to manually create the shadow database prisma uses to detect issues with any schema changes. If you know how to do this without issue go for it and ignore the following. Here's how I did it, possibly badly, using psql from the command line.
 
    1. `psql`
    1. `CREATE DATABASE xmas2022 TEMPLATE template0;`
