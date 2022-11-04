@@ -26,7 +26,7 @@ Hopefully this all works, but it's very possibly missing something. Let me know 
 1. To sync the database with the schema, run `npx prisma migrate dev`. If it works, you shouldn't get any errors, and your database should match the schema in `prisma/schema.prisma`.
 1. I think you'll need to generate the prisma client with `npx prisma generate`. It creates files in `node_modules/.prisma` that are used by the app. Kinda weird if you ask me, but that's how it works.
 1. You should be able to explore your database with `npx prisma studio`, similar to the Django admin (but tbh not nearly as nice).
-1. Run `npm run sync && npm run dev -- --open` to tell SvelteKit to create its files, start the dev server, and open the app in your browser.
+1. Run `npm run dev -- --open` to start the dev server and open the app in your browser. There's a small chance you'll have to run `svelte-kit sync` to tell SvelteKit to create its files, but it should take care of this for you.
 
 ## Docs
 
@@ -41,7 +41,7 @@ The current app doesn't have a lot, but that should make it a good starting poin
 
 ### Troubleshooting
 
-Sometimes I find I need to manually run `npm run sync` to get SvelteKit to regenerate types, especially with new code. If you're getting a bunch of errors or red squigglies, try that.
+Sometimes I find I need to manually restart the dev server to get SvelteKit to regenerate types, especially with new code. If you're getting a bunch of errors or red squigglies, try that or `svelte-kit sync`.
 
 Don't wait long before asking for help. These instructions are untested, and in general if you're spinning your wheels on something with this stack there's a good chance I have too.
 
