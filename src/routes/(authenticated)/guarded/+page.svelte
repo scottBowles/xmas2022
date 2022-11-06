@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 
 	const logout = async () => {
-		await fetch('/auth/logout', {
+		await fetch('/logout', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' }
 		});

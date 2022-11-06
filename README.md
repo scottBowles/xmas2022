@@ -75,6 +75,8 @@ If there's a `+page.server.ts` file, it will only run on the server and can expo
 
 A `+page.server.ts` file can also export an `actions` object that can respond to requests. For instance, if you have a `default` function in the `actions` object, it will get called from a form in the `+page.svelte` at that route. You can also name action functions, which will correspond to a form's `action` attribute, and you can hit those endpoints across routes and so on. Currently, you can see this in use for the login and signup forms.
 
-If there's a `+server.ts` file, it's like an api endpoint that can export functions corresponding to HTTP verbs like GET, POST, PATCH, PUT and DELETE. The `auth/logout/` folder uses one of these.
+If there's a `+server.ts` file, it's like an api endpoint that can export functions corresponding to HTTP verbs like GET, POST, PATCH, PUT and DELETE. The `logout/` and `/(unauthenticated)/login/googleCallback/` folders use these.
+
+`+layout.svelte` files apply a layout to everything downstream from them in the file system. `+layout.server.ts` and the like do the same for the layout as `+page.server.ts` does for a page. Layouts can also have groups of pages that they apply to, which is how the `(authenticated)` and `(unauthenticated)` layouts work. With the parentheses, they are applied as layout groups but don't affect the urls of the pages they wrap.
 
 Everything in the `lib` file can be imported as `$lib/<file name>`.

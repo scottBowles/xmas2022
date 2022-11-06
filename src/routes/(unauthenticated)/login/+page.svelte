@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { ActionData } from './$types';
-	import LoginError from './LoginError';
 	import { onMount } from 'svelte';
-	import { initializeGoogleAccounts, renderGoogleButton } from '$lib/google';
+	import LoginError from './LoginError';
+	import type { ActionData } from './$types';
+	import { initializeGoogleAccounts, renderGoogleButton } from './googleUtils';
 
 	export let form: ActionData;
 
