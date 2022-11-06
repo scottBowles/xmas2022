@@ -2,17 +2,11 @@ import bcrypt from 'bcryptjs';
 import prisma from '$lib/prisma';
 import jwt from 'jsonwebtoken';
 import { invalid, redirect } from '@sveltejs/kit';
-import type { Actions, PageServerLoad } from './$types';
+import type { Actions } from './$types';
 import LoginError from './LoginError';
 import { AUTH_COOKIE_OPTIONS, JWT_SIGN_OPTIONS } from '$lib/constants';
 
 import { env } from '$env/dynamic/private';
-
-export const load: PageServerLoad = async ({ locals }) => {
-	if (locals.user) {
-		throw redirect(302, '/guarded');
-	}
-};
 
 export const actions: Actions = {
 	default: async ({ request, cookies }) => {
