@@ -7,23 +7,33 @@ import prisma from '$lib/prisma';
 import type { RequestHandler } from './$types';
 import { getGoogleUserFromJWT, type GoogleUser } from '$lib/serverOnly/google';
 
-// Get user
-async function retrieveUser(googleUser: GoogleUser) {
+// Create user
+async function createUser(googleUser: GoogleUser) {
 	try {
-		return prisma.user.findUnique({ where: { email: googleUser.email } });
+		const { firstName, lastName, email, picture } = googleUser;
+		const username = firstName + lastName[0];
+		return prisma.user.create({
+			data: {
+				firstName,
+				lastName,
+				email,
+				username,
+				picture,
+				isGoogleAccountConnected: true
+			}
+		});
 	} catch (err) {
-		const message = err instanceof Error ? err.message : '';
-		throw error(500, `Server error: ${message}`);
+		let message = '';
+		if (err instanceof Error) message = err.message;
+		throw error(500, `Google user could not be created: ${message}`);
 	}
 }
 
-// Takes the google token, verifies it, finds the user, sets the cookie, and returns the user
+// Takes the google token, verifies it, creates the user, sets the cookie, and returns the user
 export const POST: RequestHandler = async (event) => {
 	const { googleToken } = await event.request.json();
 	const googleUser = await getGoogleUserFromJWT(googleToken);
-	const user = await retrieveUser(googleUser);
-
-	if (!user || !user.isGoogleAccountConnected) throw error(404, 'Google account not found.');
+	const user = await createUser(googleUser);
 
 	const jwtUser: JwtUser = {
 		id: user.id,

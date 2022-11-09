@@ -2,12 +2,19 @@
 	import { onMount } from 'svelte';
 	import LoginError from './LoginError';
 	import type { ActionData } from './$types';
-	import { initializeGoogleAccounts, renderGoogleButton } from './googleUtils';
+	import { initializeGoogleAccounts, renderGoogleButton, createGoogleCallback } from '$lib/google';
 
 	export let form: ActionData;
 
+	let googleError: string = '';
+
+	const onGoogleError = ({ message }: { message: string }) => {
+		googleError = message;
+	};
+	const googleCallback = createGoogleCallback('/login/googleCallback', onGoogleError);
+
 	onMount(() => {
-		initializeGoogleAccounts();
+		initializeGoogleAccounts(googleCallback);
 		renderGoogleButton();
 	});
 </script>
@@ -33,4 +40,8 @@
 			<p>Unknown error</p>
 		{/if}
 	</form>
+	<div>{googleError}</div>
+	<div>
+		<a href="/signup" sveltekit:prefetch>Sign up</a>
+	</div>
 </section>
