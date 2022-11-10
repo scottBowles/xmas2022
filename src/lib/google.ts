@@ -21,10 +21,10 @@ export function renderGoogleButton() {
 	}
 }
 
-export const createGoogleCallback =
-	(callbackUrl: string, onError: ({ message }: { message: string }) => void) =>
+const createGoogleCallback =
+	(onError: (message: string) => void) =>
 	async (response: google.accounts.id.CredentialResponse) => {
-		const res = await fetch(callbackUrl, {
+		const res = await fetch('/googleCallback', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -45,14 +45,16 @@ export const createGoogleCallback =
 			goto('/');
 		} else {
 			const json = await res.json();
-			onError({ message: json.message });
+			onError(json.message);
 		}
 	};
 
-export function initializeGoogleAccounts(callback: google.accounts.id.IdConfiguration['callback']) {
+export function initializeGoogleAccounts(onError: (message: string) => void) {
 	const initialized = get(googleInitialized);
 
 	if (initialized) return;
+
+	const callback = createGoogleCallback(onError);
 
 	google.accounts.id.initialize({
 		client_id: PUBLIC_GOOGLE_CLIENT_ID,
