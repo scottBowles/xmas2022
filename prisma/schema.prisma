@@ -9,14 +9,79 @@ datasource db {
 }
 
 model User {
-  id                       Int      @id @default(autoincrement())
-  email                    String   @unique @db.VarChar(255)
-  password                 String?  @db.VarChar(255)
-  firstName                String?  @db.VarChar(255)
-  lastName                 String?  @db.VarChar(255)
-  username                 String?  @unique @db.VarChar(255)
-  createdAt                DateTime @default(now())
-  updatedAt                DateTime @default(now()) @updatedAt
-  isGoogleAccountConnected Boolean  @default(false)
-  picture                  String?  @db.VarChar(255)
+  id                       Int                    @id @default(autoincrement())
+  email                    String                 @unique @db.VarChar(255)
+  password                 String?                @db.VarChar(255)
+  firstName                String?                @db.VarChar(255)
+  lastName                 String?                @db.VarChar(255)
+  username                 String?                @unique @db.VarChar(255)
+  createdAt                DateTime               @default(now())
+  updatedAt                DateTime               @updatedAt
+  isGoogleAccountConnected Boolean                @default(false)
+  picture                  String?                @db.VarChar(255)
+  challengeResponses       ChallengeResponse[]
+  ChallengeSetResponse     ChallengeSetResponse[]
+}
+
+model ChallengeSet {
+  id                   Int                    @id @default(autoincrement())
+  title                String                 @default("") @db.VarChar(255)
+  instructions         String                 @default("") @db.Text
+  imageId              String                 @default("") @db.VarChar(255)
+  timeAvailableStart   DateTime?
+  timeAvailableEnd     DateTime?
+  challenges           Challenge[]
+  ChallengeSetResponse ChallengeSetResponse[]
+}
+
+model Challenge {
+  id                      Int                 @id @default(autoincrement())
+  title                   String              @default("") @db.VarChar(255)
+  prompt                  String              @default("") @db.Text
+  acceptedResponsesIfOpen String[]
+  scoreOnSubmit           Boolean             @default(true)
+  challengeSet            ChallengeSet        @relation(fields: [challengeSetId], references: [id])
+  challengeSetId          Int
+  options                 Option[]
+  responses               ChallengeResponse[]
+}
+
+model Option {
+  id          Int       @id @default(autoincrement())
+  text        String    @default("") @db.VarChar(255)
+  challenge   Challenge @relation(fields: [challengeId], references: [id])
+  challengeId Int
+  isCorrect   Boolean   @default(false)
+}
+
+model ChallengeResponse {
+  id                      Int       @id @default(autoincrement())
+  player                  User      @relation(fields: [playerId], references: [id])
+  playerId                Int
+  challenge               Challenge @relation(fields: [challengeId], references: [id])
+  challengeId             Int
+  response                String    @default("") @db.Text
+  pointsEarned            Int?
+  pointsManuallyAwarded   Int?
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  submittedBeforeSetStart Boolean   @default(false)
+  submittedAfterSetEnd    Boolean   @default(false)
+
+  @@unique([playerId, challengeId])
+}
+
+model ChallengeSetResponse {
+  id                 Int          @id @default(autoincrement())
+  player             User         @relation(fields: [playerId], references: [id])
+  playerId           Int
+  challengeSet       ChallengeSet @relation(fields: [challengeSetId], references: [id])
+  challengeSetId     Int
+  startedAt          DateTime?
+  completedAt        DateTime?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  clientRecordedTime Int?
+
+  @@unique([playerId, challengeSetId])
 }
