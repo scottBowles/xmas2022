@@ -41,10 +41,10 @@ export async function verifyAndGetGoogleUserFromJWT(token: string): Promise<Goog
 }
 
 /** Create a user given a GoogleUser */
-function createUserFromGoogleUser(googleUser: GoogleUser) {
+async function createUserFromGoogleUser(googleUser: GoogleUser) {
 	const { firstName, lastName, email, picture } = googleUser;
 	const username = firstName + lastName[0];
-	return prisma.user.create({
+	const user = await prisma.user.create({
 		data: {
 			firstName,
 			lastName,
@@ -54,6 +54,7 @@ function createUserFromGoogleUser(googleUser: GoogleUser) {
 			isGoogleAccountConnected: true
 		}
 	});
+	return user;
 }
 
 /** Get or create a user given the GoogleUser */
