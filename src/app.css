@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 html {
+    --white: #fff;
     --red: #c30f16;
     --bright-red: hsl(358, 86%, 53%);
     --text-gray: #333;

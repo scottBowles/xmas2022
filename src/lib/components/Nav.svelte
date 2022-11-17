@@ -36,7 +36,7 @@
 	nav {
 		height: var(--nav-height);
 		background: var(--red);
-		color: #fff;
+		color: var(--white);
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
