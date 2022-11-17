@@ -2,10 +2,12 @@
 	import { slide } from 'svelte/transition';
 	import MenuToggle from './MenuToggle.svelte';
 	import { clickOutside } from '$lib/actions.js';
-	import type { MenuStore } from '$lib/stores';
+	import DropdownMenu from '$lib/components/DropdownMenu.svelte';
+	import { menu } from '$lib/stores';
 
 	export let user: JwtUser | null;
-	export let menuIsOpen: MenuStore;
+
+	const menuIsOpen = menu();
 
 	const handleOutsideClick = menuIsOpen.close;
 	const handleKeydown = ({ key }: KeyboardEvent) => {
@@ -25,6 +27,10 @@
 		<MenuToggle {menuIsOpen} />
 	{/if}
 </nav>
+
+{#if $menuIsOpen}
+	<DropdownMenu />
+{/if}
 
 <style>
 	nav {
