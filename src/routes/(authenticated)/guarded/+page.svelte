@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { logout } from '$lib/clientOnly/logout';
+	import { logout } from '$lib/utils/clientOnly/logout';
 </script>
 
 Logged in!

@@ -1,6 +1,6 @@
 <script>
 	import { slide } from 'svelte/transition';
-	import { logout } from '$lib/clientOnly/logout';
+	import { logout } from '$lib/utils/clientOnly/logout';
 </script>
 
 <div class="container" transition:slide>
