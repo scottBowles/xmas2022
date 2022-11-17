@@ -11,7 +11,7 @@ const getSessionCookie: Handle = async ({ event, resolve }) => {
 	const token = event.cookies.get('AuthorizationToken');
 	if (token) {
 		try {
-			const jwtPayload = (await jwt.verify(token, env.JWT_ACCESS_SECRET)) as
+			const jwtPayload = jwt.verify(token, env.JWT_ACCESS_SECRET) as
 				| (JwtPayload & JwtUser)
 				| string;
 			const isBadPayload = typeof jwtPayload === 'string';
