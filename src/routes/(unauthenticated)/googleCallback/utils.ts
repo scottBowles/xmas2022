@@ -1,4 +1,3 @@
-import type { User } from '@prisma/client';
 import { error, type Cookies } from '@sveltejs/kit';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
@@ -6,6 +5,7 @@ import { env } from '$env/dynamic/private';
 import { PUBLIC_GOOGLE_CLIENT_ID } from '$env/static/public';
 import { AUTH_COOKIE_OPTIONS, JWT_SIGN_OPTIONS } from '$lib/constants';
 import prisma from '$lib/prisma';
+import { pick } from '$lib/utils';
 
 /** User data we use from Google */
 type GoogleUser = {
@@ -41,36 +41,30 @@ export async function verifyAndGetGoogleUserFromJWT(token: string): Promise<Goog
 }
 
 /** Create a user given a GoogleUser */
-async function createUserFromGoogleUser(googleUser: GoogleUser) {
+async function createUserFromGoogleUser(googleUser: GoogleUser): Promise<JwtUser> {
 	const { firstName, lastName, email, picture } = googleUser;
 	const username = firstName + lastName[0];
 	const user = await prisma.user.create({
-		data: {
-			firstName,
-			lastName,
-			email,
-			picture,
-			username,
-			isGoogleAccountConnected: true
-		}
+		data: { firstName, lastName, email, picture, username, isGoogleAccountConnected: true },
+		select: { id: true, email: true }
 	});
 	return user;
 }
 
 /** Get or create a user given the GoogleUser */
-export async function getOrCreateGoogleUser(googleUser: GoogleUser) {
-	const existingUser = await prisma.user.findUnique({ where: { email: googleUser.email } });
+export async function getOrCreateGoogleUser(googleUser: GoogleUser): Promise<JwtUser> {
+	const existingUser = await prisma.user.findUnique({
+		where: { email: googleUser.email },
+		select: { id: true, email: true, isGoogleAccountConnected: true }
+	});
 	if (existingUser && !existingUser.isGoogleAccountConnected)
 		throw error(400, 'This email is already associated with a non-Google account');
-	return existingUser || createUserFromGoogleUser(googleUser);
+	return existingUser ? pick(existingUser, ['id', 'email']) : createUserFromGoogleUser(googleUser);
 }
 
 /** Sets the Authorization JWT cookie given the user and the cookies object  */
-export function setJwtCookie(user: User, cookies: Cookies) {
-	const jwtUser: JwtUser = {
-		id: user.id,
-		email: user.email
-	};
+export function setJwtCookie(jwtUser: JwtUser, cookies: Cookies) {
+	jwtUser = pick(jwtUser, ['id', 'email']); // Ensure only the intended fields are in the JWT
 	const token = jwt.sign(jwtUser, env.JWT_ACCESS_SECRET, JWT_SIGN_OPTIONS);
 	cookies.set('AuthorizationToken', token, AUTH_COOKIE_OPTIONS);
 }

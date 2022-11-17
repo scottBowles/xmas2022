@@ -10,7 +10,7 @@ import { AUTH_COOKIE_OPTIONS, JWT_SIGN_OPTIONS } from '$lib/constants';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (locals.user) {
-		throw redirect(302, '/guarded');
+		throw redirect(302, '/');
 	}
 };
 
@@ -42,6 +42,6 @@ export const actions: Actions = {
 					return invalid(400, { email, error: SignupError.UNKNOWN });
 			}
 		}
-		throw redirect(302, '/guarded');
+		throw redirect(302, '/');
 	}
 };

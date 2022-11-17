@@ -1,5 +1,5 @@
 import { get, type Writable } from 'svelte/store';
-import { goto, invalidateAll } from '$app/navigation';
+import { invalidateAll } from '$app/navigation';
 import { PUBLIC_GOOGLE_CLIENT_ID } from '$env/static/public';
 
 /**
@@ -25,9 +25,7 @@ const createGoogleCallback =
 	async (response: google.accounts.id.CredentialResponse) => {
 		const res = await fetch('/googleCallback', {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
+			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ googleToken: response.credential })
 		});
 
@@ -41,8 +39,6 @@ const createGoogleCallback =
 			// unsubscribe();
 
 			// if (referrer) return goto(referrer);
-
-			goto('/');
 		} else {
 			const json = await res.json();
 			onError(json.message);
