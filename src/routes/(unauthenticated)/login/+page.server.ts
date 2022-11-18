@@ -39,6 +39,6 @@ export const actions: Actions = {
 			console.error(error);
 			return invalid(400, { email, error: LoginError.UNKNOWN });
 		}
-		throw redirect(302, '/guarded');
+		throw redirect(302, '/');
 	}
 };

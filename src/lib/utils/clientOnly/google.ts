@@ -1,7 +1,6 @@
-import { get } from 'svelte/store';
-import { goto } from '$app/navigation';
+import { get, type Writable } from 'svelte/store';
+import { invalidateAll } from '$app/navigation';
 import { PUBLIC_GOOGLE_CLIENT_ID } from '$env/static/public';
-import { googleInitialized } from '$lib/stores';
 
 /**
  * For future reference, much of the google auth code throughout the app is modified from:
@@ -26,13 +25,12 @@ const createGoogleCallback =
 	async (response: google.accounts.id.CredentialResponse) => {
 		const res = await fetch('/googleCallback', {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
+			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ googleToken: response.credential })
 		});
 
 		if (res.ok) {
+			invalidateAll();
 			// Not currently using referrer, but leaving this in case we want to in the future.
 			// let referrer;
 			// const unsubscribe = page.subscribe((p) => {
@@ -41,15 +39,16 @@ const createGoogleCallback =
 			// unsubscribe();
 
 			// if (referrer) return goto(referrer);
-
-			goto('/');
 		} else {
 			const json = await res.json();
 			onError(json.message);
 		}
 	};
 
-export function initializeGoogleAccounts(onError: (message: string) => void) {
+export function initializeGoogleAccounts(
+	googleInitialized: Writable<boolean>,
+	onError: (message: string) => void
+) {
 	const initialized = get(googleInitialized);
 
 	if (initialized) return;

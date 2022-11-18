@@ -1,13 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-
-	const logout = async () => {
-		await fetch('/logout', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' }
-		});
-		goto('/login');
-	};
+	import { logout } from '$lib/utils/clientOnly/logout';
 </script>
 
 Logged in!

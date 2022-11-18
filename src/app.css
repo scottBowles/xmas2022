@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+    --white: #fff;
+    --red: #c30f16;
+    --bright-red: hsl(358, 86%, 53%);
+    --text-gray: #333;
+    --nav-height: 48px;
+  }
+  
+  body {
+    font-family: "Jost", sans-serif !important;
+  }
+  
+  main {
+    max-width: 38rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    margin: auto;
+  }
+  
+  .text-christmas-red {
+    color: var(--red);
+  }
+  
