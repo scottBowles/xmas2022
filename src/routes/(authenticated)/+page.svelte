@@ -24,13 +24,14 @@
 	{#if currentChallengeSets?.length > 0}
 		<h2 class="text-2xl mt-4 mb-1">Today's Challenges</h2>
 		{#each currentChallengeSets as challengeSet (challengeSet.id)}
+			{@const status = getStatus(challengeSet)}
 			<span class="mt-3 mb-1">
 				<a
 					href={`/challenge-set/${challengeSet.id}/`}
-					class={`${getStatus(challengeSet).class} text-blue-500 text-lg`}
+					class={`${status.class} text-blue-500 text-lg`}
 				>
 					{challengeSet.title}
-					{getStatus(challengeSet).text}
+					{status.text}
 				</a>
 			</span>
 		{/each}
