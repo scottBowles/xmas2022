@@ -1,4 +1,4 @@
-import prisma from '$lib/prisma';
+import prisma, { jwtUserFactory } from '$lib/prisma';
 import { invalid, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import bcrypt from 'bcryptjs';
@@ -28,7 +28,7 @@ export const actions: Actions = {
 			const user = await prisma.user.create({
 				data: { email, password: await bcrypt.hash(password, 10) }
 			});
-			const jwtUser: JwtUser = { id: user.id, email: user.email };
+			const jwtUser = jwtUserFactory(user);
 			const token = jwt.sign(jwtUser, env.JWT_ACCESS_SECRET, JWT_SIGN_OPTIONS);
 			cookies.set('AuthorizationToken', token, AUTH_COOKIE_OPTIONS);
 		} catch (error) {
