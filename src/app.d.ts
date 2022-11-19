@@ -14,4 +14,5 @@ declare namespace App {
 interface JwtUser {
 	id: number;
 	email: string;
+	displayName: string;
 }

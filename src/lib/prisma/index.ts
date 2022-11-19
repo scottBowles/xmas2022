@@ -4,7 +4,7 @@ import { challengeSet, ChallengeSet } from './models/challengeSet';
 import { challengeResponse, ChallengeResponse } from './models/challengeResponse';
 import { challengeSetResponse, ChallengeSetResponse } from './models/challengeSetResponse';
 import { option, Option } from './models/option';
-import { user, User } from './models/user';
+import { user, User, jwtUserFactory } from './models/user';
 
 /**
  * Models
@@ -19,7 +19,15 @@ import { user, User } from './models/user';
  *    ```
  * Tbh I'm not thrilled with this solution, so if you have other ideas by all means say so.
  */
-export { Challenge, ChallengeSet, ChallengeResponse, ChallengeSetResponse, Option, User };
+export {
+	Challenge,
+	ChallengeSet,
+	ChallengeResponse,
+	ChallengeSetResponse,
+	Option,
+	User,
+	jwtUserFactory
+};
 
 /**
  * Extended Prisma Client
