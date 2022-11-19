@@ -20,18 +20,18 @@ model User {
   isGoogleAccountConnected Boolean                @default(false)
   picture                  String?                @db.VarChar(255)
   challengeResponses       ChallengeResponse[]
-  ChallengeSetResponse     ChallengeSetResponse[]
+  challengeSetResponses    ChallengeSetResponse[]
 }
 
 model ChallengeSet {
-  id                   Int                    @id @default(autoincrement())
-  title                String                 @default("") @db.VarChar(255)
-  instructions         String                 @default("") @db.Text
-  imageId              String                 @default("") @db.VarChar(255)
-  timeAvailableStart   DateTime?
-  timeAvailableEnd     DateTime?
-  challenges           Challenge[]
-  ChallengeSetResponse ChallengeSetResponse[]
+  id                    Int                    @id @default(autoincrement())
+  title                 String                 @default("") @db.VarChar(255)
+  instructions          String                 @default("") @db.Text
+  imageId               String                 @default("") @db.VarChar(255)
+  timeAvailableStart    DateTime?
+  timeAvailableEnd      DateTime?
+  challenges            Challenge[]
+  challengeSetResponses ChallengeSetResponse[]
 }
 
 model Challenge {
