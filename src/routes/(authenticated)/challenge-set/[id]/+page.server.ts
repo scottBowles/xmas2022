@@ -1,7 +1,15 @@
 import prisma from '$lib/prisma';
 import { error, invalid, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import getActionChallengeSet from './getActionChallengeSet';
+import {
+	isAvailable,
+	challengesExist,
+	userHasCompleted,
+	resultsUrl,
+	userResponseExists,
+	nextChallengeUrl
+} from '$lib/prisma/models/challengeSet';
+import { getNow } from '$lib/utils';
 
 export const load: PageServerLoad = async ({ params, parent }) => {
 	const now = new Date();
@@ -37,31 +45,42 @@ export const actions: Actions = {
 		// if the user is not logged in, redirect to login (unlikely but possible)
 		if (!userId) throw redirect(403, '/login');
 
-		// get the challenge set from the database and add getters used below
-		const challengeSet = await getActionChallengeSet(id, userId);
+		const challengeSet = await prisma.challengeSet.findUnique({
+			where: { id },
+			select: {
+				id: true,
+				timeAvailableStart: true,
+				challengeSetResponses: {
+					where: { playerId: userId },
+					select: { startedAt: true, completedAt: true }
+				},
+				challenges: {
+					select: {
+						id: true,
+						responses: { select: { response: true }, where: { playerId: userId } }
+					},
+					orderBy: { id: 'asc' }
+				}
+			}
+		});
 
-		// if the challenge set doesn't exist or is not available, throw a 404
-		if (!challengeSet || !challengeSet.isAvailable)
-			return invalid(404, { error: 'Challenge set not found' });
+		if (!challengeSet) return invalid(404, { error: 'Challenge set not found' });
 
-		// if the challenge set has no challenges, throw a 404
-		if (!challengeSet.challengesExist)
+		if (!isAvailable(challengeSet)) return invalid(404, { error: 'Challenge set not found' });
+		if (!challengesExist(challengeSet))
 			return invalid(404, { error: 'Challenge set has no challenges' });
-
-		// if the user has already completed the challenge set, redirect to the results page
-		if (challengeSet.userHasCompleted) throw redirect(302, challengeSet.resultsUrl);
+		if (userHasCompleted(challengeSet)) throw redirect(302, resultsUrl(challengeSet));
 
 		// if the user has not started the challenge set, create a new challenge set response
 		// with the current time as the start time
-		if (!challengeSet.userResponseExists) {
-			const now = new Date();
+		if (!userResponseExists(challengeSet)) {
 			await prisma.challengeSetResponse.create({
-				data: { challengeSetId: id, playerId: userId, startedAt: now }
+				data: { challengeSetId: id, playerId: userId, startedAt: getNow() }
 			});
 		}
 
 		// redirect to the first incomplete challenge in the challenge set, if it exists, or
 		// the first challenge if it doesn't
-		throw redirect(302, `/challenge-set/${id}/challenge/${challengeSet.nextChallenge.id}`);
+		throw redirect(302, nextChallengeUrl(challengeSet));
 	}
 };
