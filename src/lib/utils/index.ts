@@ -18,3 +18,9 @@ export const pick = <T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> => {
 	});
 	return result;
 };
+
+export const getNow = () => new Date();
+
+export const addKey =
+	<T extends Record<string, unknown>, K extends string, V>(key: K, transform: (obj: T) => V) =>
+	(obj: T): T & Record<K, V> => ({ ...obj, [key]: transform(obj) });

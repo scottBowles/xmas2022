@@ -1,6 +1,5 @@
 import prisma from './prismaClient';
 import { challenge, Challenge } from './models/challenge';
-import { challengeSet, ChallengeSet } from './models/challengeSet';
 import { challengeResponse, ChallengeResponse } from './models/challengeResponse';
 import { challengeSetResponse, ChallengeSetResponse } from './models/challengeSetResponse';
 import { option, Option } from './models/option';
@@ -19,15 +18,7 @@ import { user, User, jwtUserFactory } from './models/user';
  *    ```
  * Tbh I'm not thrilled with this solution, so if you have other ideas by all means say so.
  */
-export {
-	Challenge,
-	ChallengeSet,
-	ChallengeResponse,
-	ChallengeSetResponse,
-	Option,
-	User,
-	jwtUserFactory
-};
+export { Challenge, ChallengeResponse, ChallengeSetResponse, Option, User, jwtUserFactory };
 
 /**
  * Extended Prisma Client
@@ -49,7 +40,6 @@ export {
 const client = {
 	...prisma,
 	challenge,
-	challengeSet,
 	challengeResponse,
 	challengeSetResponse,
 	option,
