@@ -1,62 +1,51 @@
-import type { ChallengeSet as DBChallengeSet } from '@prisma/client';
-import prismaClient from '../prismaClient';
 import { getNow, addKey } from '$lib/utils';
+import type { WithMinimumInput } from '$lib/utils/types';
 
-export const challengeSet = Object.assign(prismaClient.challengeSet, {
-	// Add custom methods here
-});
+/**
+ * TYPES for what follows
+ */
+type IsAvailable = WithMinimumInput<{ timeAvailableStart: Date | null }, boolean>;
+type ChallengesExist = WithMinimumInput<{ challenges: unknown[] }, boolean>;
+type UserHasCompleted = WithMinimumInput<
+	{ challengeSetResponses: { completedAt: Date | null }[] },
+	boolean
+>;
+type ResultsUrl = WithMinimumInput<{ id: number }, string>;
+type UserResponseExists = WithMinimumInput<{ challengeSetResponses: unknown[] }, boolean>;
+type NextChallenge = <T extends { challenges: { responses: unknown[] }[] }>(
+	challengeSet: T
+) => T['challenges'][number];
+type NextChallengeUrl = WithMinimumInput<
+	{
+		id: number;
+		challenges: { id: number; responses: unknown[] }[];
+	},
+	string
+>;
 
-export class ChallengeSet {
-	id: number;
-	title: string;
-	instructions: string;
-	imageId: string;
-	timeAvailableStart: Date | null;
-	timeAvailableEnd: Date | null;
+/**
+ * HELPERS
+ * Functions to help work with ChallengeSet objects
+ */
+const isAvailable: IsAvailable = (challengeSet) =>
+	!!challengeSet.timeAvailableStart && challengeSet.timeAvailableStart <= getNow();
 
-	constructor(challengeSet: DBChallengeSet) {
-		this.id = challengeSet.id;
-		this.title = challengeSet.title;
-		this.instructions = challengeSet.instructions;
-		this.imageId = challengeSet.imageId;
-		this.timeAvailableStart = challengeSet.timeAvailableStart;
-		this.timeAvailableEnd = challengeSet.timeAvailableEnd;
-	}
-}
+const challengesExist: ChallengesExist = (challengeSet) => Boolean(challengeSet.challenges.length);
 
-type IsAvailableMinimalInput = { timeAvailableStart: Date | null };
-const isAvailable = <T extends IsAvailableMinimalInput>(cs: T) =>
-	!!cs.timeAvailableStart && cs.timeAvailableStart <= getNow();
+const userHasCompleted: UserHasCompleted = (challengeSet) =>
+	Boolean(challengeSet.challengeSetResponses[0]?.completedAt);
 
-type ChallengesExistMinimalInput = { challenges: unknown[] };
-const challengesExist = <T extends ChallengesExistMinimalInput>(cs: T) =>
-	Boolean(cs.challenges.length);
+const resultsUrl: ResultsUrl = (challengeSet) => `/challenge-set/${challengeSet.id}/results`;
 
-type UserHasCompletedMinimalInput = { challengeSetResponses: { completedAt: Date | null }[] };
-const userHasCompleted = <T extends UserHasCompletedMinimalInput>(cs: T) =>
-	Boolean(cs.challengeSetResponses[0]?.completedAt);
+const userResponseExists: UserResponseExists = (challengeSet) =>
+	Boolean(challengeSet.challengeSetResponses.length);
 
-type ResultsUrlMinimalInput = { id: number };
-const resultsUrl = <T extends ResultsUrlMinimalInput>(cs: T) => `/challenge-set/${cs.id}/results`;
+const nextChallenge: NextChallenge = (challengeSet) =>
+	challengeSet.challenges.find((challenge) => !challenge.responses.length) ||
+	challengeSet.challenges[0];
 
-type UserResponseExistsMinimalInput = { challengeSetResponses: unknown[] };
-const userResponseExists = <T extends UserResponseExistsMinimalInput>(cs: T) =>
-	Boolean(cs.challengeSetResponses.length);
-
-type NextChallengeMinimalInput = { challenges: { responses: unknown[] }[] };
-const nextChallenge = <T extends NextChallengeMinimalInput>(cs: T): T['challenges'][number] =>
-	cs.challenges.find((challenge) => !challenge.responses.length) || cs.challenges[0];
-
-type NextChallengeUrlMinimalInput = {
-	id: number;
-	challenges: { id: number; responses: unknown[] }[];
-};
-const nextChallengeUrl = <T extends NextChallengeUrlMinimalInput>(cs: T) =>
-	`/challenge-set/${cs.id}/challenge/${
-		nextChallenge<{
-			challenges: T['challenges'];
-		}>(cs).id
-	}`;
+const nextChallengeUrl: NextChallengeUrl = (challengeSet) =>
+	`/challenge-set/${challengeSet.id}/challenge/${nextChallenge(challengeSet).id}`;
 
 const addIsAvailable = addKey('isAvailable', isAvailable);
 const addChallengesExist = addKey('challengesExist', challengesExist);
