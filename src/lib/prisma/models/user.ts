@@ -1,46 +1,25 @@
-import { pick } from '$lib/utils';
-import type { User as DBUser } from '@prisma/client';
-import prismaClient from '../prismaClient';
+import { addKey, pick } from '$lib/utils';
+import type { WithMinimumInput } from '$lib/utils/types';
 
-export const user = Object.assign(prismaClient.user, {
-	// Add custom methods heres
-});
-
-export class User {
-	id: number;
-	email: string;
-	firstName: string | null;
-	lastName: string | null;
-	username: string | null;
-	isGoogleAccountConnected: boolean;
-	picture: string | null;
-
-	constructor(user: DBUser | User) {
-		this.id = user.id;
-		this.email = user.email;
-		this.firstName = user.firstName;
-		this.lastName = user.lastName;
-		this.username = user.username;
-		this.isGoogleAccountConnected = user.isGoogleAccountConnected;
-		this.picture = user.picture;
-	}
-
-	get displayName() {
-		return this.username || this.firstName || this.email.split('@')[0];
-	}
-
-	get jwtUser() {
-		return jwtUserFactory(this);
-	}
-}
+type DisplayName = WithMinimumInput<
+	| { username: string; firstName?: string | null; email?: string; displayName?: string }
+	| { username?: string | null; firstName: string; email?: string; displayName?: string }
+	| { username?: string | null; firstName?: string | null; email: string; displayName?: string },
+	string
+>;
+const displayName: DisplayName = (user) =>
+	user.displayName || user.username || user.firstName || (user.email as string).split('@')[0];
+const addDisplayName = addKey('displayName', displayName);
 
 /**
  * Returns the user saved in the auth jwt.
  * Must remain a pojo to be serialized for the jwt and passed to the client.
  */
-export const jwtUserFactory = (user: DBUser | User | JwtUser): JwtUser => {
-	if (!('displayName' in user)) {
-		user = new User(user);
-	}
-	return pick(user, ['id', 'email', 'displayName']);
-};
+type JwtUserFactory = WithMinimumInput<
+	{ id: number; email: string } & Parameters<DisplayName>[0],
+	JwtUser
+>;
+const jwtUserFactory: JwtUserFactory = (user) =>
+	pick(addDisplayName(user), ['id', 'email', 'displayName']);
+
+export { displayName, addDisplayName, jwtUserFactory };
