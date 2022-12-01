@@ -4,7 +4,8 @@ import jwt from 'jsonwebtoken';
 import { env } from '$env/dynamic/private';
 import { PUBLIC_GOOGLE_CLIENT_ID } from '$env/static/public';
 import { AUTH_COOKIE_OPTIONS, JWT_SIGN_OPTIONS } from '$lib/constants';
-import prisma, { jwtUserFactory } from '$lib/prisma';
+import prisma from '$lib/prisma';
+import { jwtUserFactory } from '$lib/prisma/models/user';
 
 /** User data we use from Google */
 type GoogleUser = {

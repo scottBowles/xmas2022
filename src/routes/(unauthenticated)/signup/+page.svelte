@@ -38,6 +38,6 @@
 	</form>
 	<div>{googleError}</div>
 	<div>
-		<a href="/login" data-sveltekit-prefetch>Log in</a>
+		<a href="/login" data-sveltekit-preload-data>Log in</a>
 	</div>
 </section>
