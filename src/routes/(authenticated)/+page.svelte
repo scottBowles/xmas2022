@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { urls } from '$lib/utils';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -27,7 +28,7 @@
 			{@const status = getStatus(challengeSet)}
 			<span class="mt-3 mb-1">
 				<a
-					href={`/challenge-set/${challengeSet.id}/`}
+					href={urls.challengeSet(challengeSet.id)}
 					class={`${status.class} text-blue-500 text-lg`}
 				>
 					{challengeSet.title}

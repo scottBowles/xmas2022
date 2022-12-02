@@ -1,4 +1,4 @@
-import { getNow, addKey } from '$lib/utils';
+import { getNow, addKey, urls } from '$lib/utils';
 import type { WithMinimumInput } from '$lib/utils/types';
 
 /**
@@ -24,8 +24,9 @@ type NextChallengeUrl = WithMinimumInput<
 >;
 
 /**
- * HELPERS
- * Functions to help work with ChallengeSet objects
+ * CHALLENGE SET COMPUTED PROPERTIES
+ * Functions to help work with ChallengeSet objects.
+ * These all take a partial ChallengeSet object as their sole argument.
  */
 const isAvailable: IsAvailable = (challengeSet) =>
 	!!challengeSet.timeAvailableStart && challengeSet.timeAvailableStart <= getNow();
@@ -35,7 +36,7 @@ const challengesExist: ChallengesExist = (challengeSet) => Boolean(challengeSet.
 const userHasCompleted: UserHasCompleted = (challengeSet) =>
 	Boolean(challengeSet.challengeSetResponses[0]?.completedAt);
 
-const resultsUrl: ResultsUrl = (challengeSet) => `/challenge-set/${challengeSet.id}/results`;
+const resultsUrl: ResultsUrl = (challengeSet) => urls.challengeSetResults(challengeSet.id);
 
 const userResponseExists: UserResponseExists = (challengeSet) =>
 	Boolean(challengeSet.challengeSetResponses.length);
@@ -45,8 +46,14 @@ const nextChallenge: NextChallenge = (challengeSet) =>
 	challengeSet.challenges[0];
 
 const nextChallengeUrl: NextChallengeUrl = (challengeSet) =>
-	`/challenge-set/${challengeSet.id}/challenge/${nextChallenge(challengeSet).id}`;
+	urls.challenge(challengeSet.id, nextChallenge(challengeSet).id);
 
+/**
+ * ADD FUNCTIONS
+ * Functions to add computed properties to ChallengeSet objects.
+ * These all take a partial ChallengeSet object as their sole argument and
+ * return a like object with the computed property added.
+ */
 const addIsAvailable = addKey('isAvailable', isAvailable);
 const addChallengesExist = addKey('challengesExist', challengesExist);
 const addUserHasCompleted = addKey('userHasCompleted', userHasCompleted);
