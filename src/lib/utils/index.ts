@@ -1,5 +1,7 @@
 import type { JwtPayload } from 'jsonwebtoken';
 
+export { default as urls } from './urls';
+
 export const isJwtExpiringWithinDays = (jwtPayload: JwtPayload, days = 7): boolean => {
 	const exp = jwtPayload.exp;
 	if (exp) {

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { urls } from '$lib/utils';
 	import type { PageData, ActionData } from './$types';
 
 	export let data: PageData;
@@ -8,7 +9,7 @@
 	const { startedAt, completedAt } = challengeSetResponses[0] ?? {};
 	const userHasStartedChallengeSet = !!startedAt;
 	const userHasCompletedChallengeSet = !!completedAt;
-	const reviewUrl = `/challenge-set/${id}/review`;
+	const reviewUrl = urls.challengeSetReview(id);
 </script>
 
 {#if userHasCompletedChallengeSet}
