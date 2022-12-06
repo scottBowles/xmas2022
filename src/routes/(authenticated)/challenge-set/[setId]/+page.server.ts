@@ -14,7 +14,7 @@ import { getNow } from '$lib/utils';
 export const load: PageServerLoad = async ({ params, parent }) => {
 	const now = new Date();
 	const { user } = await parent();
-	const id = parseInt(params.id);
+	const id = parseInt(params.setId);
 
 	const challengeSet = await prisma.challengeSet.findUnique({
 		where: { id },
@@ -40,7 +40,7 @@ export const actions: Actions = {
 	 */
 	default: async ({ locals, params }) => {
 		const userId = locals.user?.id;
-		const id = parseInt(params.id);
+		const id = parseInt(params.setId);
 
 		// if the user is not logged in, redirect to login (unlikely but possible)
 		if (!userId) throw redirect(403, '/login');
@@ -64,9 +64,8 @@ export const actions: Actions = {
 			}
 		});
 
-		if (!challengeSet) return invalid(404, { error: 'Challenge set not found' });
-
-		if (!isAvailable(challengeSet)) return invalid(404, { error: 'Challenge set not found' });
+		if (!challengeSet || !isAvailable(challengeSet))
+			return invalid(404, { error: 'Challenge set not found' });
 		if (!challengesExist(challengeSet))
 			return invalid(404, { error: 'Challenge set has no challenges' });
 		if (userHasCompleted(challengeSet)) throw redirect(302, resultsUrl(challengeSet));
