@@ -12,16 +12,19 @@ type UserHasCompleted = WithMinimumInput<
 >;
 type ResultsUrl = WithMinimumInput<{ id: number }, string>;
 type UserResponseExists = WithMinimumInput<{ challengeSetResponses: unknown[] }, boolean>;
-type NextChallenge = <T extends { challenges: { responses: unknown[] }[] }>(
-	challengeSet: T
+type NextChallenge = <T extends { challenges: { id: number; responses: unknown[] }[] }>(
+	challengeSet: T,
+	lastChallengeId?: number
 ) => T['challenges'][number];
-type NextChallengeUrl = WithMinimumInput<
-	{
+type NextChallengeUrl = <
+	T extends {
 		id: number;
 		challenges: { id: number; responses: unknown[] }[];
-	},
-	string
->;
+	}
+>(
+	challengeSet: T,
+	lastChallengeId?: number
+) => string;
 
 /**
  * CHALLENGE SET COMPUTED PROPERTIES
@@ -41,12 +44,24 @@ const resultsUrl: ResultsUrl = (challengeSet) => urls.challengeSetResults(challe
 const userResponseExists: UserResponseExists = (challengeSet) =>
 	Boolean(challengeSet.challengeSetResponses.length);
 
-const nextChallenge: NextChallenge = (challengeSet) =>
-	challengeSet.challenges.find((challenge) => !challenge.responses.length) ||
-	challengeSet.challenges[0];
+const nextChallenge: NextChallenge = (challengeSet, lastChallengeId) => {
+	if (lastChallengeId) {
+		const lastChallengeIndex = challengeSet.challenges.findIndex(
+			(challenge) => challenge.id === lastChallengeId
+		);
+		if (lastChallengeIndex === -1) throw new Error('Challenge not found');
+		if (lastChallengeIndex === challengeSet.challenges.length - 1)
+			return challengeSet.challenges[0];
+		return challengeSet.challenges[lastChallengeIndex + 1];
+	}
+	return (
+		challengeSet.challenges.find((challenge) => !challenge.responses.length) ||
+		challengeSet.challenges[0]
+	);
+};
 
-const nextChallengeUrl: NextChallengeUrl = (challengeSet) =>
-	urls.challenge(challengeSet.id, nextChallenge(challengeSet).id);
+const nextChallengeUrl: NextChallengeUrl = (challengeSet, lastChallengeId) =>
+	urls.challenge(challengeSet.id, nextChallenge(challengeSet, lastChallengeId).id);
 
 /**
  * ADD FUNCTIONS
