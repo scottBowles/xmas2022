@@ -1,22 +1,21 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { onMount } from 'svelte';
-	import { urls } from '$lib/utils';
 	import type { PageData, ActionData } from './$types';
+	import { NEXT_INPUT_VALUE, SUBMIT_INPUT_VALUE } from './constants';
 
 	export let data: PageData;
 	export let form: ActionData;
 
-	const { challenge, challengeSet } = data;
+	$: ({ challenge, challengeSet } = data);
+	$: response = challenge?.responses[0]?.response ?? '';
 
-	let response = '';
 	let textInput: HTMLInputElement;
 	let showInstructions = false;
-	let confirmSubmit = challenge.isLast; // Didn't do this for most last time. Could remove it.
+	let confirmSubmit = challenge?.isLast; // Didn't do this for most last time. Could remove it.
 	let confirming = false;
 
-	onMount(() => {
-		textInput?.focus();
-	});
+	onMount(() => textInput?.focus());
 
 	function toggleInstructions() {
 		showInstructions = !showInstructions;
@@ -26,30 +25,45 @@
 <div class="challenge-container flex flex-col">
 	<h1 class="text-4xl mt-4 mb-1">{challenge.title.split(': ')[1] || challenge.title}</h1>
 	{#if showInstructions}
-		<p on:click={toggleInstructions} class="italic text-blue-400 cursor-pointer">
+		<p
+			on:click={toggleInstructions}
+			on:keydown={toggleInstructions}
+			class="italic text-blue-400 cursor-pointer"
+		>
 			<i class="fas fa-caret-up" /> Hide Instructions
 		</p>
 
 		<p class="italic text-green-700">{@html challengeSet.instructions}</p>
 	{:else}
-		<p on:click={toggleInstructions} class="italic text-blue-400 cursor-pointer">
+		<p
+			on:click={toggleInstructions}
+			on:keydown={toggleInstructions}
+			class="italic text-blue-400 cursor-pointer"
+		>
 			<i class="fas fa-caret-down" /> Review Instructions
 		</p>
 	{/if}
-	<form class="flex flex-col justify-between sm:justify-start">
+	<form class="flex flex-col justify-between sm:justify-start" method="POST" use:enhance>
 		<fieldset class="flex flex-col mt-4">
 			<legend class="mb-4 text-lg">{@html challenge.prompt}</legend>
 			{#if challenge.options.length > 0}
 				{#each challenge.options as option}
 					<label class="mb-4 text-lg">
-						<input type="radio" name={challenge.title} value={option.text} bind:group={response} />
+						<input
+							type="radio"
+							name="answer"
+							value={option.text}
+							checked={response === option.text}
+							required
+						/>
 						{option.text}
 					</label>
 				{/each}
 			{:else}
 				<input
 					type="text"
-					bind:value={response}
+					name="answer"
+					value={response}
 					bind:this={textInput}
 					class="text-green-700 border-2 border-green-700 rounded focus:border-green-700 focus:outline-none w-full p-2"
 				/>
@@ -76,8 +90,9 @@
 			{:else}
 				<input
 					type="button"
+					name="submit_action"
 					on:click={() => (confirming = true)}
-					value={challenge.isLast ? 'SUBMIT' : 'NEXT'}
+					value={challenge.isLast ? SUBMIT_INPUT_VALUE : NEXT_INPUT_VALUE}
 					disabled={!response}
 					class="bg-green-700 text-white font-bold py-3 px-6 rounded w-full text-lg my-8 block"
 				/>
@@ -85,10 +100,13 @@
 		{:else}
 			<input
 				type="submit"
-				value={challenge.isLast ? 'SUBMIT' : 'NEXT'}
-				disabled={!response}
+				value={challenge.isLast ? SUBMIT_INPUT_VALUE : NEXT_INPUT_VALUE}
+				name="submit_action"
 				class="bg-green-700 text-white font-bold py-3 px-6 rounded w-full text-lg my-8 block"
 			/>
+		{/if}
+		{#if form?.message}
+			<p class="text-christmas-red">{@html form.message}</p>
 		{/if}
 	</form>
 </div>

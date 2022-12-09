@@ -4,6 +4,8 @@ import type { Actions, PageServerLoad } from './$types';
 import { getNow, urls } from '$lib/utils';
 import { isLast } from '$lib/prisma/models/challenge';
 import { isLive } from '$lib/prisma/models/challengeSetResponse';
+import { nextChallengeUrl } from '$lib/prisma/models/challengeSet';
+import { SUBMIT_INPUT_VALUE } from './constants';
 
 export const load: PageServerLoad = async ({ params, parent }) => {
 	const { user } = await parent();
@@ -19,7 +21,10 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 			},
 			challenges: {
 				include: {
-					options: true
+					options: true,
+					responses: {
+						where: { playerId: user.id }
+					}
 				}
 			}
 		}
@@ -48,4 +53,56 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 			isLast: isLast(challengeSet)(challenge)
 		}
 	};
+};
+
+export const actions: Actions = {
+	default: async ({ request, params, locals }) => {
+		const data = await request.formData();
+		const response = data.get('answer')?.toString();
+		const action = data.get('submit_action')?.toString();
+		const submitting = action === SUBMIT_INPUT_VALUE;
+		const setId = parseInt(params.setId);
+		const challengeId = parseInt(params.challengeId);
+		const playerId = locals.user?.id;
+
+		if (!playerId) throw redirect(302, urls.login());
+
+		// currently we aren't validating the response, but we could do that here
+
+		const challengeSet = await prisma.challengeSet.findUnique({
+			where: { id: setId },
+			select: {
+				id: true,
+				challenges: { select: { id: true } },
+				challengeSetResponses: {
+					where: { playerId },
+					select: { id: true, startedAt: true, completedAt: true }
+				}
+			}
+		});
+		const challengeSetResponse = challengeSet?.challengeSetResponses[0];
+
+		if (!challengeSet) return invalid(404, { message: 'Challenge set not found' });
+		if (!challengeSetResponse || !isLive(challengeSetResponse))
+			throw redirect(302, urls.challengeSetReview(setId));
+
+		// create or update challengeResponse
+		await prisma.challengeResponse.upsert({
+			where: { playerId_challengeId: { challengeId, playerId } },
+			update: { response },
+			create: { challengeId, playerId, response }
+		});
+
+		if (submitting) {
+			// end the challengeSetResponse by giving it a completedAt date
+			await prisma.challengeSetResponse.update({
+				where: { id: challengeSetResponse.id },
+				data: { completedAt: getNow() }
+			});
+			// redirect to the review page
+			throw redirect(302, urls.challengeSetReview(setId));
+		}
+
+		throw redirect(302, nextChallengeUrl(challengeSet, challengeId));
+	}
 };
