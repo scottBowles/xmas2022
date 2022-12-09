@@ -12,14 +12,14 @@ type UserHasCompleted = WithMinimumInput<
 >;
 type ResultsUrl = WithMinimumInput<{ id: number }, string>;
 type UserResponseExists = WithMinimumInput<{ challengeSetResponses: unknown[] }, boolean>;
-type NextChallenge = <T extends { challenges: { id: number; responses: unknown[] }[] }>(
+type NextChallenge = <T extends { challenges: { id: number; responses?: unknown[] }[] }>(
 	challengeSet: T,
 	lastChallengeId?: number
 ) => T['challenges'][number];
 type NextChallengeUrl = <
 	T extends {
 		id: number;
-		challenges: { id: number; responses: unknown[] }[];
+		challenges: { id: number; responses?: unknown[] }[];
 	}
 >(
 	challengeSet: T,
@@ -55,8 +55,9 @@ const nextChallenge: NextChallenge = (challengeSet, lastChallengeId) => {
 		return challengeSet.challenges[lastChallengeIndex + 1];
 	}
 	return (
-		challengeSet.challenges.find((challenge) => !challenge.responses.length) ||
-		challengeSet.challenges[0]
+		challengeSet.challenges.find(
+			(challenge) => challenge.responses && !challenge.responses.length
+		) || challengeSet.challenges[0]
 	);
 };
 
