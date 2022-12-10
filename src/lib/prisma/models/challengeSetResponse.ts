@@ -5,4 +5,9 @@ const isLive = (challengeSetResponse: { startedAt: Date | null; completedAt: Dat
 	challengeSetResponse.startedAt <= getNow() &&
 	!challengeSetResponse.completedAt;
 
-export { isLive };
+const timeTaken = (challengeSetResponse: { startedAt: Date | null; completedAt: Date | null }) =>
+	challengeSetResponse.completedAt &&
+	challengeSetResponse.startedAt &&
+	challengeSetResponse.completedAt.getTime() - challengeSetResponse.startedAt.getTime();
+
+export { isLive, timeTaken };
