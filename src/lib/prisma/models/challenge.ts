@@ -32,6 +32,8 @@ type CorrectAnswersMinimalInput = { options: { isCorrect: boolean; text: string 
 } & ResponseMinimalInput;
 type CorrectAnswers = <T extends CorrectAnswersMinimalInput>(challenge: T) => string[];
 
+type ResponseIsCorrect = <T extends CorrectAnswersMinimalInput>(challenge: T) => boolean;
+
 // remove all characters that are not letters or numbers and convert to lowercase
 const normalize = (str: string) => str.replace(/[^a-z0-9]/gi, '').toLowerCase();
 
@@ -59,7 +61,7 @@ const allowableAnswers: CorrectAnswers = (challenge) => {
 
 const response: Response = (challenge) => challenge.responses[0]?.response;
 
-const responseIsCorrect = (challenge: CorrectAnswersMinimalInput) =>
+const responseIsCorrect: ResponseIsCorrect = (challenge) =>
 	allowableAnswers(challenge).some(
 		(answer) => normalize(answer) === normalize(response(challenge))
 	);
