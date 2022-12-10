@@ -1,7 +1,7 @@
 import prisma from '$lib/prisma';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { getNow } from '$lib/utils';
+import { getNow, pick } from '$lib/utils';
 import { addCorrectAnswer, addResponse, addResponseIsCorrect } from '$lib/prisma/models/challenge';
 import { timeTaken } from '$lib/prisma/models/challengeSetResponse';
 
@@ -52,7 +52,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 	if (!challengeSetCanBeReviewed) throw error(404, 'Challenge set not found');
 
 	return {
-		challengeSet,
+		challengeSet: pick(challengeSet, ['title', 'timeAvailableStart']),
 		challenges,
 		timeTaken: timeTaken(challengeSetResponse),
 		numChallenges,
