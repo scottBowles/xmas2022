@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 		select: {
 			challengeSetResponses: {
 				where: { playerId: user.id },
-				select: { startedAt: true, completedAt: true }
+				select: { startedAt: true, completedAt: true, numCorrect: true }
 			},
 			challenges: {
 				include: {
@@ -37,8 +37,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 	);
 	const challengeSetResponse = challengeSet?.challengeSetResponses[0];
 	const numChallenges = challenges?.length || 0;
-	const numChallengesCorrect =
-		challenges?.filter((challenge) => challenge.responseIsCorrect).length || 0;
+	const numChallengesCorrect = challengeSetResponse?.numCorrect || 0;
 	const percentCorrect = Math.round((numChallengesCorrect / numChallenges) * 100);
 
 	/** Ensure it's ok for the user to see this data */
