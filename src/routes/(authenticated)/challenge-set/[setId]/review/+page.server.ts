@@ -1,10 +1,10 @@
-import prisma from '$lib/prisma';
+import { pipe, pickAll } from 'ramda';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { getNow, pick } from '$lib/utils';
-import { addCorrectAnswer, addResponse, addResponseIsCorrect } from '$lib/prisma/models/challenge';
+import prisma from '$lib/prisma';
 import { timeTaken } from '$lib/prisma/models/challengeSetResponse';
-import { pipe } from 'ramda';
+import { addCorrectAnswer, addResponse, addResponseIsCorrect } from '$lib/prisma/models/challenge';
+import { getNow } from '$lib/utils';
 
 export const load: PageServerLoad = async ({ params, parent }) => {
 	/** Request data */
@@ -52,7 +52,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 	if (!challengeSetCanBeReviewed) throw error(404, 'Challenge set not found');
 
 	return {
-		challengeSet: pick(challengeSet, ['title', 'timeAvailableStart']),
+		challengeSet: pickAll(['title', 'timeAvailableStart'], challengeSet),
 		challenges,
 		timeTaken: timeTaken(challengeSetResponse),
 		numChallenges,

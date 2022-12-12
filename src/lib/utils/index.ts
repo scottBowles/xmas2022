@@ -13,14 +13,6 @@ export const isJwtExpiringWithinDays = (jwtPayload: JwtPayload, days = 7): boole
 	return false;
 };
 
-export const pick = <T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> => {
-	const result = {} as Pick<T, K>;
-	keys.forEach((key) => {
-		result[key] = obj[key];
-	});
-	return result;
-};
-
 export const getNow = () => new Date();
 
 export const addKey =

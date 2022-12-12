@@ -1,4 +1,5 @@
-import { addKey, pick } from '$lib/utils';
+import { pickAll } from 'ramda';
+import { addKey } from '$lib/utils';
 import type { WithMinimumInput } from '$lib/utils/types';
 
 type DisplayName = WithMinimumInput<
@@ -20,6 +21,6 @@ type JwtUserFactory = WithMinimumInput<
 	JwtUser
 >;
 const jwtUserFactory: JwtUserFactory = (user) =>
-	pick(addDisplayName(user), ['id', 'email', 'displayName']);
+	pickAll(['id', 'email', 'displayName'], addDisplayName(user));
 
 export { displayName, addDisplayName, jwtUserFactory };
