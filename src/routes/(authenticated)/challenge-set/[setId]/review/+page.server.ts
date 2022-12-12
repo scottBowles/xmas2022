@@ -4,6 +4,7 @@ import type { PageServerLoad } from './$types';
 import { getNow, pick } from '$lib/utils';
 import { addCorrectAnswer, addResponse, addResponseIsCorrect } from '$lib/prisma/models/challenge';
 import { timeTaken } from '$lib/prisma/models/challengeSetResponse';
+import { pipe } from 'ramda';
 
 export const load: PageServerLoad = async ({ params, parent }) => {
 	/** Request data */
@@ -32,8 +33,8 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 	});
 
 	/** Derived */
-	const challenges = challengeSet?.challenges.map((challenge) =>
-		addCorrectAnswer(addResponse(addResponseIsCorrect(challenge)))
+	const challenges = challengeSet?.challenges.map(
+		pipe(addCorrectAnswer, addResponse, addResponseIsCorrect)
 	);
 	const challengeSetResponse = challengeSet?.challengeSetResponses[0];
 	const numChallenges = challenges?.length || 0;
