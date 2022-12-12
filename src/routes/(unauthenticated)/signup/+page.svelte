@@ -2,6 +2,7 @@
 	import type { ActionData } from './$types';
 	import SignupError from './SignupError';
 	import GoogleButton from '$lib/components/GoogleButton.svelte';
+	import PageMargin from '$lib/components/PageMargin.svelte';
 
 	export let form: ActionData;
 
@@ -16,28 +17,30 @@
 	<title>Sign Up</title>
 </svelte:head>
 
-<section>
-	<h1>Sign Up</h1>
-	<div>
-		<GoogleButton {onGoogleError} />
-	</div>
-	<form method="POST">
-		<label for="email">Email</label>
-		<input type="email" name="email" id="email" value={form?.email ?? ''} required />
-		<label for="password">Password</label>
-		<input type="password" name="password" id="password" required />
-		<button type="submit">Submit</button>
+<PageMargin>
+	<section>
+		<h1>Sign Up</h1>
+		<div>
+			<GoogleButton {onGoogleError} />
+		</div>
+		<form method="POST">
+			<label for="email">Email</label>
+			<input type="email" name="email" id="email" value={form?.email ?? ''} required />
+			<label for="password">Password</label>
+			<input type="password" name="password" id="password" required />
+			<button type="submit">Submit</button>
 
-		{#if form?.error === SignupError.VALIDATION}
-			<p>Invalid email or password</p>
-		{:else if form?.error === SignupError.EMAIL_TAKEN}
-			<p>Email already in use. <a href="/login">Login here.</a></p>
-		{:else if form?.error === SignupError.UNKNOWN}
-			<p>Unknown error</p>
-		{/if}
-	</form>
-	<div>{googleError}</div>
-	<div>
-		<a href="/login" data-sveltekit-preload-data>Log in</a>
-	</div>
-</section>
+			{#if form?.error === SignupError.VALIDATION}
+				<p>Invalid email or password</p>
+			{:else if form?.error === SignupError.EMAIL_TAKEN}
+				<p>Email already in use. <a href="/login">Login here.</a></p>
+			{:else if form?.error === SignupError.UNKNOWN}
+				<p>Unknown error</p>
+			{/if}
+		</form>
+		<div>{googleError}</div>
+		<div>
+			<a href="/login" data-sveltekit-preload-data>Log in</a>
+		</div>
+	</section>
+</PageMargin>

@@ -2,7 +2,7 @@ import prisma from '$lib/prisma';
 import { error, invalid, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { getNow, urls } from '$lib/utils';
-import { isLast } from '$lib/prisma/models/challenge';
+import { isLast, responseIsCorrect } from '$lib/prisma/models/challenge';
 import { isLive } from '$lib/prisma/models/challengeSetResponse';
 import { nextChallengeUrl } from '$lib/prisma/models/challengeSet';
 import { SUBMIT_INPUT_VALUE } from './constants';
@@ -94,10 +94,21 @@ export const actions: Actions = {
 		});
 
 		if (submitting) {
-			// end the challengeSetResponse by giving it a completedAt date
+			// end and score the challengeSetResponse
+			const completedAt = getNow();
+			const challenges = await prisma.challenge.findMany({
+				where: { challengeSetId: setId },
+				include: {
+					options: true,
+					responses: {
+						where: { playerId }
+					}
+				}
+			});
+			const numCorrect = challenges.filter(responseIsCorrect).length;
 			await prisma.challengeSetResponse.update({
 				where: { id: challengeSetResponse.id },
-				data: { completedAt: getNow() }
+				data: { completedAt, numCorrect }
 			});
 			// redirect to the review page
 			throw redirect(302, urls.challengeSetReview(setId));

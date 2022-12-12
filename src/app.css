@@ -14,13 +14,6 @@ html {
     font-family: "Jost", sans-serif !important;
   }
   
-  main {
-    max-width: 38rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    margin: auto;
-  }
-  
   .text-christmas-red {
     color: var(--red);
   }

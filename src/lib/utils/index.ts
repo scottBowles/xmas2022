@@ -52,3 +52,10 @@ export function formatDuration(ms: number, withUnits = true) {
 	const daysStr = days ? `${days}:` : '';
 	return `${daysStr}${hoursStr}${minStr}${secStr}`;
 }
+
+export const dateToYYYYMMDD = (date: Date) => {
+	const year = date.getFullYear();
+	const month = date.getMonth().toString().padStart(2, '0');
+	const day = date.getDate().toString().padStart(2, '0');
+	return `${year}-${month}-${day}`;
+};
