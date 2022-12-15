@@ -32,8 +32,6 @@
 	export let storageKey: string;
 	export let onCompletion: (numGuesses: number | null) => void;
 
-	let submitForm: HTMLFormElement;
-
 	const stores = gameStores.getOrInit(storageKey, solution);
 	const { guessStore, gameStateStore } = stores;
 
