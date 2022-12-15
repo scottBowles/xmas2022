@@ -34,6 +34,12 @@ model ChallengeSet {
   challengeSetResponses ChallengeSetResponse[]
 }
 
+enum ChallengeType {
+  OPEN_RESPONSE
+  MULTIPLE_CHOICE
+  WORDLE
+}
+
 model Challenge {
   id                      Int                 @id @default(autoincrement())
   title                   String              @default("") @db.VarChar(255)
@@ -44,6 +50,8 @@ model Challenge {
   challengeSetId          Int
   options                 Option[]
   responses               ChallengeResponse[]
+  type                    ChallengeType       @default(OPEN_RESPONSE)
+  points                  Int                 @default(0)
 }
 
 model Option {
