@@ -1,17 +1,17 @@
 import { browser } from '$app/environment';
 import type { CharStatus, CharValue } from '$lib/wordle/status';
-import { solution } from '$lib/wordle/words';
+// import { solution } from '$lib/wordle/words';
 import { writable } from 'svelte/store';
 import { loadGameFromLocalStorage } from '$lib/wordle/localstorage';
 import { MAX_CHALLENGES } from '$lib/wordle/constants/settings';
-import { gameStateStore } from './gameState';
+import type { createGameStateStore } from './gameState';
 
 export type Guess = {
 	guess: CharValue[];
 	statuses: CharStatus[];
 };
 
-const helper = (guess: CharValue[]) => {
+const helper = (guess: CharValue[], solution: string) => {
 	const splitSolution = solution.split('');
 	//* used to make sure we don't perform the same present check more than once
 	const usedSolutionCharacters = splitSolution.map(() => false);
@@ -51,11 +51,15 @@ const helper = (guess: CharValue[]) => {
 	});
 	return { guess, statuses };
 };
-function createGuessStore() {
+export function createGuessStore(
+	gameStateStore: ReturnType<typeof createGameStateStore>,
+	solution: string,
+	key: string
+) {
 	//* initialize
 	let init: Guess[] = [];
 	if (browser) {
-		const loaded = loadGameFromLocalStorage();
+		const loaded = loadGameFromLocalStorage(key);
 		if (loaded?.solution === solution) {
 			const isGameWon = loaded.guesses.includes(solution);
 			if (isGameWon) {
@@ -65,7 +69,7 @@ function createGuessStore() {
 				gameStateStore.setGameLost(true);
 			}
 			init = loaded.guesses.map((g) => {
-				return helper(g.split('') as CharValue[]);
+				return helper(g.split('') as CharValue[], solution);
 			});
 		}
 	}
@@ -75,11 +79,12 @@ function createGuessStore() {
 		subscribe,
 		addGuess: (guess: CharValue[]) =>
 			update((state) => {
-				const newGuess = helper(guess);
+				const newGuess = helper(guess, solution);
 				state.push(newGuess);
 				return state;
 			}),
 		reset: () => set([])
 	};
 }
-export const guessStore = createGuessStore();
+// NEED TO CREATE STORE IN COMPONENT, PASSING IN SOLUTION
+// export const guessStore = createGuessStore();

@@ -3,13 +3,16 @@
 	import { CELL_ANIMATION_DURATION, KEYBOARD_DELAY } from '$lib/wordle/constants/settings';
 	import type { CharStatus } from '$lib/wordle/status';
 	import { dummy } from '$lib/wordle/transition';
-	import { correctedKeyStore } from '$lib/wordle/stores/keyboard';
+	import type { TStores } from '$lib/wordle/stores';
 
+	export let stores: TStores;
 	export let kbKey: string;
 	export let onClick: (value: string) => void;
 	export let status: CharStatus | undefined = undefined;
 	export let heightClass = 'h-14';
 	export let widthClass = 'w-12';
+
+	$: ({ correctedKeyStore } = stores);
 
 	// for when a status goes from 'present' to 'correct'
 	onDestroy(() => {

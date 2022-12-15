@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import { spring } from 'svelte/motion';
 	import { countdownClock } from '$lib/wordle/stores/countdown';
 	import { gameStateStore } from '$lib/wordle/stores/gameState';
@@ -148,4 +148,4 @@
 	.share-button {
 		@apply my-2 rounded-md bg-sky-600 px-4 py-2 text-white transition-colors hover:bg-sky-800 focus:bg-sky-800 focus:outline-none focus:ring-2 focus:ring-offset-2 active:bg-sky-800;
 	}
-</style>
+</style> -->

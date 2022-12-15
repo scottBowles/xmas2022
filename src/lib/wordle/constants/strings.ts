@@ -1,10 +1,10 @@
 export const GAME_TITLE = 'Svordle';
 
 export const WIN_MESSAGES = [
-	'Absolute mad lad',
+	'Genius!',
 	'Expertly done!',
 	'Great job!',
-	'well done',
+	'Well done!',
 	'Call it a comeback!',
 	'Phew, nice work!'
 ];

@@ -6,6 +6,7 @@ import { isLast, responseIsCorrect } from '$lib/prisma/models/challenge';
 import { isLive } from '$lib/prisma/models/challengeSetResponse';
 import { nextChallengeUrl } from '$lib/prisma/models/challengeSet';
 import { SUBMIT_INPUT_VALUE } from './constants';
+import { ChallengeType } from '@prisma/client';
 
 export const load: PageServerLoad = async ({ params, parent }) => {
 	const { user } = await parent();
@@ -73,7 +74,7 @@ export const actions: Actions = {
 			where: { id: setId },
 			select: {
 				id: true,
-				challenges: { select: { id: true } },
+				challenges: { select: { id: true, type: true } },
 				challengeSetResponses: {
 					where: { playerId },
 					select: { id: true, startedAt: true, completedAt: true }
@@ -81,8 +82,9 @@ export const actions: Actions = {
 			}
 		});
 		const challengeSetResponse = challengeSet?.challengeSetResponses[0];
+		const challenge = challengeSet?.challenges.find((challenge) => challenge.id === challengeId);
 
-		if (!challengeSet) return invalid(404, { message: 'Challenge set not found' });
+		if (!challengeSet || !challenge) return invalid(404, { message: 'Challenge not found' });
 		if (!challengeSetResponse || !isLive(challengeSetResponse))
 			throw redirect(302, urls.challengeSetReview(setId));
 
@@ -111,9 +113,13 @@ export const actions: Actions = {
 				data: { completedAt, numCorrect }
 			});
 			// redirect to the review page
-			throw redirect(302, urls.challengeSetReview(setId));
+			if (challenge.type !== 'WORDLE') {
+				throw redirect(302, urls.challengeSetReview(setId));
+			}
 		}
 
-		throw redirect(302, nextChallengeUrl(challengeSet, challengeId));
+		if (challenge.type !== 'WORDLE') {
+			throw redirect(302, nextChallengeUrl(challengeSet, challengeId));
+		}
 	}
 };

@@ -6,15 +6,15 @@ type StoredGameState = {
 	solution?: string;
 };
 
-export const gameStateKey = 'gameState';
+export const gameStateKey = (key: string) => 'gameState' + key;
 
-export const saveGameToLocalStorage = (gameState: StoredGameState) => {
-	localStorage.setItem(gameStateKey, JSON.stringify(gameState));
+export const saveGameToLocalStorage = (key: string, gameState: StoredGameState) => {
+	localStorage.setItem(gameStateKey(key), JSON.stringify(gameState));
 };
 
-export const loadGameFromLocalStorage = () => {
+export const loadGameFromLocalStorage = (key: string) => {
 	try {
-		const state = localStorage.getItem(gameStateKey);
+		const state = localStorage.getItem(gameStateKey(key));
 		if (!state) return { guesses: [] } as StoredGameState;
 		return JSON.parse(state) as StoredGameState;
 	} catch (error) {

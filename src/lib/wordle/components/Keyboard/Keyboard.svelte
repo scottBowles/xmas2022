@@ -1,13 +1,16 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import { keyStatusStore } from '$lib/wordle/stores/keyboard';
 	import { DELETE_TEXT, ENTER_TEXT } from '$lib/wordle/constants/strings';
 	import Key from './Key.svelte';
+	import type { TStores } from '$lib/wordle/stores';
 
 	export let onChar: (value: string) => void;
 	export let onEnter: () => void;
 	export let onDelete: () => void;
+	export let stores: TStores;
+
+	$: ({ keyStatusStore } = stores);
 
 	const onKeyDown = (e: KeyboardEvent) => {
 		const value = e.key.toUpperCase();
@@ -40,19 +43,19 @@
 <div id="keyboard" class="mb-2">
 	<section class="flex justify-center">
 		{#each rowOne as kbKey (`${kbKey}${$keyStatusStore[kbKey]}`)}
-			<Key {kbKey} onClick={onChar} status={$keyStatusStore[kbKey]} />
+			<Key {kbKey} onClick={onChar} status={$keyStatusStore[kbKey]} {stores} />
 		{/each}
 	</section>
 	<section class="flex justify-center">
 		{#each rowTwo as kbKey (`${kbKey}${$keyStatusStore[kbKey]}`)}
-			<Key {kbKey} onClick={onChar} status={$keyStatusStore[kbKey]} />
+			<Key {kbKey} onClick={onChar} status={$keyStatusStore[kbKey]} {stores} />
 		{/each}
 	</section>
 	<section class="flex justify-center">
-		<Key kbKey={ENTER_TEXT} onClick={onEnter} widthClass="w-[4.5rem]" />
+		<Key kbKey={ENTER_TEXT} onClick={onEnter} widthClass="w-[4.5rem]" {stores} />
 		{#each rowThree as kbKey (`${kbKey}${$keyStatusStore[kbKey]}`)}
-			<Key {kbKey} onClick={onChar} status={$keyStatusStore[kbKey]} />
+			<Key {kbKey} onClick={onChar} status={$keyStatusStore[kbKey]} {stores} />
 		{/each}
-		<Key kbKey={DELETE_TEXT} onClick={onDelete} widthClass="w-[4.5rem]" />
+		<Key kbKey={DELETE_TEXT} onClick={onDelete} widthClass="w-[4.5rem]" {stores} />
 	</section>
 </div>

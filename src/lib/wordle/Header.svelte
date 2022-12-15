@@ -1,8 +1,12 @@
 <script lang="ts">
 	import Settings from '$lib/wordle/components/Modal/Settings.svelte';
 	import Help from '$lib/wordle/components/Modal/Help.svelte';
-	import StatsModal from '$lib/wordle/components/Modal/Stats.svelte';
-	import { statsModalState, helpModalState, settingsModalState } from '$lib/wordle/stores/modals';
+	// import StatsModal from '$lib/wordle/components/Modal/__Stats.svelte';
+	import {
+		// statsModalState,
+		helpModalState,
+		settingsModalState
+	} from '$lib/wordle/stores/modals';
 	import { GAME_TITLE } from '$lib/wordle/constants/strings';
 	import {
 		darkModeStore,
@@ -21,7 +25,7 @@
 	</div>
 	<h1 class="text-2xl font-semibold md:text-4xl">{GAME_TITLE}</h1>
 	<div class="flex items-center justify-center">
-		<StatsModal isOpen={$statsModalState} toggleIsOpen={statsModalState.set} />
+		<!-- <StatsModal isOpen={$statsModalState} toggleIsOpen={statsModalState.set} /> -->
 		<Settings isOpen={$settingsModalState} toggleIsOpen={settingsModalState.set} />
 	</div>
 </header>

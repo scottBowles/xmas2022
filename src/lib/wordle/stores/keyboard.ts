@@ -1,30 +1,35 @@
 import { derived, writable } from 'svelte/store';
 import type { CharStatus } from '$lib/wordle/status';
-import { solution } from '$lib/wordle/words';
-import { guessStore } from './guess';
+import type { createGuessStore } from './guess';
 
-export const keyStatusStore = derived(guessStore, ($values) => {
-	const base: { [key: string]: CharStatus } = {};
-	$values.forEach(({ guess }) =>
-		guess.forEach((letter, i) => {
-			if (!solution.includes(letter)) {
-				base[letter] = 'absent';
-				return;
-			}
-			if (letter === solution[i]) {
-				base[letter] = 'correct';
-				return;
-			}
-			if (base[letter] !== 'correct') {
-				base[letter] = 'present';
-				return;
-			}
-		})
-	);
-	return base;
-});
+// singleton
+export const createKeyStatusStore = (
+	guessStore: ReturnType<typeof createGuessStore>,
+	solution: string
+) =>
+	derived(guessStore, ($values) => {
+		const base: { [key: string]: CharStatus } = {};
+		$values.forEach(({ guess }) =>
+			guess.forEach((letter, i) => {
+				if (!solution.includes(letter)) {
+					base[letter] = 'absent';
+					return;
+				}
+				if (letter === solution[i]) {
+					base[letter] = 'correct';
+					return;
+				}
+				if (base[letter] !== 'correct') {
+					base[letter] = 'present';
+					return;
+				}
+			})
+		);
+		return base;
+	});
 
-function createCorrectedKeyStore() {
+// singleton
+export function createCorrectedKeyStore() {
 	const { update, subscribe } = writable<Set<string>>(new Set());
 
 	return {
@@ -36,4 +41,4 @@ function createCorrectedKeyStore() {
 			})
 	};
 }
-export const correctedKeyStore = createCorrectedKeyStore();
+// export const correctedKeyStore = createCorrectedKeyStore();

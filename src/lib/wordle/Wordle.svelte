@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import type { CharValue } from '$lib/wordle/status';
-	import { isWinningWord, isWordInWordList, solution } from '$lib/wordle/words';
+	import { isWordInWordList } from '$lib/wordle/words';
 	import { saveGameToLocalStorage } from '$lib/wordle/localstorage';
 	import {
 		CELL_ANIMATION_DURATION,
@@ -13,8 +13,7 @@
 	import Grid from '$lib/wordle/components/Grid/Grid.svelte';
 	import { toastStore } from '$lib/wordle/components/Toast/store';
 	import { statStore } from '$lib/wordle/stores/stats';
-	import { guessStore } from '$lib/wordle/stores/guess';
-	import { gameStateStore } from '$lib/wordle/stores/gameState';
+	import gameStores from '$lib/wordle/stores';
 	import {
 		aboutModalState,
 		helpModalState,
@@ -29,8 +28,24 @@
 	} from '$lib/wordle/constants/strings';
 	import Container from '$lib/wordle/components/Toast/Container.svelte';
 
+	export let solution: string;
+	export let storageKey: string;
+	export let onCompletion: (numGuesses: number | null) => void;
+
+	let submitForm: HTMLFormElement;
+
+	const stores = gameStores.getOrInit(storageKey, solution);
+	const { guessStore, gameStateStore } = stores;
+
+	// const keyStatusStore = createKeyStatusStore(guessStore, solution);
+	// const correctedKeyStore = createCorrectedKeyStore();
+
+	const isWinningWord = (word: string) => word === solution;
+
 	let currentGuess: CharValue[] = [];
 	const RESPONSE_TIMEOUT = KEYBOARD_DELAY + CELL_ANIMATION_DURATION;
+
+	// const guessStore = createGuessStore(solution);
 
 	// consider moving into onMount function
 	// GAME WON
@@ -42,6 +57,7 @@
 			timeout: 2000
 		});
 		setTimeout(() => statsModalState.set(true), 2000);
+		onCompletion($guessStore.length);
 	}
 	// GAME LOST
 	$: if ($gameStateStore.gameLost) {
@@ -53,9 +69,10 @@
 			timeout: 2000
 		});
 		setTimeout(() => statsModalState.set(true), 2000);
+		onCompletion(null);
 	}
 	$: if (browser) {
-		saveGameToLocalStorage({
+		saveGameToLocalStorage(storageKey, {
 			solution,
 			guesses: $guessStore.map((store) => store.guess.join(''))
 		});
@@ -127,12 +144,12 @@
 <Container />
 <!-- <Header /> -->
 
-<main class="flex grow flex-col items-center justify-center">
+<div class="flex grow flex-col items-center justify-center">
 	<Grid {currentGuess} allGuesses={$guessStore} />
-</main>
+</div>
 
 <!-- <div> -->
-<Keyboard {onChar} {onDelete} {onEnter} />
+<Keyboard {onChar} {onDelete} {onEnter} {stores} />
 <!-- </div> -->
 
 <!-- <Footer /> -->

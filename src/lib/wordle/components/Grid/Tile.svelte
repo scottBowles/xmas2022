@@ -8,7 +8,7 @@
 	export let letter: string | undefined = undefined;
 	export let status: CharStatus | undefined = undefined;
 	export let heightClass = 'h-16';
-	export let widthClass = 'w-16';
+	export let widthClass = 'w-16 max-w-[100%]';
 	export let delay = 1;
 
 	const animate = (node: HTMLElement, args?: any): any => {
