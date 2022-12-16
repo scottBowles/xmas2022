@@ -6,9 +6,8 @@
 <div class="container" transition:slide>
 	<ul>
 		<a href="/"><li>Play!</li></a>
-		<a href="/pastchallenges"><li>Past Challenges</li></a>
 		<a href="/scoreboard"><li>Scoreboard</li></a>
-		<!-- <a href="/profile"><li>Profile</li></a> -->
+		<a href="/settings"><li>Settings</li></a>
 		<button on:click={logout}><li>Logout</li></button>
 	</ul>
 </div>
