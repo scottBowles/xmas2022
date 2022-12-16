@@ -30,7 +30,7 @@
 		dateToYYYYMMDD(new Date()) in challengeSetsByDate
 			? days.indexOf(dateToYYYYMMDD(new Date()))
 			: days.length - 1;
-	const dayChallengeSets = challengeSetsByDate[days[dayShown]] || [];
+	$: dayChallengeSets = challengeSetsByDate[days[dayShown]] || [];
 </script>
 
 <div class="days flex justify-evenly w-full h-10">
