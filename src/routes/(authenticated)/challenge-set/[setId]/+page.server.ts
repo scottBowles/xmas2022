@@ -1,5 +1,5 @@
 import prisma from '$lib/prisma';
-import { error, invalid, redirect } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import {
 	isAvailable,
@@ -65,9 +65,9 @@ export const actions: Actions = {
 		});
 
 		if (!challengeSet || !isAvailable(challengeSet))
-			return invalid(404, { error: 'Challenge set not found' });
+			return fail(404, { error: 'Challenge set not found' });
 		if (!challengesExist(challengeSet))
-			return invalid(404, { error: 'Challenge set has no challenges' });
+			return fail(404, { error: 'Challenge set has no challenges' });
 		if (userHasCompleted(challengeSet)) throw redirect(302, resultsUrl(challengeSet));
 
 		// if the user has not started the challenge set, create a new challenge set response
