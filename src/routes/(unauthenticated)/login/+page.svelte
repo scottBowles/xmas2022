@@ -58,7 +58,7 @@
 				class="w-64 m-1 p-2 border rounded bg-green-700 text-white text-lg cursor-pointer hover:bg-green-800"
 			/>
 
-			{#if [LoginError.INVALID, SignupError.VALIDATION].includes(form?.error)}
+			{#if form?.error && [LoginError.INVALID, SignupError.VALIDATION].includes(form.error)}
 				<p class="pt-4 text-christmas-red">Invalid email or password</p>
 			{:else if form?.error === SignupError.EMAIL_TAKEN}
 				<p class="pt-4 text-christmas-red">
@@ -66,7 +66,7 @@
 				</p>
 			{:else if form?.error === LoginError.EMAIL_MISSING}
 				<p class="pt-4 text-christmas-red">Email and password required.</p>
-			{:else if [LoginError.UNKNOWN, SignupError.UNKNOWN].includes(form?.error)}
+			{:else if form?.error && [LoginError.UNKNOWN, SignupError.UNKNOWN].includes(form.error)}
 				<p class="pt-4 text-christmas-red">Unknown error</p>
 			{/if}
 
