@@ -14,7 +14,7 @@ export function renderGoogleButton() {
 			type: 'standard',
 			theme: 'filled_blue',
 			size: 'large',
-			width: '367'
+			width: '256'
 		});
 		google.accounts.id.prompt(); // also display the One Tap dialog
 	}
