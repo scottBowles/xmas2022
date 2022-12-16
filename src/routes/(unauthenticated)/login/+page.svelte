@@ -12,16 +12,18 @@
 	const toggleMode = () => (mode = mode === 'login' ? 'signup' : 'login');
 	const onGoogleError = (message: string) => (googleError = message);
 
-	$: ({ title, heading, action } = {
+	$: ({ title, heading, action, toggleMessage } = {
 		login: {
 			title: 'Login',
 			action: '?/login',
-			heading: 'Login'
+			heading: 'Login',
+			toggleMessage: 'Need an account? Sign up here.'
 		},
 		signup: {
 			title: 'Create an Account',
 			action: '?/signup',
-			heading: 'Create Account'
+			heading: 'Create Account',
+			toggleMessage: 'Have an account? Login here.'
 		}
 	}[mode]);
 </script>
@@ -77,7 +79,7 @@
 				on:keyup={toggleMode}
 				class="text-green-700 pt-4 cursor-pointer hover:underline"
 			>
-				Need an account? Sign up here.
+				{toggleMessage}
 			</p>
 		</form>
 		<div>{googleError}</div>
