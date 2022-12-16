@@ -15,6 +15,7 @@
 	"devDependencies": {
 		"@prisma/client": "^4.7.1",
 		"@sveltejs/adapter-auto": "next",
+		"@sveltejs/adapter-vercel": "^1.0.0",
 		"@sveltejs/kit": "^1.0.0",
 		"@types/bcryptjs": "^2.4.2",
 		"@types/google.accounts": "^0.0.2",
