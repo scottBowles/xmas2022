@@ -43,7 +43,7 @@ export const actions: Actions = {
 		const id = parseInt(params.setId);
 
 		// if the user is not logged in, redirect to login (unlikely but possible)
-		if (!userId) throw redirect(403, '/login');
+		if (!userId) throw redirect(302, '/login');
 
 		const challengeSet = await prisma.challengeSet.findUnique({
 			where: { id },
