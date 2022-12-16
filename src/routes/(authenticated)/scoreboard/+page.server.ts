@@ -20,6 +20,7 @@ export const load: PageServerLoad = async () => {
 				id: true,
 				firstName: true,
 				lastName: true,
+				email: true,
 				challengeSetResponses: {
 					where: {
 						startedAt: { not: null },

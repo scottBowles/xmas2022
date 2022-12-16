@@ -5,6 +5,7 @@
 	import { dateToYYYYMMDD, formatDuration } from '$lib/utils';
 	import type { PageData } from './$types';
 	import { groupBy, pipe, filter, prop } from 'ramda';
+	import { displayName } from '$lib/prisma/models/user';
 
 	export let data: PageData;
 
@@ -84,9 +85,9 @@
 				<tbody>
 					{#each players as player, idx}
 						<tr>
-							<td class={idx % 2 ? 'text-christmas-red' : 'text-green-700'}
-								>{player.firstName} {player.lastName?.[0] ?? ''}.</td
-							>
+							<td class={idx % 2 ? 'text-christmas-red' : 'text-green-700'}>
+								{displayName(player)}
+							</td>
 							{#each dayChallengeSets as challenge}
 								{@const { time, percent } = playerScores[player.id]?.[challenge.id] || {}}
 								<td>{time ? formatDuration(time, false) : '–'}</td>
