@@ -1,5 +1,6 @@
-import prisma, { jwtUserFactory } from '$lib/prisma';
-import { invalid, redirect } from '@sveltejs/kit';
+import prisma from '$lib/prisma';
+import { jwtUserFactory } from '$lib/prisma/models/user';
+import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -21,7 +22,7 @@ export const actions: Actions = {
 		const password = data.get('password')?.toString();
 
 		if (!email || !password) {
-			return invalid(400, { email, error: SignupError.VALIDATION });
+			return fail(400, { email, error: SignupError.VALIDATION });
 		}
 
 		try {
@@ -35,11 +36,11 @@ export const actions: Actions = {
 			console.error(error);
 			switch (true) {
 				case error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002':
-					return invalid(400, { email, error: SignupError.EMAIL_TAKEN });
+					return fail(400, { email, error: SignupError.EMAIL_TAKEN });
 				case error instanceof Prisma.PrismaClientValidationError:
-					return invalid(400, { email, error: SignupError.VALIDATION });
+					return fail(400, { email, error: SignupError.VALIDATION });
 				default:
-					return invalid(400, { email, error: SignupError.UNKNOWN });
+					return fail(400, { email, error: SignupError.UNKNOWN });
 			}
 		}
 		throw redirect(302, '/');
