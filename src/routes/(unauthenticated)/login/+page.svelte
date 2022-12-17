@@ -3,6 +3,7 @@
 	import { LoginError, SignupError } from './Errors';
 	import GoogleButton from '$lib/components/GoogleButton.svelte';
 	import PageMargin from '$lib/components/PageMargin.svelte';
+	import { enhance } from '$app/forms';
 
 	export let form: ActionData;
 
@@ -34,7 +35,7 @@
 
 <PageMargin>
 	<section>
-		<form method="POST" {action} class="flex flex-col items-center mt-8">
+		<form method="POST" {action} class="flex flex-col items-center mt-8" use:enhance>
 			<fieldset class="flex flex-col items-center">
 				<legend class="text-4xl mb-1 text-green-700">{heading}</legend>
 				<input
