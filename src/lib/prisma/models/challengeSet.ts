@@ -54,11 +54,14 @@ const nextChallenge: NextChallenge = (challengeSet, lastChallengeId) => {
 			return challengeSet.challenges[0];
 		return challengeSet.challenges[lastChallengeIndex + 1];
 	}
-	return (
-		challengeSet.challenges.find(
-			(challenge) => challenge.responses && !challenge.responses.length
-		) || challengeSet.challenges[0]
-	);
+	// This is from when we were redirecting to the first incomplete challenge rather than
+	// the first challenge. If we add navigation between challenges, this might make sense.
+	// return (
+	// 	challengeSet.challenges.find(
+	// 		(challenge) => challenge.responses && !challenge.responses.length
+	// 	) || challengeSet.challenges[0]
+	// );
+	return challengeSet.challenges[0];
 };
 
 const nextChallengeUrl: NextChallengeUrl = (challengeSet, lastChallengeId) =>
