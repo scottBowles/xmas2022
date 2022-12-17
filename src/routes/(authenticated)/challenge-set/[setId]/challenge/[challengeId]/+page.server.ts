@@ -1,10 +1,11 @@
-import prisma from '$lib/prisma';
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { getNow, urls } from '$lib/utils';
-import { isLast, responseIsCorrect } from '$lib/prisma/models/challenge';
-import { isLive } from '$lib/prisma/models/challengeSetResponse';
+
+import prisma from '$lib/prisma';
+import { isLast, scoreChallenges } from '$lib/prisma/models/challenge';
 import { nextChallengeUrl } from '$lib/prisma/models/challengeSet';
+import { isLive } from '$lib/prisma/models/challengeSetResponse';
+import { getNow, urls } from '$lib/utils';
 import { SUBMIT_INPUT_VALUE } from './constants';
 
 export const load: PageServerLoad = async ({ params, parent }) => {
@@ -106,12 +107,14 @@ export const actions: Actions = {
 					}
 				}
 			});
-			const points = challenges.filter(responseIsCorrect).reduce((acc, cur) => acc + cur.points, 0);
+			const points = scoreChallenges(challenges);
+
 			await prisma.challengeSetResponse.update({
 				where: { id: challengeSetResponse.id },
 				data: { completedAt, points }
 			});
-			// redirect to the review page
+
+			// redirect to the review page if not a wordle challenge
 			if (challenge.type !== 'WORDLE') {
 				throw redirect(302, urls.challengeSetReview(setId));
 			}

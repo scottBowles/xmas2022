@@ -1,6 +1,7 @@
 import { addKey } from '$lib/utils';
 
-type IsLast = <T extends { challenges: { id: number }[] }>(
+type IsLastMinimalInput = { challenges: { id: number }[] };
+type IsLast = <T extends IsLastMinimalInput>(
 	challengeSet: T
 ) => (challenge: T['challenges'][number]) => boolean;
 
@@ -9,9 +10,7 @@ type CorrectAnswerFromOptions = <T extends CorrectAnswerFromOptionsMinimalInput>
 	challenge: T
 ) => string | false | undefined;
 
-type CorrectAnswerFromAcceptedResponsesMinimalInput = {
-	acceptedResponsesIfOpen: string[];
-};
+type CorrectAnswerFromAcceptedResponsesMinimalInput = { acceptedResponsesIfOpen: string[] };
 type CorrectAnswerFromAcceptedResponses = <
 	T extends CorrectAnswerFromAcceptedResponsesMinimalInput
 >(
@@ -33,6 +32,18 @@ type CorrectAnswersMinimalInput = { options: { isCorrect: boolean; text: string 
 type CorrectAnswers = <T extends CorrectAnswersMinimalInput>(challenge: T) => string[];
 
 type ResponseIsCorrect = <T extends CorrectAnswersMinimalInput>(challenge: T) => boolean;
+
+type ScoreNonWordleMinimalInput = CorrectAnswersMinimalInput & { points: number };
+type ScoreNonWordle = <T extends ScoreNonWordleMinimalInput>(challenge: T) => number;
+
+type ScoreWordleMinimalInput = { responses: { response: string }[] };
+type ScoreWordle = <T extends ScoreWordleMinimalInput>(challenge: T) => number;
+
+type ScoreChallengeMinimalInput = ScoreNonWordleMinimalInput &
+	ScoreWordleMinimalInput & { type: string };
+type ScoreChallenge = <T extends ScoreChallengeMinimalInput>(challenge: T) => number;
+
+type ScoreChallenges = <T extends ScoreChallengeMinimalInput>(challenges: T[]) => number;
 
 // remove all characters that are not letters or numbers and convert to lowercase
 const normalize = (str: string) => str.replace(/[^a-z0-9]/gi, '').toLowerCase();
@@ -66,6 +77,18 @@ const responseIsCorrect: ResponseIsCorrect = (challenge) =>
 		(answer) => normalize(answer) === normalize(response(challenge))
 	);
 
+const scoreWordle: ScoreWordle = (challenge) =>
+	({ '1': 15, '2': 10, '3': 8, '4': 6, '5': 4, '6': 2 }[response(challenge)] || 0);
+
+const scoreNonWordle: ScoreNonWordle = (challenge) =>
+	responseIsCorrect(challenge) ? challenge.points : 0;
+
+const scoreChallenge: ScoreChallenge = (challenge) =>
+	challenge.type === 'WORDLE' ? scoreWordle(challenge) : scoreNonWordle(challenge);
+
+const scoreChallenges: ScoreChallenges = (challenges) =>
+	challenges.reduce((acc, challenge) => acc + scoreChallenge(challenge), 0);
+
 const addIsLast = <T extends { challenges: { id: number }[] }>(challengeSet: T) =>
 	addKey('isLast', isLast(challengeSet));
 const addCorrectAnswer = addKey('correctAnswer', correctAnswer);
@@ -79,6 +102,10 @@ export {
 	correctAnswer,
 	response,
 	responseIsCorrect,
+	scoreWordle,
+	scoreNonWordle,
+	scoreChallenge,
+	scoreChallenges,
 	addIsLast,
 	addCorrectAnswer,
 	addResponse,
