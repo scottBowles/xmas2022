@@ -25,7 +25,8 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 					responses: {
 						where: { playerId: user.id }
 					}
-				}
+				},
+				orderBy: { id: 'asc' }
 			},
 			title: true,
 			timeAvailableStart: true

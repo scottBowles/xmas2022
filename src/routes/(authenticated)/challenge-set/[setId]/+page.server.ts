@@ -23,9 +23,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 				where: { playerId: user.id },
 				select: { startedAt: true, completedAt: true }
 			},
-			challenges: {
-				select: { id: true }
-			}
+			challenges: { select: { id: true }, orderBy: { id: 'asc' } }
 		}
 	});
 	if (!challengeSet || !challengeSet.timeAvailableStart || challengeSet.timeAvailableStart > now) {

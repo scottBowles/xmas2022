@@ -14,7 +14,7 @@ export const load: PageServerLoad = async () => {
 				timeAvailableStart: true,
 				isTimed: true,
 				isScored: true,
-				challenges: { select: { id: true } }
+				challenges: { select: { id: true }, orderBy: { id: 'asc' } }
 			}
 		}),
 		prisma.user.findMany({

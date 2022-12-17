@@ -23,7 +23,7 @@
 </script>
 
 <Wordle
-	solution={challenge.acceptedResponsesIfOpen[0]}
+	solution={challenge.acceptedResponsesIfOpen[0].toUpperCase()}
 	storageKey={`${challengeSet.id}|${challenge.id}`}
 	{onCompletion}
 />

@@ -26,7 +26,8 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 					responses: {
 						where: { playerId: user.id }
 					}
-				}
+				},
+				orderBy: { id: 'asc' }
 			}
 		}
 	});
@@ -74,7 +75,7 @@ export const actions: Actions = {
 			where: { id: setId },
 			select: {
 				id: true,
-				challenges: { select: { id: true, type: true } },
+				challenges: { select: { id: true, type: true }, orderBy: { id: 'asc' } },
 				challengeSetResponses: {
 					where: { playerId },
 					select: { id: true, startedAt: true, completedAt: true }
