@@ -1,15 +1,25 @@
 <script lang="ts">
 	import FaPercentage from 'svelte-icons/fa/FaPercentage.svelte';
 	import FaRegClock from 'svelte-icons/fa/FaRegClock.svelte';
+	import FaHashtag from 'svelte-icons/fa/FaHashtag.svelte';
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { dateToYYYYMMDD, formatDuration } from '$lib/utils';
 	import type { PageData } from './$types';
-	import { groupBy, pipe, filter, prop } from 'ramda';
+	import { groupBy, pipe, filter, prop, sum, sort, descend } from 'ramda';
 	import { displayName } from '$lib/prisma/models/user';
 
 	export let data: PageData;
 
 	const { challengeSets, players, playerScores } = data;
+
+	const numStats = ({ isTimed, isScored }: typeof challengeSets[number]) =>
+		sum([isTimed, isScored].map((a) => (a ? 1 : 0)));
+
+	const getDayScore = (
+		cSets: typeof challengeSets,
+		pScores: typeof playerScores,
+		player: typeof players[number]
+	) => cSets.reduce((acc, cur) => acc + (pScores[player.id]?.[cur.id]?.points ?? 0), 0);
 
 	const groupByDate = groupBy((set: typeof challengeSets[number]) => {
 		if (!set.timeAvailableStart) return 'Invalid Date';
@@ -22,6 +32,7 @@
 		filter(pipe(prop('timeAvailableStart'), Boolean)),
 		groupByDate
 	)(challengeSets);
+
 	const days = Object.keys(challengeSetsByDate).sort((a, b) => {
 		if (a === 'Invalid Date') return 1;
 		if (b === 'Invalid Date') return -1;
@@ -31,7 +42,7 @@
 		dateToYYYYMMDD(new Date()) in challengeSetsByDate
 			? days.indexOf(dateToYYYYMMDD(new Date()))
 			: days.length - 1;
-	$: dayChallengeSets = challengeSetsByDate[days[dayShown]] || [];
+	const dayChallengeSets = sort(descend(numStats), challengeSetsByDate[days[dayShown]] ?? []);
 </script>
 
 <div class="days flex justify-evenly w-full h-10">
@@ -51,7 +62,7 @@
 </div>
 <PageMargin>
 	<div class="content-container flex flex-col items-center">
-		<!-- <h1 class="text-christmas-red text-2xl">Merry Christmas!</h1>
+		<!-- <h1 class="text-christmasRed text-2xl">Merry Christmas!</h1>
 		<h3 class="text-green-800 text-lg mb-4">Thanks for playing!</h3> -->
 		{#if dayChallengeSets.length}
 			<table class="w-full overflow-x-auto">
@@ -59,40 +70,64 @@
 					<tr>
 						<th />
 						{#each dayChallengeSets as challengeSet}
-							<th colspan="2">{challengeSet.title}</th>
+							<th colspan={numStats(challengeSet)}>
+								{challengeSet.title}
+							</th>
 						{/each}
+
+						<th>
+							<div>Total</div>
+						</th>
 					</tr>
-					<tr>
+					<tr class="row">
 						<th />
-						{#each dayChallengeSets as _challengeSet}
-							<th>
-								<div class="flex justify-center items-center">
-									<div class="h-5 w-5 text-christmas-red">
-										<FaRegClock />
+						{#each dayChallengeSets as challengeSet}
+							{#if challengeSet.isTimed}
+								<th class="odd:text-green-700 even:text-christmasRed">
+									<div class="flex justify-center items-center">
+										<div class="h-5 w-5">
+											<FaRegClock />
+										</div>
 									</div>
-								</div>
-							</th>
-							<th>
-								<div class="flex justify-center items-center">
-									<div class="h-5 w-5 text-green-700">
-										<FaPercentage />
+								</th>
+							{/if}
+							{#if challengeSet.isScored}
+								<th class="odd:text-green-700 even:text-christmasRed">
+									<div class="flex justify-center items-center">
+										<div class="h-5 w-5">
+											<FaHashtag />
+										</div>
 									</div>
-								</div>
-							</th>
+								</th>
+							{/if}
 						{/each}
+						<th class="odd:text-green-700 even:text-christmasRed">
+							<div class="flex justify-center items-center">
+								<div class="h-5 w-5">
+									<FaPercentage />
+								</div>
+							</div>
+						</th>
 					</tr>
 				</thead>
 				<tbody>
 					{#each players as player, idx}
 						<tr>
-							<td class={idx % 2 ? 'text-christmas-red' : 'text-green-700'}>
+							<td class={idx % 2 ? 'text-christmasRed' : 'text-green-700'}>
 								{displayName(player)}
 							</td>
 							{#each dayChallengeSets as challenge}
-								{@const { time, percent } = playerScores[player.id]?.[challenge.id] || {}}
-								<td>{time ? formatDuration(time, false) : '–'}</td>
-								<td>{percent || '–'}</td>
+								{@const { time, points } = playerScores[player.id]?.[challenge.id] || {}}
+								{#if challenge.isTimed}
+									<td>{time ? formatDuration(time, false) : '–'}</td>
+								{/if}
+								{#if challenge.isScored}
+									<td>{points || '–'}</td>
+								{/if}
 							{/each}
+							<td>
+								{getDayScore(dayChallengeSets, playerScores, player)}
+							</td>
 						</tr>
 					{/each}
 				</tbody>
@@ -122,10 +157,6 @@
 		height: 2rem;
 		text-align: center;
 		vertical-align: middle;
-	}
-
-	.text-christmas-red {
-		color: var(--red);
 	}
 
 	.loader {

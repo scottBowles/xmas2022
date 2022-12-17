@@ -32,6 +32,8 @@ model ChallengeSet {
   timeAvailableEnd      DateTime?
   challenges            Challenge[]
   challengeSetResponses ChallengeSetResponse[]
+  isTimed               Boolean                @default(false)
+  isScored              Boolean                @default(false)
 }
 
 enum ChallengeType {
@@ -90,7 +92,7 @@ model ChallengeSetResponse {
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @updatedAt
   clientRecordedTime Int?
-  numCorrect         Int          @default(0)
+  points             Int          @default(0)
 
   @@unique([playerId, challengeSetId])
 }

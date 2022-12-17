@@ -6,8 +6,8 @@
 
 	export let data: PageData;
 
-	$: ({ challenge } = data);
-	$: response = challenge?.responses[0]?.response ?? '';
+	$: challenge = data.challenge;
+	$: response = data.challenge?.responses[0]?.response ?? '';
 
 	let textInput: HTMLInputElement;
 
@@ -18,26 +18,30 @@
 	<fieldset class="flex flex-col mt-4">
 		<legend class="mb-4 text-lg">{@html challenge.prompt}</legend>
 		{#if challenge.type === 'MULTIPLE_CHOICE'}
-			{#each challenge.options as option}
-				<label class="mb-4 text-lg">
-					<input
-						type="radio"
-						name="answer"
-						value={option.text}
-						checked={response === option.text}
-						required
-					/>
-					{option.text}
-				</label>
-			{/each}
+			{#key data}
+				{#each challenge.options as option}
+					<label class="mb-4 text-lg">
+						<input
+							type="radio"
+							name="answer"
+							value={option.text}
+							checked={response === option.text}
+							required
+						/>
+						{option.text}
+					</label>
+				{/each}
+			{/key}
 		{:else}
-			<input
-				type="text"
-				name="answer"
-				value={response}
-				bind:this={textInput}
-				class="text-green-700 border-2 border-green-700 rounded focus:border-green-700 focus:outline-none w-full p-2"
-			/>
+			{#key data}
+				<input
+					type="text"
+					name="answer"
+					value={response}
+					bind:this={textInput}
+					class="text-green-700 border-2 border-green-700 rounded focus:border-green-700 focus:outline-none w-full p-2"
+				/>
+			{/key}
 		{/if}
 	</fieldset>
 	<input

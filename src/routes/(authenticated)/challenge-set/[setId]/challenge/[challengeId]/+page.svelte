@@ -32,7 +32,7 @@
 		{/if}
 
 		{#if form?.message}
-			<p class="text-christmas-red">{@html form.message}</p>
+			<p class="text-christmasRed">{@html form.message}</p>
 		{/if}
 	</div>
 </PageMargin>

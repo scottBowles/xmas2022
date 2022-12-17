@@ -5,8 +5,7 @@
 
 	export let data: PageData;
 
-	$: ({ challengeSet, challenges, timeTaken, numChallenges, numChallengesCorrect, percentCorrect } =
-		data);
+	$: ({ challengeSet, challenges, timeTaken, points } = data);
 </script>
 
 <PageMargin>
@@ -16,7 +15,7 @@
 			{timeTaken ? formatDuration(timeTaken) : '–'}
 		</h2>
 		<h2 class="text-xl mt-4 mb-1 text-green-700 whitespace-nowrap">
-			{numChallengesCorrect} / {numChallenges} ({percentCorrect}%)
+			{points} points
 		</h2>
 	</div>
 
@@ -50,6 +49,9 @@
 						challenge.correctAnswer ||
 							'No correct answer (something went wrong here better tell Scott)'
 					)}
+				</p>
+				<p class="my-2">
+					{challenge.responseIsCorrect ? challenge.points : 0} / {challenge.points} points
 				</p>
 				{#if challenge.responseIsCorrect}
 					<p class="mb-4 text-lg text-green-700 italic">Correct!</p>

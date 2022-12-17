@@ -106,10 +106,10 @@ export const actions: Actions = {
 					}
 				}
 			});
-			const numCorrect = challenges.filter(responseIsCorrect).length;
+			const points = challenges.filter(responseIsCorrect).reduce((acc, cur) => acc + cur.points, 0);
 			await prisma.challengeSetResponse.update({
 				where: { id: challengeSetResponse.id },
-				data: { completedAt, numCorrect }
+				data: { completedAt, points }
 			});
 			// redirect to the review page
 			if (challenge.type !== 'WORDLE') {

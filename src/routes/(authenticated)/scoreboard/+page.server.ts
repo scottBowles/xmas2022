@@ -12,6 +12,8 @@ export const load: PageServerLoad = async () => {
 				id: true,
 				title: true,
 				timeAvailableStart: true,
+				isTimed: true,
+				isScored: true,
 				challenges: { select: { id: true } }
 			}
 		}),
@@ -31,23 +33,20 @@ export const load: PageServerLoad = async () => {
 		})
 	]);
 
-	type PlayerStats = { time: number | null; percent: number | undefined };
-	const playerScores = players.reduce((acc, player) => {
-		const statsByChallengeSetId = player.challengeSetResponses.reduce((acc, csr) => {
-			const numChallenges = challengeSets.find((cs) => cs.id === csr.challengeSetId)?.challenges
-				.length;
-			const percent = numChallenges && (csr.numCorrect / numChallenges) * 100;
-			return {
-				...acc,
-				[csr.challengeSetId]: { time: timeTaken(csr), percent }
-			};
-		}, {} as { [challengeSetId: number]: PlayerStats });
-
-		return {
+	type PlayerStats = { time: number | null; points: number | undefined };
+	const playerScores = players.reduce(
+		(acc, player) => ({
 			...acc,
-			[player.id]: statsByChallengeSetId
-		};
-	}, {} as { [playerId: number]: { [challengeSetId: number]: PlayerStats } });
+			[player.id]: player.challengeSetResponses.reduce(
+				(acc, csr) => ({
+					...acc,
+					[csr.challengeSetId]: { time: timeTaken(csr), points: csr.points }
+				}),
+				{} as { [challengeSetId: number]: PlayerStats }
+			)
+		}),
+		{} as { [playerId: number]: { [challengeSetId: number]: PlayerStats } }
+	);
 
 	return {
 		challengeSets,

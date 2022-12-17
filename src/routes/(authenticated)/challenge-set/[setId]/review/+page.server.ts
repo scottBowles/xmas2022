@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 		select: {
 			challengeSetResponses: {
 				where: { playerId: user.id },
-				select: { startedAt: true, completedAt: true, numCorrect: true }
+				select: { startedAt: true, completedAt: true, points: true }
 			},
 			challenges: {
 				include: {
@@ -33,13 +33,10 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 	});
 
 	/** Derived */
-	const challenges = challengeSet?.challenges.map(
-		pipe(addCorrectAnswer, addResponse, addResponseIsCorrect)
-	);
 	const challengeSetResponse = challengeSet?.challengeSetResponses[0];
-	const numChallenges = challenges?.length || 0;
-	const numChallengesCorrect = challengeSetResponse?.numCorrect || 0;
-	const percentCorrect = Math.round((numChallengesCorrect / numChallenges) * 100);
+	const challenges =
+		challengeSetResponse &&
+		challengeSet?.challenges.map(pipe(addCorrectAnswer, addResponse, addResponseIsCorrect));
 
 	/** Ensure it's ok for the user to see this data */
 	const challengeSetCanBeReviewed =
@@ -55,8 +52,6 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 		challengeSet: pickAll(['title', 'timeAvailableStart'], challengeSet),
 		challenges,
 		timeTaken: timeTaken(challengeSetResponse),
-		numChallenges,
-		numChallengesCorrect,
-		percentCorrect
+		points: challengeSetResponse.points
 	};
 };
