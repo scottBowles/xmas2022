@@ -1,10 +1,11 @@
-import prisma from '$lib/prisma';
-import { error, invalid, redirect } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { getNow, urls } from '$lib/utils';
-import { isLast } from '$lib/prisma/models/challenge';
-import { isLive } from '$lib/prisma/models/challengeSetResponse';
+
+import prisma from '$lib/prisma';
+import { isLast, scoreChallenges } from '$lib/prisma/models/challenge';
 import { nextChallengeUrl } from '$lib/prisma/models/challengeSet';
+import { isLive } from '$lib/prisma/models/challengeSetResponse';
+import { getNow, urls } from '$lib/utils';
 import { SUBMIT_INPUT_VALUE } from './constants';
 
 export const load: PageServerLoad = async ({ params, parent }) => {
@@ -25,7 +26,8 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 					responses: {
 						where: { playerId: user.id }
 					}
-				}
+				},
+				orderBy: { id: 'asc' }
 			}
 		}
 	});
@@ -73,7 +75,7 @@ export const actions: Actions = {
 			where: { id: setId },
 			select: {
 				id: true,
-				challenges: { select: { id: true } },
+				challenges: { select: { id: true, type: true }, orderBy: { id: 'asc' } },
 				challengeSetResponses: {
 					where: { playerId },
 					select: { id: true, startedAt: true, completedAt: true }
@@ -81,8 +83,9 @@ export const actions: Actions = {
 			}
 		});
 		const challengeSetResponse = challengeSet?.challengeSetResponses[0];
+		const challenge = challengeSet?.challenges.find((challenge) => challenge.id === challengeId);
 
-		if (!challengeSet) return invalid(404, { message: 'Challenge set not found' });
+		if (!challengeSet || !challenge) return fail(404, { message: 'Challenge not found' });
 		if (!challengeSetResponse || !isLive(challengeSetResponse))
 			throw redirect(302, urls.challengeSetReview(setId));
 
@@ -94,15 +97,32 @@ export const actions: Actions = {
 		});
 
 		if (submitting) {
-			// end the challengeSetResponse by giving it a completedAt date
+			// end and score the challengeSetResponse
+			const completedAt = getNow();
+			const challenges = await prisma.challenge.findMany({
+				where: { challengeSetId: setId },
+				include: {
+					options: true,
+					responses: {
+						where: { playerId }
+					}
+				}
+			});
+			const points = scoreChallenges(challenges);
+
 			await prisma.challengeSetResponse.update({
 				where: { id: challengeSetResponse.id },
-				data: { completedAt: getNow() }
+				data: { completedAt, points }
 			});
-			// redirect to the review page
-			throw redirect(302, urls.challengeSetReview(setId));
+
+			// redirect to the review page if not a wordle challenge
+			if (challenge.type !== 'WORDLE') {
+				throw redirect(302, urls.challengeSetReview(setId));
+			}
 		}
 
-		throw redirect(302, nextChallengeUrl(challengeSet, challengeId));
+		if (challenge.type !== 'WORDLE') {
+			throw redirect(302, nextChallengeUrl(challengeSet, challengeId));
+		}
 	}
 };

@@ -1,4 +1,4 @@
-import { getNow } from '$lib/utils';
+import { addKey, getNow } from '$lib/utils';
 
 const isLive = (challengeSetResponse: { startedAt: Date | null; completedAt: Date | null }) =>
 	challengeSetResponse.startedAt &&
@@ -10,4 +10,6 @@ const timeTaken = (challengeSetResponse: { startedAt: Date | null; completedAt: 
 	challengeSetResponse.startedAt &&
 	challengeSetResponse.completedAt.getTime() - challengeSetResponse.startedAt.getTime();
 
-export { isLive, timeTaken };
+const addTimeTaken = addKey('timeTaken', timeTaken);
+
+export { isLive, timeTaken, addTimeTaken };

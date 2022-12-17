@@ -1,5 +1,5 @@
 import prisma from '$lib/prisma';
-import { error, invalid, redirect } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import {
 	isAvailable,
@@ -23,9 +23,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 				where: { playerId: user.id },
 				select: { startedAt: true, completedAt: true }
 			},
-			challenges: {
-				select: { id: true }
-			}
+			challenges: { select: { id: true }, orderBy: { id: 'asc' } }
 		}
 	});
 	if (!challengeSet || !challengeSet.timeAvailableStart || challengeSet.timeAvailableStart > now) {
@@ -43,7 +41,7 @@ export const actions: Actions = {
 		const id = parseInt(params.setId);
 
 		// if the user is not logged in, redirect to login (unlikely but possible)
-		if (!userId) throw redirect(403, '/login');
+		if (!userId) throw redirect(302, '/login');
 
 		const challengeSet = await prisma.challengeSet.findUnique({
 			where: { id },
@@ -65,9 +63,9 @@ export const actions: Actions = {
 		});
 
 		if (!challengeSet || !isAvailable(challengeSet))
-			return invalid(404, { error: 'Challenge set not found' });
+			return fail(404, { error: 'Challenge set not found' });
 		if (!challengesExist(challengeSet))
-			return invalid(404, { error: 'Challenge set has no challenges' });
+			return fail(404, { error: 'Challenge set has no challenges' });
 		if (userHasCompleted(challengeSet)) throw redirect(302, resultsUrl(challengeSet));
 
 		// if the user has not started the challenge set, create a new challenge set response

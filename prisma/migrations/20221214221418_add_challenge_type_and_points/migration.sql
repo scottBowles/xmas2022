@@ -1,0 +1,6 @@
+-- CreateEnum
+CREATE TYPE "ChallengeType" AS ENUM ('OPEN_RESPONSE', 'MULTIPLE_CHOICE', 'WORDLE');
+
+-- AlterTable
+ALTER TABLE "Challenge" ADD COLUMN     "points" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "type" "ChallengeType" NOT NULL DEFAULT 'OPEN_RESPONSE';

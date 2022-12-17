@@ -21,25 +21,7 @@ model User {
   picture                  String?                @db.VarChar(255)
   challengeResponses       ChallengeResponse[]
   challengeSetResponses    ChallengeSetResponse[]
-  playerGroups             PlayerGroupOnUsers[]
-}
-
-model PlayerGroupOnUsers {
-  playerGroups  PlayerGroup @relation(fields: [playerGroupId], references: [id])
-  playerGroupId Int
-  users         User        @relation(fields: [userId], references: [id])
-  userId        Int
-  isAdmin       Boolean     @default(false)
-
-  @@id([playerGroupId, userId])
-}
-
-model PlayerGroup {
-  id        Int                  @id @default(autoincrement())
-  name      String               @default("") @db.VarChar(255)
-  createdAt DateTime             @default(now())
-  updatedAt DateTime             @updatedAt
-  players   PlayerGroupOnUsers[]
+  isAdmin                  Boolean                @default(false)
 }
 
 model ChallengeSet {
@@ -51,6 +33,14 @@ model ChallengeSet {
   timeAvailableEnd      DateTime?
   challenges            Challenge[]
   challengeSetResponses ChallengeSetResponse[]
+  isTimed               Boolean                @default(false)
+  isScored              Boolean                @default(false)
+}
+
+enum ChallengeType {
+  OPEN_RESPONSE
+  MULTIPLE_CHOICE
+  WORDLE
 }
 
 model Challenge {
@@ -63,6 +53,8 @@ model Challenge {
   challengeSetId          Int
   options                 Option[]
   responses               ChallengeResponse[]
+  type                    ChallengeType       @default(OPEN_RESPONSE)
+  points                  Int                 @default(0)
 }
 
 model Option {
@@ -101,6 +93,7 @@ model ChallengeSetResponse {
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @updatedAt
   clientRecordedTime Int?
+  points             Int          @default(0)
 
   @@unique([playerId, challengeSetId])
 }
