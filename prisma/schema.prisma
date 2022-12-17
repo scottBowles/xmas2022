@@ -21,6 +21,7 @@ model User {
   picture                  String?                @db.VarChar(255)
   challengeResponses       ChallengeResponse[]
   challengeSetResponses    ChallengeSetResponse[]
+  isAdmin                  Boolean                @default(false)
 }
 
 model ChallengeSet {
