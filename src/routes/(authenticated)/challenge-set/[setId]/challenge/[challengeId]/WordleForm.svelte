@@ -9,6 +9,8 @@
 
 	$: ({ challenge, challengeSet } = data);
 
+	let isComplete = false;
+
 	const onCompletion = async (numGuesses: number | null) => {
 		const formData = new FormData();
 		formData.append('answer', numGuesses?.toString() || '');
@@ -18,6 +20,7 @@
 			body: formData
 		});
 		const result: ActionResult = JSON.parse(await response.text());
+		isComplete = true;
 		return applyAction(result);
 	};
 </script>
@@ -27,3 +30,11 @@
 	storageKey={`${challengeSet.id}|${challenge.id}`}
 	{onCompletion}
 />
+
+{#if isComplete}
+	<hr />
+	<div class="my-4 flex justify-between">
+		<a href="/" class="text-christmasRed hover:underline">&larr; Back to Challenges</a>
+		<a href="/scoreboard" class="text-christmasRed hover:underline">Scoreboard &rarr;</a>
+	</div>
+{/if}
