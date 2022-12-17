@@ -122,7 +122,7 @@
 									<td>{time ? formatDuration(time, false) : '–'}</td>
 								{/if}
 								{#if challenge.isScored}
-									<td>{points || '–'}</td>
+									<td>{points ?? '–'}</td>
 								{/if}
 							{/each}
 							<td>
