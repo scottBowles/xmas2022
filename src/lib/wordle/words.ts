@@ -6,9 +6,6 @@ export const isWordInWordList = (word: string) => {
 };
 
 export const isWinningWord = (word: string) => {
-	console.log('solution', solution);
-	console.log('word', word);
-	console.log('isWinningWord', solution === word);
 	return solution === word;
 };
 
