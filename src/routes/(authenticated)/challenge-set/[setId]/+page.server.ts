@@ -71,13 +71,18 @@ export const actions: Actions = {
 			return fail(404, { error: 'Challenge set has no challenges' });
 		if (userHasCompleted(challengeSet)) throw redirect(302, resultsUrl(challengeSet));
 
+		console.log('user response exists', userResponseExists(challengeSet));
+
 		// if the user has not started the challenge set, create a new challenge set response
 		// with the current time as the start time
 		if (!userResponseExists(challengeSet)) {
+			console.log(1);
 			await prisma.challengeSetResponse.create({
 				data: { challengeSetId: id, playerId: userId, startedAt: getNow() }
 			});
+			console.log(2);
 		}
+		console.log(3);
 
 		// redirect to the first incomplete challenge in the challenge set, if it exists, or
 		// the first challenge if it doesn't
