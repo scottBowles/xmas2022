@@ -91,10 +91,18 @@ export const load: PageServerLoad = async ({ locals }) => {
 	);
 
 	const playersByGroup = groups.reduce(
-		(acc, cur) => ({
-			...acc,
-			[cur.name]: cur.users.map((u) => u.user)
-		}),
+		(acc, cur) => {
+			const users = cur.users.map((u) => u.user);
+			// If the user is me, show all users, otherwise hide me
+			const usersFiltered =
+				locals?.user?.email === 'shbowles@gmail.com'
+					? users
+					: users.filter((u) => u.email !== 'shbowles@gmail.com');
+			return {
+				...acc,
+				[cur.name]: usersFiltered
+			};
+		},
 		{} as {
 			[groupName: string]: {
 				id: number;
