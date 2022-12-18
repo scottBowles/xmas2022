@@ -5,24 +5,26 @@
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { dateToYYYYMMDD, formatDuration } from '$lib/utils';
 	import type { PageData } from './$types';
-	import { groupBy, pipe, filter, prop, sort, descend } from 'ramda';
+	import { groupBy, pipe, filter, prop, sort, descend, isEmpty } from 'ramda';
 	import { displayName } from '$lib/prisma/models/user';
 	import { numScoreboardStats } from '$lib/prisma/models/challengeSet';
 
 	export let data: PageData;
 
-	const { challengeSets, playersByGroup, playerScoresByGroup, groupNames, player } = data;
+	const { challengeSets, playersByGroup, playerScoresByGroup, groupNames, user, userScores } = data;
 
 	let groupShown = groupNames[0];
 
 	$: players = playersByGroup[groupShown];
 	$: playerScores = playerScoresByGroup[groupShown];
 
+	const emptyPlayerStats = { time: null, points: null };
+
 	const getDayScore = (
 		cSets: typeof challengeSets,
-		pScores: typeof playerScoresByGroup[string][number],
-		player: typeof playersByGroup[string][number]
-	) => cSets.reduce((acc, cur) => acc + (pScores[player.id]?.[cur.id]?.points ?? 0), 0);
+		pScores: typeof playerScoresByGroup[string],
+		p: typeof playersByGroup[string][number]
+	) => cSets.reduce((acc, cur) => acc + (pScores[p.id]?.[cur.id]?.points ?? 0), 0);
 
 	const groupByDate = groupBy((set: typeof challengeSets[number]) => {
 		if (!set.timeAvailableStart) return 'Invalid Date';
@@ -68,13 +70,22 @@
 </div>
 
 <!-- add a select to allow a user to select among their groupNames -->
-<div class="flex justify-evenly w-full h-10 mt-4">
-	<select class="text-lg text-green-800" bind:value={groupShown}>
-		{#each groupNames as groupName}
-			<option value={groupName}>{groupName}</option>
-		{/each}
-	</select>
-</div>
+{#if isEmpty(groupNames)}
+	<div class="flex justify-center items-center mt-4">
+		<h3 class="text-green-700 italic">
+			Join or create a group <a href="/settings" class="text-christmasRed hover:underline">here</a> to
+			share a scoreboard with your friends!
+		</h3>
+	</div>
+{:else}
+	<div class="flex justify-evenly w-full h-10 mt-4">
+		<select class="text-lg text-green-800" bind:value={groupShown}>
+			{#each groupNames as groupName}
+				<option value={groupName}>{groupName}</option>
+			{/each}
+		</select>
+	</div>
+{/if}
 
 <PageMargin>
 	<div class="flex flex-col items-center mt-4">
@@ -147,13 +158,15 @@
 								</td>
 							</tr>
 						{/each}
-					{:else if player}
+					{:else if user}
 						<tr>
 							<td class={'text-green-700'}>
-								{displayName(player)}
+								{displayName(user)}
 							</td>
 							{#each dayChallengeSets as challenge}
-								{@const { time, points } = playerScores[player.id]?.[challenge.id] || {}}
+								{@const { time, points } =
+									(!isEmpty(userScores) && userScores && userScores[challenge.id]) ||
+									emptyPlayerStats}
 								{#if challenge.isTimed}
 									<td>{time ? formatDuration(time, false) : '–'}</td>
 								{/if}
@@ -162,7 +175,10 @@
 								{/if}
 							{/each}
 							<td>
-								{getDayScore(dayChallengeSets, playerScores, player)}
+								{dayChallengeSets.reduce(
+									(acc, cur) => acc + (userScores?.[cur.id]?.points ?? 0),
+									0
+								)}
 							</td>
 						</tr>
 					{:else}

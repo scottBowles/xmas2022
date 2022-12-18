@@ -49,24 +49,25 @@ export const load: PageServerLoad = async ({ locals }) => {
 	]);
 
 	// If the user is not in a group, we need to get their data separately
-	const player =
-		groups.length === 0 &&
-		(await prisma.user.findUnique({
-			where: { id: userId },
-			select: {
-				id: true,
-				firstName: true,
-				lastName: true,
-				username: true,
-				email: true,
-				challengeSetResponses: {
-					where: {
-						startedAt: { not: null },
-						completedAt: { not: null }
+	const user =
+		groups.length === 0
+			? await prisma.user.findUnique({
+					where: { id: userId },
+					select: {
+						id: true,
+						firstName: true,
+						lastName: true,
+						username: true,
+						email: true,
+						challengeSetResponses: {
+							where: {
+								startedAt: { not: null },
+								completedAt: { not: null }
+							}
+						}
 					}
-				}
-			}
-		}));
+			  })
+			: null;
 
 	type PlayerStats = { time: number | null; points: number | undefined };
 	const playerScoresByGroup = groups.reduce(
@@ -104,6 +105,14 @@ export const load: PageServerLoad = async ({ locals }) => {
 		}
 	);
 
+	const userScores = user?.challengeSetResponses.reduce(
+		(acc, csr) => ({
+			...acc,
+			[csr.challengeSetId]: { time: timeTaken(csr), points: csr.points }
+		}),
+		{} as { [challengeSetId: number]: PlayerStats }
+	);
+
 	const groupNames = groups.map((g) => g.name);
 
 	return {
@@ -111,6 +120,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		playerScoresByGroup,
 		playersByGroup,
 		groupNames,
-		player
+		user,
+		userScores
 	};
 };

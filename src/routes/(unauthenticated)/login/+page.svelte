@@ -1,10 +1,11 @@
 <script lang="ts">
-	import type { ActionData } from './$types';
+	import type { ActionData, PageData } from './$types';
 	import { LoginError, SignupError } from './Errors';
 	import GoogleButton from '$lib/components/GoogleButton.svelte';
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { enhance } from '$app/forms';
 
+	export let data: PageData;
 	export let form: ActionData;
 
 	let mode: 'login' | 'signup' = 'login';
@@ -53,6 +54,7 @@
 					required
 					class="w-64 m-1 p-2 text-green-700 border border-green-700 rounded"
 				/>
+				<input type="hidden" name="group" value={data.group} />
 			</fieldset>
 			<input
 				type="submit"

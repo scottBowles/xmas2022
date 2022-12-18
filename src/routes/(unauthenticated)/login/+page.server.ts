@@ -9,10 +9,15 @@ import { LoginError, SignupError } from './Errors';
 import { Prisma } from '@prisma/client';
 import { AUTH_COOKIE_OPTIONS, JWT_SIGN_OPTIONS } from '$lib/constants';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = async ({ locals, url }) => {
+	const { searchParams } = url;
+	const group = searchParams.get('group');
+
 	if (locals.user) {
 		throw redirect(302, '/');
 	}
+
+	return { group };
 };
 
 export const actions: Actions = {
@@ -49,6 +54,7 @@ export const actions: Actions = {
 		const data = await request.formData();
 		const email = data.get('email')?.toString();
 		const password = data.get('password')?.toString();
+		const group = data.get('group')?.toString();
 
 		if (!email || !password) {
 			return fail(400, { email, error: SignupError.VALIDATION });
@@ -56,7 +62,13 @@ export const actions: Actions = {
 
 		try {
 			const user = await prisma.user.create({
-				data: { email, password: await bcrypt.hash(password, 10) }
+				data: {
+					email,
+					password: await bcrypt.hash(password, 10),
+					...(group && {
+						groups: { create: [{ isAdmin: false, group: { connect: { name: group } } }] }
+					})
+				}
 			});
 			const jwtUser = jwtUserFactory(user);
 			const token = jwt.sign(jwtUser, env.JWT_ACCESS_SECRET, JWT_SIGN_OPTIONS);
