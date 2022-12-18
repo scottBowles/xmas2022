@@ -62,6 +62,9 @@ export const actions: Actions = {
 			}
 		});
 
+		console.log({ userId, id });
+		console.log({ challengeSet });
+
 		if (!challengeSet || !isAvailable(challengeSet))
 			return fail(404, { error: 'Challenge set not found' });
 		if (!challengesExist(challengeSet))
