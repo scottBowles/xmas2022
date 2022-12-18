@@ -33,6 +33,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 								id: true,
 								firstName: true,
 								lastName: true,
+								username: true,
 								email: true,
 								challengeSetResponses: {
 									where: {
@@ -108,6 +109,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 				id: number;
 				firstName: string | null;
 				lastName: string | null;
+				username: string | null;
 				email: string;
 			}[];
 		}
