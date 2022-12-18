@@ -1,5 +1,6 @@
 import { getNow, addKey, urls } from '$lib/utils';
 import type { WithMinimumInput } from '$lib/utils/types';
+import { sum } from 'ramda';
 
 /**
  * TYPES for what follows
@@ -25,6 +26,9 @@ type NextChallengeUrl = <
 	challengeSet: T,
 	lastChallengeId?: number
 ) => string;
+type NumScoreboardStats = <T extends { isTimed: boolean; isScored: boolean }>(
+	challenge: T
+) => number;
 
 /**
  * CHALLENGE SET COMPUTED PROPERTIES
@@ -67,6 +71,9 @@ const nextChallenge: NextChallenge = (challengeSet, lastChallengeId) => {
 const nextChallengeUrl: NextChallengeUrl = (challengeSet, lastChallengeId) =>
 	urls.challenge(challengeSet.id, nextChallenge(challengeSet, lastChallengeId).id);
 
+const numScoreboardStats: NumScoreboardStats = ({ isTimed, isScored }) =>
+	sum([isTimed, isScored].map((a) => (a ? 1 : 0)));
+
 /**
  * ADD FUNCTIONS
  * Functions to add computed properties to ChallengeSet objects.
@@ -95,5 +102,6 @@ export {
 	nextChallenge,
 	addNextChallenge,
 	nextChallengeUrl,
-	addNextChallengeUrl
+	addNextChallengeUrl,
+	numScoreboardStats
 };

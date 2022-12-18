@@ -5,20 +5,23 @@
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { dateToYYYYMMDD, formatDuration } from '$lib/utils';
 	import type { PageData } from './$types';
-	import { groupBy, pipe, filter, prop, sum, sort, descend } from 'ramda';
+	import { groupBy, pipe, filter, prop, sort, descend } from 'ramda';
 	import { displayName } from '$lib/prisma/models/user';
+	import { numScoreboardStats } from '$lib/prisma/models/challengeSet';
 
 	export let data: PageData;
 
-	const { challengeSets, players, playerScores } = data;
+	const { challengeSets, playersByGroup, playerScoresByGroup, groupNames, player } = data;
 
-	const numStats = ({ isTimed, isScored }: typeof challengeSets[number]) =>
-		sum([isTimed, isScored].map((a) => (a ? 1 : 0)));
+	let groupShown = groupNames[0];
+
+	$: players = playersByGroup[groupShown];
+	$: playerScores = playerScoresByGroup[groupShown];
 
 	const getDayScore = (
 		cSets: typeof challengeSets,
-		pScores: typeof playerScores,
-		player: typeof players[number]
+		pScores: typeof playerScoresByGroup[string][number],
+		player: typeof playersByGroup[string][number]
 	) => cSets.reduce((acc, cur) => acc + (pScores[player.id]?.[cur.id]?.points ?? 0), 0);
 
 	const groupByDate = groupBy((set: typeof challengeSets[number]) => {
@@ -42,7 +45,10 @@
 		dateToYYYYMMDD(new Date()) in challengeSetsByDate
 			? days.indexOf(dateToYYYYMMDD(new Date()))
 			: days.length - 1;
-	const dayChallengeSets = sort(descend(numStats), challengeSetsByDate[days[dayShown]] ?? []);
+	const dayChallengeSets = sort(
+		descend(numScoreboardStats),
+		challengeSetsByDate[days[dayShown]] ?? []
+	);
 </script>
 
 <div class="days flex justify-evenly w-full h-10">
@@ -60,8 +66,18 @@
 		</div>
 	{/each}
 </div>
+
+<!-- add a select to allow a user to select among their groupNames -->
+<div class="flex justify-evenly w-full h-10 mt-4">
+	<select class="text-lg text-green-800" bind:value={groupShown}>
+		{#each groupNames as groupName}
+			<option value={groupName}>{groupName}</option>
+		{/each}
+	</select>
+</div>
+
 <PageMargin>
-	<div class="content-container flex flex-col items-center">
+	<div class="flex flex-col items-center mt-4">
 		<!-- <h1 class="text-christmasRed text-2xl">Merry Christmas!</h1>
 		<h3 class="text-green-800 text-lg mb-4">Thanks for playing!</h3> -->
 		{#if dayChallengeSets.length}
@@ -70,7 +86,7 @@
 					<tr>
 						<th />
 						{#each dayChallengeSets as challengeSet}
-							<th colspan={numStats(challengeSet)}>
+							<th colspan={numScoreboardStats(challengeSet)}>
 								{challengeSet.title}
 							</th>
 						{/each}
@@ -111,9 +127,29 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each players as player, idx}
+					{#if groupNames.length}
+						{#each players as player, idx}
+							<tr>
+								<td class={idx % 2 ? 'text-christmasRed' : 'text-green-700'}>
+									{displayName(player)}
+								</td>
+								{#each dayChallengeSets as challenge}
+									{@const { time, points } = playerScores[player.id]?.[challenge.id] || {}}
+									{#if challenge.isTimed}
+										<td>{time ? formatDuration(time, false) : '–'}</td>
+									{/if}
+									{#if challenge.isScored}
+										<td>{points ?? '–'}</td>
+									{/if}
+								{/each}
+								<td>
+									{getDayScore(dayChallengeSets, playerScores, player)}
+								</td>
+							</tr>
+						{/each}
+					{:else if player}
 						<tr>
-							<td class={idx % 2 ? 'text-christmasRed' : 'text-green-700'}>
+							<td class={'text-green-700'}>
 								{displayName(player)}
 							</td>
 							{#each dayChallengeSets as challenge}
@@ -129,7 +165,9 @@
 								{getDayScore(dayChallengeSets, playerScores, player)}
 							</td>
 						</tr>
-					{/each}
+					{:else}
+						Data isn't loading. Something might be wrong here!
+					{/if}
 				</tbody>
 			</table>
 		{:else}
@@ -141,10 +179,6 @@
 <style>
 	.days {
 		top: var(--nav-height);
-	}
-
-	.content-container {
-		margin-top: calc(var(--nav-height) * 1.25);
 	}
 
 	/* table,
