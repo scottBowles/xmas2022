@@ -1,8 +1,9 @@
 import prisma from '$lib/prisma';
 import type { PageServerLoad } from './$types';
 import { timeTaken } from '$lib/prisma/models/challengeSetResponse';
-import { urls } from '$lib/utils';
+import { dateToYYYYMMDD, urls } from '$lib/utils';
 import { redirect } from '@sveltejs/kit';
+import { filter, groupBy, pipe, prop } from 'ramda';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const userId = locals.user?.id;
@@ -123,10 +124,22 @@ export const load: PageServerLoad = async ({ locals }) => {
 		{} as { [challengeSetId: number]: PlayerStats }
 	);
 
+	const groupByDate = groupBy((set: typeof challengeSets[number]) => {
+		if (!set.timeAvailableStart) return 'Invalid Date';
+		const date = new Date(set.timeAvailableStart);
+		if (isNaN(date.getTime())) return 'Invalid Date';
+		return dateToYYYYMMDD(date);
+	});
+
+	const challengeSetsByDate = pipe(
+		filter(pipe(prop('timeAvailableStart'), Boolean)),
+		groupByDate
+	)(challengeSets);
+
 	const groupNames = groups.map((g) => g.name);
 
 	return {
-		challengeSets,
+		challengeSetsByDate,
 		playerScoresByGroup,
 		playersByGroup,
 		groupNames,
