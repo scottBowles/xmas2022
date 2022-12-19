@@ -12,7 +12,6 @@ import {
 import { getNow } from '$lib/utils';
 
 export const load: PageServerLoad = async ({ params, parent }) => {
-	const now = new Date();
 	const { user } = await parent();
 	const id = parseInt(params.setId);
 
@@ -26,9 +25,10 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 			challenges: { select: { id: true }, orderBy: { id: 'asc' } }
 		}
 	});
-	if (!challengeSet || !challengeSet.timeAvailableStart || challengeSet.timeAvailableStart > now) {
+	if (!challengeSet || (!user.isAdmin && !isAvailable(challengeSet))) {
 		throw error(404, 'Challenge set not found');
 	}
+
 	return { challengeSet };
 };
 
@@ -37,11 +37,11 @@ export const actions: Actions = {
 	 * This is called when the user clicks to start or continue a challenge set.
 	 */
 	default: async ({ locals, params }) => {
-		const userId = locals.user?.id;
+		const user = locals.user;
 		const id = parseInt(params.setId);
 
 		// if the user is not logged in, redirect to login (unlikely but possible)
-		if (!userId) throw redirect(302, '/login');
+		if (!user?.id) throw redirect(302, '/login');
 
 		const challengeSet = await prisma.challengeSet.findUnique({
 			where: { id },
@@ -49,40 +49,32 @@ export const actions: Actions = {
 				id: true,
 				timeAvailableStart: true,
 				challengeSetResponses: {
-					where: { playerId: userId },
+					where: { playerId: user.id },
 					select: { startedAt: true, completedAt: true }
 				},
 				challenges: {
 					select: {
 						id: true,
-						responses: { select: { response: true }, where: { playerId: userId } }
+						responses: { select: { response: true }, where: { playerId: user.id } }
 					},
 					orderBy: { id: 'asc' }
 				}
 			}
 		});
 
-		console.log({ userId, id });
-		console.log({ challengeSet });
-
-		if (!challengeSet || !isAvailable(challengeSet))
+		if (!challengeSet || (!user.isAdmin && !isAvailable(challengeSet)))
 			return fail(404, { error: 'Challenge set not found' });
 		if (!challengesExist(challengeSet))
 			return fail(404, { error: 'Challenge set has no challenges' });
 		if (userHasCompleted(challengeSet)) throw redirect(302, resultsUrl(challengeSet));
 
-		console.log('user response exists', userResponseExists(challengeSet));
-
 		// if the user has not started the challenge set, create a new challenge set response
 		// with the current time as the start time
 		if (!userResponseExists(challengeSet)) {
-			console.log(1);
 			await prisma.challengeSetResponse.create({
-				data: { challengeSetId: id, playerId: userId, startedAt: getNow() }
+				data: { challengeSetId: id, playerId: user.id, startedAt: getNow() }
 			});
-			console.log(2);
 		}
-		console.log(3);
 
 		// redirect to the first incomplete challenge in the challenge set, if it exists, or
 		// the first challenge if it doesn't

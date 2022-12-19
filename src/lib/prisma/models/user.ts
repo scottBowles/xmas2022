@@ -17,10 +17,10 @@ const addDisplayName = addKey('displayName', displayName);
  * Must remain a pojo to be serialized for the jwt and passed to the client.
  */
 type JwtUserFactory = WithMinimumInput<
-	{ id: number; email: string } & Parameters<DisplayName>[0],
+	{ id: number; email: string; isAdmin: boolean } & Parameters<DisplayName>[0],
 	JwtUser
 >;
 const jwtUserFactory: JwtUserFactory = (user) =>
-	pickAll(['id', 'email', 'displayName'], addDisplayName(user));
+	pickAll(['id', 'email', 'displayName', 'isAdmin'], addDisplayName(user));
 
 export { displayName, addDisplayName, jwtUserFactory };
