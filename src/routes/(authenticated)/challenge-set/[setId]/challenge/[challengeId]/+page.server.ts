@@ -3,7 +3,7 @@ import type { Actions, PageServerLoad } from './$types';
 
 import prisma from '$lib/prisma';
 import { isLast, scoreChallenges } from '$lib/prisma/models/challenge';
-import { nextChallengeUrl } from '$lib/prisma/models/challengeSet';
+import { isAvailable, nextChallengeUrl } from '$lib/prisma/models/challengeSet';
 import { isLive } from '$lib/prisma/models/challengeSetResponse';
 import { getNow, urls } from '$lib/utils';
 import { SUBMIT_INPUT_VALUE } from './constants';
@@ -36,8 +36,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 
 	if (
 		!challengeSet ||
-		!challengeSet.timeAvailableStart ||
-		challengeSet.timeAvailableStart > getNow() ||
+		(!user.isAdmin && !isAvailable(challengeSet)) ||
 		!challengeSetResponse?.startedAt ||
 		!challenge
 	) {

@@ -5,7 +5,7 @@
 
 	export let data: PageData;
 
-	const { pastChallengeSetExists, currentChallengeSets, user } = data;
+	const { pastChallengeSetExists, currentChallengeSets, futureChallengeSets, user } = data;
 	type TChallengeSet = typeof currentChallengeSets[0];
 
 	function getStatus(challengeSet: TChallengeSet) {
@@ -47,6 +47,21 @@
 			<p>No challenge sets yet. Coming soon!</p>
 		{/if}
 	</div>
+	{#if futureChallengeSets && futureChallengeSets.length > 0}
+		<h2 class="text-2xl mt-4 mb-1">Future Challenges</h2>
+		{#each futureChallengeSets as challengeSet (challengeSet.id)}
+			{@const status = getStatus(challengeSet)}
+			<span class="mt-3 mb-1">
+				<a
+					href={urls.challengeSet(challengeSet.id)}
+					class={`${status.class} text-blue-500 text-lg`}
+				>
+					{challengeSet.title}
+					{status.text}
+				</a>
+			</span>
+		{/each}
+	{/if}
 </PageMargin>
 
 <style>

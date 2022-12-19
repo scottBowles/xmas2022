@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	const [challengeSets, groups] = await Promise.all([
 		prisma.challengeSet.findMany({
-			where: { timeAvailableStart: { lte: now } },
+			...(!locals.user?.isAdmin && { where: { timeAvailableStart: { lte: now } } }),
 			select: {
 				id: true,
 				title: true,

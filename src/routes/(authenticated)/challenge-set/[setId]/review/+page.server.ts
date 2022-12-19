@@ -4,7 +4,7 @@ import type { PageServerLoad } from './$types';
 import prisma from '$lib/prisma';
 import { timeTaken } from '$lib/prisma/models/challengeSetResponse';
 import { addCorrectAnswer, addResponse, addResponseIsCorrect } from '$lib/prisma/models/challenge';
-import { getNow } from '$lib/utils';
+import { isAvailable } from '$lib/prisma/models/challengeSet';
 
 export const load: PageServerLoad = async ({ params, parent }) => {
 	/** Request data */
@@ -42,8 +42,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 	/** Ensure it's ok for the user to see this data */
 	const challengeSetCanBeReviewed =
 		challengeSet &&
-		challengeSet.timeAvailableStart &&
-		challengeSet.timeAvailableStart < getNow() &&
+		(user.isAdmin || isAvailable(challengeSet)) &&
 		challengeSetResponse?.completedAt &&
 		challenges;
 
