@@ -34,7 +34,9 @@ export const load: PageServerLoad = async (event) => {
 	const currentChallengeSets = startedChallengeSets.filter(
 		(set) => !set.timeAvailableEnd || set.timeAvailableEnd > now
 	);
-	const pastChallengeSetExists = startedChallengeSets.length > currentChallengeSets.length;
+	const pastChallengeSets = startedChallengeSets.filter(
+		(set) => set.timeAvailableEnd && set.timeAvailableEnd < now
+	);
 
-	return { currentChallengeSets, pastChallengeSetExists, futureChallengeSets };
+	return { currentChallengeSets, pastChallengeSets, futureChallengeSets };
 };

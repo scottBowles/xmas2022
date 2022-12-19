@@ -5,7 +5,7 @@
 
 	export let data: PageData;
 
-	const { pastChallengeSetExists, currentChallengeSets, futureChallengeSets, user } = data;
+	const { pastChallengeSets, currentChallengeSets, futureChallengeSets, user } = data;
 	type TChallengeSet = typeof currentChallengeSets[0];
 
 	function getStatus(challengeSet: TChallengeSet) {
@@ -24,22 +24,39 @@
 	<h1 class="text-4xl mt-4 mb-1">Welcome, {user.displayName}!</h1>
 
 	<div class="flex flex-col">
-		{#if currentChallengeSets?.length > 0}
+		{#if currentChallengeSets?.length > 0 || pastChallengeSets?.length > 0}
 			<h2 class="text-2xl mt-4 mb-1">Today's Challenges</h2>
-			{#each currentChallengeSets as challengeSet (challengeSet.id)}
-				{@const status = getStatus(challengeSet)}
-				<span class="mt-3 mb-1">
-					<a
-						href={urls.challengeSet(challengeSet.id)}
-						class={`${status.class} text-blue-500 text-lg`}
-					>
-						{challengeSet.title}
-						{status.text}
-					</a>
-				</span>
-			{/each}
-		{:else if pastChallengeSetExists}
-			<p class="text-lg mt-3 mb-1">No challenge sets are available at the moment.</p>
+			{#if currentChallengeSets.length === 0}
+				<p class="text-lg mt-3 mb-1">No challenges currently available. Check back later!</p>
+			{:else}
+				{#each currentChallengeSets as challengeSet (challengeSet.id)}
+					{@const status = getStatus(challengeSet)}
+					<span class="mt-3 mb-1">
+						<a
+							href={urls.challengeSet(challengeSet.id)}
+							class={`${status.class} text-blue-500 text-lg`}
+						>
+							{challengeSet.title}
+							{status.text}
+						</a>
+					</span>
+				{/each}
+			{/if}
+			{#if pastChallengeSets.length > 0}
+				<h2 class="text-2xl mt-16 mb-1">Past Challenges</h2>
+				{#each pastChallengeSets as challengeSet (challengeSet.id)}
+					{@const status = getStatus(challengeSet)}
+					<span class="mt-3 mb-1">
+						<a
+							href={urls.challengeSet(challengeSet.id)}
+							class={`${status.class} text-blue-500 text-lg`}
+						>
+							{challengeSet.title}
+							{status.text}
+						</a>
+					</span>
+				{/each}
+			{/if}
 			<!-- <p class="text-lg mt-3 mb-1">
 	Check out the <a href={"/scoreboard/"} class="text-lg text-blue-500">scoreboard</a>?
 	</p> -->
@@ -48,8 +65,8 @@
 		{/if}
 	</div>
 	{#if futureChallengeSets && futureChallengeSets.length > 0}
-		<div class="flex flex-col">
-			<h2 class="text-2xl mt-4 mb-1">Future Challenges</h2>
+		<div class="flex flex-col mt-16">
+			<h2 class="text-2xl mb-1">Future Challenges</h2>
 			{#each futureChallengeSets as challengeSet (challengeSet.id)}
 				{@const status = getStatus(challengeSet)}
 				<span class="mt-3 mb-1">
