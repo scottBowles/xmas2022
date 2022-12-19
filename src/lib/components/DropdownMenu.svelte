@@ -1,6 +1,8 @@
 <script>
 	import { slide } from 'svelte/transition';
 	import { logout } from '$lib/utils/clientOnly/logout';
+
+	export let isAdmin = false;
 </script>
 
 <div class="container" transition:slide>
@@ -8,6 +10,9 @@
 		<a href="/"><li>Play!</li></a>
 		<a href="/scoreboard"><li>Scoreboard</li></a>
 		<a href="/settings"><li>Settings</li></a>
+		{#if isAdmin}
+			<a href="/admin"><li>Admin</li></a>
+		{/if}
 		<button on:click={logout}><li>Logout</li></button>
 	</ul>
 </div>
