@@ -5,13 +5,14 @@
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { dateToYYYYMMDD, formatDuration, urls } from '$lib/utils';
 	import type { PageData } from './$types';
-	import { groupBy, pipe, filter, prop, sort, descend, isEmpty } from 'ramda';
+	import { sort, descend, isEmpty } from 'ramda';
 	import { displayName } from '$lib/prisma/models/user';
 	import { numScoreboardStats } from '$lib/prisma/models/challengeSet';
 
 	export let data: PageData;
 
-	const { challengeSets, playersByGroup, playerScoresByGroup, groupNames, user, userScores } = data;
+	const { challengeSetsByDate, playersByGroup, playerScoresByGroup, groupNames, user, userScores } =
+		data;
 
 	let groupShown = groupNames[0];
 
@@ -20,37 +21,43 @@
 
 	const emptyPlayerStats = { time: null, points: null };
 
-	const getDayScore = (
-		cSets: typeof challengeSets,
-		pScores: typeof playerScoresByGroup[string],
-		p: typeof playersByGroup[string][number]
-	) => cSets.reduce((acc, cur) => acc + (pScores[p.id]?.[cur.id]?.points ?? 0), 0);
-
-	const groupByDate = groupBy((set: typeof challengeSets[number]) => {
-		if (!set.timeAvailableStart) return 'Invalid Date';
-		const date = new Date(set.timeAvailableStart);
-		if (isNaN(date.getTime())) return 'Invalid Date';
-		return dateToYYYYMMDD(date);
-	});
-
-	const challengeSetsByDate = pipe(
-		filter(pipe(prop('timeAvailableStart'), Boolean)),
-		groupByDate
-	)(challengeSets);
-
 	const days = Object.keys(challengeSetsByDate).sort((a, b) => {
 		if (a === 'Invalid Date') return 1;
 		if (b === 'Invalid Date') return -1;
 		return a > b ? 1 : -1;
 	});
+
 	let dayShown =
 		dateToYYYYMMDD(new Date()) in challengeSetsByDate
 			? days.indexOf(dateToYYYYMMDD(new Date()))
 			: days.length - 1;
+
 	$: dayChallengeSets = sort(
 		descend(numScoreboardStats),
 		challengeSetsByDate[days[dayShown]] ?? []
 	);
+
+	$: getDayScore = (player: typeof playersByGroup[string][number]) =>
+		dayChallengeSets.reduce(
+			(acc, cur) => acc + (playerScores[player.id]?.[cur.id]?.points ?? 0),
+			0
+		);
+
+	// sort by day score with ties broken by the time of isTimed challengeSets
+	$: playersSorted = sort((a, b) => {
+		const aScore = getDayScore(a);
+		const bScore = getDayScore(b);
+		if (aScore === bScore) {
+			const aTime = dayChallengeSets
+				.filter((cs) => cs.isTimed)
+				.reduce((acc, cur) => acc + (playerScores[a.id]?.[cur.id]?.time ?? 0), 0);
+			const bTime = dayChallengeSets
+				.filter((cs) => cs.isTimed)
+				.reduce((acc, cur) => acc + (playerScores[b.id]?.[cur.id]?.time ?? 0), 0);
+			return aTime - bTime;
+		}
+		return bScore - aScore;
+	}, players);
 </script>
 
 <div class="days flex justify-evenly w-full h-10">
@@ -140,7 +147,7 @@
 				</thead>
 				<tbody>
 					{#if groupNames.length}
-						{#each players as player, idx}
+						{#each playersSorted as player, idx}
 							<tr>
 								<td class={idx % 2 ? 'text-christmasRed' : 'text-green-700'}>
 									{displayName(player)}
@@ -155,7 +162,7 @@
 									{/if}
 								{/each}
 								<td>
-									{getDayScore(dayChallengeSets, playerScores, player)}
+									{getDayScore(player)}
 								</td>
 							</tr>
 						{/each}
