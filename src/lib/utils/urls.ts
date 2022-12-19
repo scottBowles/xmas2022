@@ -4,5 +4,6 @@ export default {
 		`/challenge-set/${challengeSetId}/challenge/${challengeId}`,
 	challengeSet: (id: number) => `/challenge-set/${id}`,
 	challengeSetResults: (id: number) => `/challenge-set/${id}/results`,
-	challengeSetReview: (id: number) => `/challenge-set/${id}/review`
+	challengeSetReview: (id: number) => `/challenge-set/${id}/review`,
+	settings: () => '/settings'
 };
