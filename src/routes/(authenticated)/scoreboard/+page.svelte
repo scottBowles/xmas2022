@@ -3,7 +3,7 @@
 	import FaRegClock from 'svelte-icons/fa/FaRegClock.svelte';
 	import FaHashtag from 'svelte-icons/fa/FaHashtag.svelte';
 	import PageMargin from '$lib/components/PageMargin.svelte';
-	import { dateToYYYYMMDD, formatDuration } from '$lib/utils';
+	import { dateToYYYYMMDD, formatDuration, urls } from '$lib/utils';
 	import type { PageData } from './$types';
 	import { groupBy, pipe, filter, prop, sort, descend, isEmpty } from 'ramda';
 	import { displayName } from '$lib/prisma/models/user';
@@ -47,7 +47,7 @@
 		dateToYYYYMMDD(new Date()) in challengeSetsByDate
 			? days.indexOf(dateToYYYYMMDD(new Date()))
 			: days.length - 1;
-	const dayChallengeSets = sort(
+	$: dayChallengeSets = sort(
 		descend(numScoreboardStats),
 		challengeSetsByDate[days[dayShown]] ?? []
 	);
@@ -73,8 +73,9 @@
 {#if isEmpty(groupNames)}
 	<div class="flex justify-center items-center mt-4">
 		<h3 class="text-green-700 italic">
-			Join or create a group <a href="/settings" class="text-christmasRed hover:underline">here</a> to
-			share a scoreboard with your friends!
+			Join or create a group <a href={urls.settings()} class="text-christmasRed hover:underline"
+				>here</a
+			> to share a scoreboard with your friends!
 		</h3>
 	</div>
 {:else}
