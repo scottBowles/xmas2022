@@ -29,7 +29,7 @@
 </nav>
 
 {#if $menuIsOpen}
-	<DropdownMenu />
+	<DropdownMenu isAdmin={user?.isAdmin} />
 {/if}
 
 <style>
