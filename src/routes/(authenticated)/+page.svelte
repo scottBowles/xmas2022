@@ -10,8 +10,8 @@
 
 	function getStatus(challengeSet: TChallengeSet) {
 		const { startedAt, completedAt } = challengeSet.challengeSetResponses?.[0] ?? {};
-		if (completedAt) return { class: 'complete', text: '(Complete)' };
-		if (startedAt) return { class: 'started', text: '(Started)' };
+		if (completedAt) return { class: 'italic', text: '(Complete)' };
+		if (startedAt) return { class: 'font-bold', text: '(Started)' };
 		return { class: '', text: '' };
 	}
 </script>
@@ -23,7 +23,7 @@
 <PageMargin>
 	<h1 class="text-4xl mt-4 mb-1">Welcome, {user.displayName}!</h1>
 
-	<div class="challenge-sets">
+	<div class="flex flex-col">
 		{#if currentChallengeSets?.length > 0}
 			<h2 class="text-2xl mt-4 mb-1">Today's Challenges</h2>
 			{#each currentChallengeSets as challengeSet (challengeSet.id)}
@@ -48,33 +48,20 @@
 		{/if}
 	</div>
 	{#if futureChallengeSets && futureChallengeSets.length > 0}
-		<h2 class="text-2xl mt-4 mb-1">Future Challenges</h2>
-		{#each futureChallengeSets as challengeSet (challengeSet.id)}
-			{@const status = getStatus(challengeSet)}
-			<span class="mt-3 mb-1">
-				<a
-					href={urls.challengeSet(challengeSet.id)}
-					class={`${status.class} text-blue-500 text-lg`}
-				>
-					{challengeSet.title}
-					{status.text}
-				</a>
-			</span>
-		{/each}
+		<div class="flex flex-col">
+			<h2 class="text-2xl mt-4 mb-1">Future Challenges</h2>
+			{#each futureChallengeSets as challengeSet (challengeSet.id)}
+				{@const status = getStatus(challengeSet)}
+				<span class="mt-3 mb-1">
+					<a
+						href={urls.challengeSet(challengeSet.id)}
+						class={`${status.class} text-blue-500 text-lg`}
+					>
+						{challengeSet.title}
+						{status.text}
+					</a>
+				</span>
+			{/each}
+		</div>
 	{/if}
 </PageMargin>
-
-<style>
-	.challenge-sets {
-		display: flex;
-		flex-direction: column;
-	}
-
-	.started {
-		font-weight: bold;
-	}
-
-	.complete {
-		font-style: italic;
-	}
-</style>
