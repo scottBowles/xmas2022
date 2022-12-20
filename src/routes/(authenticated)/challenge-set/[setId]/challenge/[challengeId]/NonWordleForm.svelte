@@ -10,8 +10,6 @@
 	$: response = data.challenge?.responses[0]?.response ?? '';
 
 	let textInput: HTMLInputElement;
-
-	onMount(() => textInput?.focus());
 </script>
 
 <form class="flex flex-col justify-between grow sm:justify-start" method="POST" use:enhance>
@@ -39,6 +37,7 @@
 					name="answer"
 					value={response}
 					bind:this={textInput}
+					autofocus
 					class="text-green-700 border-2 border-green-700 rounded focus:border-green-700 focus:outline-none w-full p-2"
 				/>
 			{/key}
