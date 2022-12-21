@@ -5,6 +5,8 @@ import { dateToYYYYMMDD, urls } from '$lib/utils';
 import { redirect } from '@sveltejs/kit';
 import { filter, groupBy, pipe, prop } from 'ramda';
 
+const HIDDEN_USER_EMAILS = ['shbowles@gmail.com', 'susansbowles@gmail.com'];
+
 export const load: PageServerLoad = async ({ locals }) => {
 	const userId = locals.user?.id;
 	const now = new Date();
@@ -94,16 +96,14 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	const playersByGroup = groups.reduce(
 		(acc, cur) => {
-			const users = cur.users.map((u) => u.user);
-			// If the user is me, show all users, otherwise hide me
-			const usersFiltered =
-				locals?.user?.email === 'shbowles@gmail.com'
-					? users
-					: users.filter((u) => u.email !== 'shbowles@gmail.com');
-			return {
-				...acc,
-				[cur.name]: usersFiltered
-			};
+			// Show all users excluding hidden users if the user isn't an admin but include the current user
+			const users = cur.users
+				.map((u) => u.user)
+				.filter((u) => {
+					if (locals?.user?.isAdmin) return true;
+					return !HIDDEN_USER_EMAILS.includes(u.email) || u.id === locals?.user?.id;
+				});
+			return { ...acc, [cur.name]: users };
 		},
 		{} as {
 			[groupName: string]: {
