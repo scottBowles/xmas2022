@@ -62,8 +62,12 @@
 			<hr />
 		{/each}
 		<div class="my-4 flex justify-between">
-			<a href="/" class="nav-links">&larr; Back to Challenges</a>
-			<a href="/scoreboard" class="nav-links">Scoreboard &rarr;</a>
+			<a href="/" class="nav-links" data-sveltekit-preload-data="hover">
+				&larr; Back to Challenges</a
+			>
+			<a href="/scoreboard" class="nav-links" data-sveltekit-preload-data="hover">
+				Scoreboard &rarr;</a
+			>
 		</div>
 	{/if}
 </PageMargin>

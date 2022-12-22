@@ -19,7 +19,11 @@
 		<p>Challenge complete! Click below to review your answers.</p>
 		<h2 class="text-2xl mt-4 mb-1">{title}</h2>
 		<p class="mb-2">{@html instructions}</p>
-		<a href={reviewUrl} class="text-xl text-green-700 hover:underline">Click to Review</a>
+		<a
+			href={reviewUrl}
+			class="text-xl text-green-700 hover:underline"
+			data-sveltekit-preload-data="hover">Click to Review</a
+		>
 	{:else}
 		<h1 class="text-4xl mt-4 mb-1">Instructions</h1>
 		<p>Read the instructions with care and hit start when you are ready.</p>

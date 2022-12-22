@@ -35,6 +35,7 @@
 						<a
 							href={urls.challengeSet(challengeSet.id)}
 							class={`${status.class} text-blue-500 text-lg`}
+							data-sveltekit-preload-data="hover"
 						>
 							{challengeSet.title}
 							{status.text}
@@ -50,6 +51,7 @@
 						<a
 							href={urls.challengeSet(challengeSet.id)}
 							class={`${status.class} text-blue-500 text-lg`}
+							data-sveltekit-preload-data="hover"
 						>
 							{challengeSet.title}
 							{status.text}
@@ -73,6 +75,7 @@
 					<a
 						href={urls.challengeSet(challengeSet.id)}
 						class={`${status.class} text-blue-500 text-lg`}
+						data-sveltekit-preload-data="hover"
 					>
 						{challengeSet.title}
 						{status.text}

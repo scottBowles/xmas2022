@@ -7,11 +7,11 @@
 
 <div class="container" transition:slide>
 	<ul>
-		<a href="/"><li>Play!</li></a>
-		<a href="/scoreboard"><li>Scoreboard</li></a>
-		<a href="/settings"><li>Settings</li></a>
+		<a href="/" data-sveltekit-preload-data="hover"><li>Play!</li></a>
+		<a href="/scoreboard" data-sveltekit-preload-data="hover"><li>Scoreboard</li></a>
+		<a href="/settings" data-sveltekit-preload-data="hover"><li>Settings</li></a>
 		{#if isAdmin}
-			<a href="/admin"><li>Admin</li></a>
+			<a href="/admin" data-sveltekit-preload-data="hover"><li>Admin</li></a>
 		{/if}
 		<button on:click={logout}><li>Logout</li></button>
 	</ul>

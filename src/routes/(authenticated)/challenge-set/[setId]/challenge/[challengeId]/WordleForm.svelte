@@ -34,7 +34,13 @@
 {#if isComplete}
 	<hr />
 	<div class="my-4 flex justify-between">
-		<a href="/" class="text-christmasRed hover:underline">&larr; Back to Challenges</a>
-		<a href="/scoreboard" class="text-christmasRed hover:underline">Scoreboard &rarr;</a>
+		<a href="/" class="text-christmasRed hover:underline" data-sveltekit-preload-data="hover"
+			>&larr; Back to Challenges</a
+		>
+		<a
+			href="/scoreboard"
+			class="text-christmasRed hover:underline"
+			data-sveltekit-preload-data="hover">Scoreboard &rarr;</a
+		>
 	</div>
 {/if}

@@ -64,9 +64,7 @@
 			{#if form?.error && [LoginError.INVALID, SignupError.VALIDATION].includes(form.error)}
 				<p class="pt-4 text-christmasRed">Invalid email or password</p>
 			{:else if form?.error === SignupError.EMAIL_TAKEN}
-				<p class="pt-4 text-christmasRed">
-					Email already in use. <a href="/login">Login here.</a>
-				</p>
+				<p class="pt-4 text-christmasRed">Email already in use.</p>
 			{:else if form?.error === LoginError.EMAIL_MISSING}
 				<p class="pt-4 text-christmasRed">Email and password required.</p>
 			{:else if form?.error && [LoginError.UNKNOWN, SignupError.UNKNOWN].includes(form.error)}

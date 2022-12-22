@@ -10,7 +10,9 @@
 			<p class="mt-4">Well that's not great. If this was unexpected, let Scott know.</p>
 
 			<p class="mt-4">
-				<a href="/" class="text-green-700 hover:underline">Click here</a> to go to the home page.
+				<a href="/" class="text-green-700 hover:underline" data-sveltekit-preload-data="hover">
+					Click here
+				</a> to go to the home page.
 			</p>
 		</div>
 	</div>
