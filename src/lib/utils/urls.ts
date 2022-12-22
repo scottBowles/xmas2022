@@ -5,5 +5,7 @@ export default {
 	challengeSet: (id: number) => `/challenge-set/${id}`,
 	challengeSetResults: (id: number) => `/challenge-set/${id}/results`,
 	challengeSetReview: (id: number) => `/challenge-set/${id}/review`,
-	settings: () => '/settings'
+	settings: () => '/settings',
+	scoreboard: (groupName?: string, dayIdx?: number | 'total') =>
+		`/scoreboard/${groupName ? encodeURIComponent(groupName) + '/' : ''}${dayIdx ?? ''}`
 };
