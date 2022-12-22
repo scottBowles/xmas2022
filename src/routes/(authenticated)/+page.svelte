@@ -23,6 +23,8 @@
 <PageMargin>
 	<h1 class="text-4xl mt-4 mb-1">Welcome, {user.displayName}!</h1>
 
+	<h2 class="text-2xl mt-4 mb-1 text-green-700">Good luck on the final day!</h2>
+
 	<div class="flex flex-col">
 		{#if currentChallengeSets?.length > 0 || pastChallengeSets?.length > 0}
 			<h2 class="text-2xl mt-4 mb-1">Today's Challenges</h2>

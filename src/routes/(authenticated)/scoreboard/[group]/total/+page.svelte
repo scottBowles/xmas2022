@@ -21,6 +21,11 @@
 <!-- CHALLENGE DAY NAVIGATION -->
 <DayNavigation {group} {days} dayShown="total" />
 
+<div class="flex flex-col items-center mt-8">
+	<h1 class="text-4xl text-green-700">Merry Christmas!</h1>
+	<h3 class="text-2xl text-christmasRed">Thanks for playing!</h3>
+</div>
+
 <!-- GROUP SELECT -->
 <GroupSelect {groupNames} {onGroupChange} />
 
