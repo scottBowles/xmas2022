@@ -4,6 +4,7 @@
 	import { clickOutside } from '$lib/actions.js';
 	import DropdownMenu from '$lib/components/DropdownMenu.svelte';
 	import { menu } from '$lib/stores';
+	import type { JwtUser } from '$lib/utils/types';
 
 	export let user: JwtUser | null;
 

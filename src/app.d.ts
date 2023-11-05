@@ -6,16 +6,14 @@ declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
-			user: {
-				id: number;
-				email: string;
-				displayName: string;
-				isAdmin: boolean;
-			} | null;
+			user: JwtUser | null;
 		}
 		// interface PageData {}
 		// interface Platform {}
 	}
+
+	// keep JwtUser in sync with src/lib/utils/types.ts so it can be used
+	// in svelte components
 	interface JwtUser {
 		id: number;
 		email: string;
