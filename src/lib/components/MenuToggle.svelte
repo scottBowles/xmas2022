@@ -3,9 +3,16 @@
 
 	export let size = 25;
 	export let menuIsOpen: MenuStore;
+	export let handleKeydown: (e: KeyboardEvent) => void;
 </script>
 
-<button class="menu" class:opened={$menuIsOpen} on:click={menuIsOpen.toggle} aria-label="Main Menu">
+<button
+	class="menu"
+	class:opened={$menuIsOpen}
+	on:click={menuIsOpen.toggle}
+	on:keydown={handleKeydown}
+	aria-label="Main Menu"
+>
 	<svg width={size} height={size} viewBox="0 0 100 100">
 		<path
 			class="line line1"
@@ -32,7 +39,8 @@
 		fill: none;
 		stroke: white;
 		stroke-width: 6;
-		transition: stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
+		transition:
+			stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
 			stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1);
 	}
 	.line1 {

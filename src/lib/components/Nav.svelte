@@ -18,13 +18,12 @@
 <nav
 	class:loggedOut={!user}
 	use:clickOutside={handleOutsideClick}
-	on:keydown={handleKeydown}
 	transition:slide={{ duration: 500 }}
 	class="text-lg"
 >
 	Christmas Trivia 2022
 	{#if user}
-		<MenuToggle {menuIsOpen} />
+		<MenuToggle {handleKeydown} {menuIsOpen} />
 	{/if}
 </nav>
 
