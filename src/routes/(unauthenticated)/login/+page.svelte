@@ -75,13 +75,14 @@
 				<GoogleButton {onGoogleError} />
 			</div>
 
-			<p
+			<button
 				on:click={toggleMode}
 				on:keyup={toggleMode}
 				class="text-green-700 pt-4 cursor-pointer hover:underline"
+				type="button"
 			>
 				{toggleMessage}
-			</p>
+			</button>
 		</form>
 		<div>{googleError}</div>
 	</section>
