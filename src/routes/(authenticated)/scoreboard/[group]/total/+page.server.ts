@@ -53,7 +53,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		})
 	]);
 
-	const playerFilter = (player: typeof users[number]) => {
+	const playerFilter = (player: (typeof users)[number]) => {
 		if (locals?.user?.isAdmin) return true;
 		return !HIDDEN_USER_EMAILS.includes(player.email) || player.id === locals?.user?.id;
 	};
@@ -82,7 +82,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 
 	const groupNames = groups.map((g) => g.name);
 
-	const groupByDate = groupBy((set: typeof allChallengeSets[number]) => {
+	const groupByDate = groupBy((set: (typeof allChallengeSets)[number]) => {
 		if (!set.timeAvailableStart) return 'Invalid Date';
 		const date = new Date(set.timeAvailableStart);
 		if (isNaN(date.getTime())) return 'Invalid Date';

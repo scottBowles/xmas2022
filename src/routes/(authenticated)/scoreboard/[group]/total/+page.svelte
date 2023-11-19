@@ -12,8 +12,8 @@
 
 	$: ({ userTotals, group, groupNames, days } = data);
 
-	const onGroupChange = (e: any) => {
-		const groupName = e.target.value;
+	const onGroupChange = (e: Event) => {
+		const groupName = (e.target as HTMLSelectElement).value;
 		goto(urls.scoreboard(groupName, 'total'));
 	};
 </script>

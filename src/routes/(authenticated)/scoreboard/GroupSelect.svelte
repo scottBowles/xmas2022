@@ -2,7 +2,7 @@
 	import { urls } from '$lib/utils';
 	import { isEmpty } from 'ramda';
 
-	export let onGroupChange: (e: any) => void;
+	export let onGroupChange: (e: Event) => void;
 	export let groupNames: string[];
 </script>
 
