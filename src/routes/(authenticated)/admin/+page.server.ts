@@ -8,7 +8,7 @@ export const load: PageServerLoad = async ({ parent }) => {
 	const { user } = await parent();
 
 	if (!user.isAdmin) {
-		return error(403, 'Forbidden');
+		throw error(403, 'Forbidden');
 	}
 
 	const users = await prisma.user.findMany();
