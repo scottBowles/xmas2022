@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import prisma from '$lib/prisma';
 import { urls } from '$lib/utils';
 import { Prisma } from '@prisma/client';
@@ -26,7 +27,9 @@ const baseResponse = {
 	createGroupGroupname: null,
 	joinGroupSuccess: null,
 	joinGroupError: null,
-	joinGroupGroupname: null
+	joinGroupGroupname: null,
+	changePasswordSuccess: null,
+	changePasswordError: null
 };
 
 export const actions: Actions = {
@@ -61,6 +64,32 @@ export const actions: Actions = {
 			}
 		}
 		return { ...baseResponse, changeUsernameSuccess: true, changeUsernameUsername: username };
+	},
+	changePassword: async ({ request, locals }) => {
+		const data = await request.formData();
+		const oldPassword = data.get('oldPassword')?.toString();
+		const newPassword = data.get('newPassword')?.toString();
+		const newPasswordConfirm = data.get('newPasswordConfirm')?.toString();
+		const userId = locals.user?.id;
+		const missingInput = !oldPassword || !newPassword || !newPasswordConfirm;
+		const passwordsMatch = newPassword === newPasswordConfirm;
+
+		const errorData = (error: string) => ({ ...baseResponse, changePasswordError: error });
+
+		if (!userId) throw redirect(302, urls.login());
+		if (missingInput) return fail(400, errorData('All fields are required'));
+		if (!passwordsMatch) return fail(400, errorData('Passwords do not match'));
+		const user = await prisma.user.findUnique({ where: { id: userId } });
+		if (!user) return fail(400, errorData('User not found'));
+		if (!user.password) return fail(400, errorData('User does not have a password'));
+		const passwordIsValid = await bcrypt.compare(oldPassword, user.password);
+		if (!passwordIsValid) return fail(400, errorData('Incorrect old password'));
+
+		// update the user's password
+		const hashedPassword = await bcrypt.hash(newPassword, 10);
+		await prisma.user.update({ where: { id: userId }, data: { password: hashedPassword } });
+
+		return { ...baseResponse, changePasswordSuccess: true };
 	},
 	createGroup: async ({ request, locals }) => {
 		const data = await request.formData();
