@@ -1,13 +1,13 @@
-enum LoginError {
-	EMAIL_MISSING,
-	INVALID,
-	UNKNOWN
-}
+const LoginError = {
+	EMAIL_MISSING: 'LOGIN_ERROR_EMAIL_MISSING',
+	INVALID: 'LOGIN_ERROR_INVALID',
+	UNKNOWN: 'LOGIN_ERROR_UNKNOWN'
+} as const;
 
-enum SignupError {
-	EMAIL_TAKEN,
-	VALIDATION,
-	UNKNOWN
-}
+const SignupError = {
+	EMAIL_TAKEN: 'SIGNUP_ERROR_EMAIL_TAKEN',
+	VALIDATION: 'SIGNUP_ERROR_VALIDATION',
+	UNKNOWN: 'SIGNUP_ERROR_UNKNOWN'
+} as const;
 
 export { LoginError, SignupError };
