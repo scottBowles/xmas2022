@@ -6,5 +6,14 @@
 	export let data: LayoutData;
 </script>
 
-<Nav user={data.user} />
-<slot />
+<div class="whole-shebang">
+	<Nav user={data.user} />
+	<slot />
+</div>
+
+<style>
+	.whole-shebang {
+		height: 100vh;
+		position: relative;
+	}
+</style>
