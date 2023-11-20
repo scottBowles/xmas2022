@@ -1,19 +1,18 @@
 <script lang="ts">
 	import '../app.css';
 	import Nav from '$lib/components/Nav.svelte';
-	import type { LayoutData } from './$types';
 
-	export let data: LayoutData;
+	export let data;
 </script>
 
-<div class="whole-shebang">
-	<Nav user={data.user} />
+<Nav user={data.user} />
+
+<main>
 	<slot />
-</div>
+</main>
 
 <style>
-	.whole-shebang {
-		height: 100vh;
-		position: relative;
+	main {
+		width: 100vw;
 	}
 </style>
