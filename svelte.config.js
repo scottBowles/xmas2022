@@ -8,7 +8,11 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-		adapter: adapter()
+		adapter: adapter(),
+		serviceWorker: {
+			// "You will need to exclude the service worker registration from the SvelteKit configuration if you're using any pwa virtual module (virtual:pwa-register or virtual:pwa-register/svelte)" --https://vite-pwa-org.netlify.app/frameworks/sveltekit.html
+			register: false
+		}
 	},
 
 	vitePlugin: {
