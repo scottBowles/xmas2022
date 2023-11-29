@@ -114,9 +114,9 @@
 </PageMargin>
 
 <style>
-	.days {
+	/* .days {
 		top: var(--nav-height);
-	}
+	} */
 
 	/* table,
     .no-challenges {
@@ -130,8 +130,8 @@
 		vertical-align: middle;
 	}
 
-	.loader {
+	/* .loader {
 		top: calc(var(--nav-height));
 		height: 2px;
-	}
+	} */
 </style>
