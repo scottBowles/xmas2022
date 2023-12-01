@@ -61,6 +61,7 @@ enum ChallengeType {
   OPEN_RESPONSE
   MULTIPLE_CHOICE
   WORDLE
+  WORDLE_2023
 }
 
 model Challenge {

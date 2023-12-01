@@ -54,12 +54,13 @@ const helper = (guess: CharValue[], solution: string) => {
 export function createGuessStore(
 	gameStateStore: ReturnType<typeof createGameStateStore>,
 	solution: string,
-	key: string
+	key: string,
+	guesses?: string[]
 ) {
 	//* initialize
 	let init: Guess[] = [];
-	if (browser) {
-		const loaded = loadGameFromLocalStorage(key);
+	if (browser || guesses) {
+		const loaded = guesses ? { solution, guesses } : loadGameFromLocalStorage(key);
 		if (loaded?.solution === solution) {
 			const isGameWon = loaded.guesses.includes(solution);
 			if (isGameWon) {

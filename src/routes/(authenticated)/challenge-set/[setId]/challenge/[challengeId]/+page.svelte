@@ -23,7 +23,7 @@
 
 		<InstructionsToggle {instructions} />
 
-		{#if challenge.type === 'WORDLE'}
+		{#if ['WORDLE', 'WORDLE_2023'].includes(challenge.type)}
 			<WordleForm {data} />
 		{:else if ['MULTIPLE_CHOICE', 'OPEN_RESPONSE'].includes(challenge.type)}
 			<NonWordleForm {data} />

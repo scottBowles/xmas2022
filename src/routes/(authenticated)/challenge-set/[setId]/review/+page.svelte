@@ -1,7 +1,10 @@
 <script lang="ts">
 	import PageMargin from '$lib/components/PageMargin.svelte';
-	import { capitalize, formatDuration } from '$lib/utils';
+	import { formatDuration } from '$lib/utils';
 	import type { PageData } from './$types';
+	import NonWordleReview from './NonWordleReview.svelte';
+	import Wordle2022Review from './Wordle2022Review.svelte';
+	import Wordle2023Review from './Wordle2023Review.svelte';
 
 	export let data: PageData;
 
@@ -24,41 +27,15 @@
 			{#if challenge.title}
 				<h2 class="text-2xl mt-4 mb-1">{challenge.title}</h2>
 			{/if}
-			<form>
-				<fieldset disabled>
-					<p class="mb-3 text-lg">{@html challenge.prompt}</p>
-					{#if challenge.options.length > 0}
-						{#each challenge.options as option}
-							<label class="flex-auto block">
-								<input
-									type="radio"
-									name={challenge.title}
-									value={option.text}
-									checked={challenge.response === option.text}
-									class="mr-1 md:mr-2"
-								/>
-								{option.text}
-							</label>
-						{/each}
-					{:else}
-						<input type="text" value={challenge.response ?? ''} class="border rounded px-2" />
-					{/if}
-				</fieldset>
-				<p class="my-2">
-					Correct Answer: {capitalize(
-						challenge.correctAnswer ||
-							'No correct answer (something went wrong here better tell Scott)'
-					)}
-				</p>
-				<p class="my-2">
-					{challenge.responseIsCorrect ? challenge.points : 0} / {challenge.points} points
-				</p>
-				{#if challenge.responseIsCorrect}
-					<p class="mb-4 text-lg text-green-700 italic">Correct!</p>
-				{:else}
-					<p class="incorrect mb-4 text-lg italic">Incorrect!</p>
-				{/if}
-			</form>
+			{#if challenge.type === 'WORDLE'}
+				<Wordle2022Review {challenge} />
+			{:else if challenge.type === 'WORDLE_2023'}
+				<Wordle2023Review {challenge} storageKey={`${challengeSet.id}|${challenge.id}`} />
+			{:else if ['MULTIPLE_CHOICE', 'OPEN_RESPONSE'].includes(challenge.type)}
+				<NonWordleReview {challenge} />
+			{:else}
+				<p>Loading Challenge...</p>
+			{/if}
 			<hr />
 		{/each}
 		<div class="my-4 flex justify-between">
@@ -73,10 +50,6 @@
 </PageMargin>
 
 <style>
-	.incorrect {
-		color: var(--red);
-	}
-
 	.nav-links {
 		color: var(--red);
 	}
