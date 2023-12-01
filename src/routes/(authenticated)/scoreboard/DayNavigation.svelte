@@ -6,6 +6,10 @@
 	export let dayShown: string;
 </script>
 
+<div class="flex justify-center text-2xl text-green-700 mb-4">Under Development</div>
+<div class="flex justify-center text-xl text-green-700 mb-4">
+	This is currently last year's scoreboard
+</div>
 <div class="days flex justify-evenly w-full h-10">
 	{#each days as day, idx}
 		<a

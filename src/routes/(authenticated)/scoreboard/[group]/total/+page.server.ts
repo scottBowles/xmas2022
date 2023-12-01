@@ -27,7 +27,10 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 				challengeSetResponses: {
 					where: {
 						startedAt: { not: null },
-						completedAt: { not: null }
+						// select ones that are completed and were completed before 02/01/2023
+						// this is temporary until we have separate scoreboards for each year
+						// completedAt: { not: null }
+						completedAt: { not: null, lt: new Date('2023-02-01') }
 					},
 					select: {
 						points: true,
@@ -94,11 +97,14 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		groupByDate
 	)(allChallengeSets);
 
-	const days = Object.keys(challengeSetsByDate).sort((a, b) => {
-		if (a === 'Invalid Date') return 1;
-		if (b === 'Invalid Date') return -1;
-		return a > b ? 1 : -1;
-	});
+	const days = Object.keys(challengeSetsByDate)
+		.sort((a, b) => {
+			if (a === 'Invalid Date') return 1;
+			if (b === 'Invalid Date') return -1;
+			return a > b ? 1 : -1;
+		})
+		// filter out dates that are invalid or before 02/01/2023 just for now
+		.filter((d) => d === 'Invalid Date' || new Date(d) < new Date('2023-02-01'));
 
 	return { userTotals, group, groupNames, days };
 };
