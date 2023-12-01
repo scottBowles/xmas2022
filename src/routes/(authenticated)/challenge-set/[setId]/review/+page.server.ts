@@ -29,7 +29,8 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 				orderBy: { id: 'asc' }
 			},
 			title: true,
-			timeAvailableStart: true
+			timeAvailableStart: true,
+			id: true
 		}
 	});
 
@@ -49,7 +50,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 	if (!challengeSetCanBeReviewed) throw error(404, 'Challenge set not found');
 
 	return {
-		challengeSet: pickAll(['title', 'timeAvailableStart'], challengeSet),
+		challengeSet: pickAll(['title', 'timeAvailableStart', 'id'], challengeSet),
 		challenges,
 		timeTaken: timeTaken(challengeSetResponse),
 		points: challengeSetResponse.points
