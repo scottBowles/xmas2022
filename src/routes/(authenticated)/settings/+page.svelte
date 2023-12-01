@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import PageMargin from '$lib/components/PageMargin.svelte';
-	import type { PageData, ActionData } from './$types';
 
-	export let data: PageData;
-	export let form: ActionData;
+	export let data;
+	export let form;
 </script>
 
 <PageMargin>
@@ -35,6 +34,48 @@
 			{/if}
 			{#if form?.changeUsernameSuccess}
 				<p class="text-green-700">Username updated</p>
+			{/if}
+		</form>
+
+		<form
+			method="POST"
+			action="?/changePassword"
+			class="flex flex-col items-center w-96 mb-8 max-w-full"
+			use:enhance
+		>
+			<fieldset class="flex flex-col items-center w-full">
+				<legend class="text-4xl mb-3 text-green-700">Change Password</legend>
+				<input
+					name="oldPassword"
+					type="password"
+					placeholder="Old Password"
+					required
+					class="w-full m-1 p-2 text-green-700 border border-green-700 rounded"
+				/>
+				<input
+					name="newPassword"
+					type="password"
+					placeholder="New Password"
+					required
+					class="w-full m-1 p-2 text-green-700 border border-green-700 rounded"
+				/>
+				<input
+					name="newPasswordConfirm"
+					type="password"
+					placeholder="Confirm New Password"
+					required
+					class="w-full m-1 p-2 text-green-700 border border-green-700 rounded"
+				/>
+				<input
+					type="submit"
+					class="w-full m-1 p-2 border rounded bg-green-700 text-white text-lg cursor-pointer hover:bg-green-800"
+				/>
+			</fieldset>
+			{#if form?.changePasswordError}
+				<p class="text-red-700">{form.changePasswordError}</p>
+			{/if}
+			{#if form?.changePasswordSuccess}
+				<p class="text-green-700">Password updated</p>
 			{/if}
 		</form>
 

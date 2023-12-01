@@ -115,12 +115,12 @@ export const actions: Actions = {
 			});
 
 			// redirect to the review page if not a wordle challenge
-			if (challenge.type !== 'WORDLE') {
+			if (['OPEN_RESPONSE', 'MULTIPLE_CHOICE'].includes(challenge.type)) {
 				throw redirect(302, urls.challengeSetReview(setId));
 			}
 		}
 
-		if (challenge.type !== 'WORDLE') {
+		if (['OPEN_RESPONSE', 'MULTIPLE_CHOICE'].includes(challenge.type)) {
 			throw redirect(302, nextChallengeUrl(challengeSet, challengeId));
 		}
 	}

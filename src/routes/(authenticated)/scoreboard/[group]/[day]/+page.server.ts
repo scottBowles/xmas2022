@@ -77,12 +77,12 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		{} as { [playerId: number]: { [challengeSetId: number]: PlayerStats } }
 	);
 
-	const playerFilter = (player: typeof users[number]) => {
+	const playerFilter = (player: (typeof users)[number]) => {
 		if (locals?.user?.isAdmin) return true;
 		return !HIDDEN_USER_EMAILS.includes(player.email) || player.id === locals?.user?.id;
 	};
 
-	const groupByDate = groupBy((set: typeof allChallengeSets[number]) => {
+	const groupByDate = groupBy((set: (typeof allChallengeSets)[number]) => {
 		if (!set.timeAvailableStart) return 'Invalid Date';
 		const date = new Date(set.timeAvailableStart);
 		if (isNaN(date.getTime())) return 'Invalid Date';
@@ -106,7 +106,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 
 	const challengeSets = sort(descend(numScoreboardStats), challengeSetsByDate[dayShown] ?? []);
 
-	const getDayShownScore = (player: typeof users[number]) =>
+	const getDayShownScore = (player: (typeof users)[number]) =>
 		challengeSets.reduce((acc, cur) => acc + (playerScores[player.id]?.[cur.id]?.points ?? 0), 0);
 
 	const players: {

@@ -29,6 +29,7 @@ type NextChallengeUrl = <
 type NumScoreboardStats = <T extends { isTimed: boolean; isScored: boolean }>(
 	challenge: T
 ) => number;
+type YearFn = WithMinimumInput<{ timeAvailableStart: Date | null }, string>;
 
 /**
  * CHALLENGE SET COMPUTED PROPERTIES
@@ -74,6 +75,11 @@ const nextChallengeUrl: NextChallengeUrl = (challengeSet, lastChallengeId) =>
 const numScoreboardStats: NumScoreboardStats = ({ isTimed, isScored }) =>
 	sum([isTimed, isScored].map((a) => (a ? 1 : 0)));
 
+const year: YearFn = (challengeSet) => {
+	if (!challengeSet.timeAvailableStart) return 'Unknown';
+	return new Date(challengeSet.timeAvailableStart).getFullYear().toString();
+};
+
 /**
  * ADD FUNCTIONS
  * Functions to add computed properties to ChallengeSet objects.
@@ -87,6 +93,7 @@ const addResultsUrl = addKey('resultsUrl', resultsUrl);
 const addUserResponseExists = addKey('userResponseExists', userResponseExists);
 const addNextChallenge = addKey('nextChallenge', nextChallenge);
 const addNextChallengeUrl = addKey('nextChallengeUrl', nextChallengeUrl);
+const addYear = addKey('year', year);
 
 export {
 	isAvailable,
@@ -103,5 +110,7 @@ export {
 	addNextChallenge,
 	nextChallengeUrl,
 	addNextChallengeUrl,
-	numScoreboardStats
+	numScoreboardStats,
+	year,
+	addYear
 };

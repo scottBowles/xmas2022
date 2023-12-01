@@ -4,6 +4,8 @@
 	import Wordle from '$lib/wordle/Wordle.svelte';
 	import { NEXT_INPUT_VALUE, SUBMIT_INPUT_VALUE } from './constants';
 	import type { ActionResult } from '@sveltejs/kit';
+	import { urls } from '$lib/utils';
+	import { goto } from '$app/navigation';
 
 	export let data: PageData;
 
@@ -11,9 +13,15 @@
 
 	let isComplete = false;
 
-	const onCompletion = async (numGuesses: number | null) => {
+	$: if (isComplete) {
+		setTimeout(() => {
+			goto(urls.challengeSetReview(challengeSet.id), { replaceState: true });
+		}, 3000);
+	}
+
+	const onCompletion = async (guessesString: string) => {
 		const formData = new FormData();
-		formData.append('answer', numGuesses?.toString() || '');
+		formData.append('answer', guessesString);
 		formData.append('submit_action', challenge.isLast ? SUBMIT_INPUT_VALUE : NEXT_INPUT_VALUE);
 		const response = await fetch(`/challenge-set/${challengeSet.id}/challenge/${challenge.id}`, {
 			method: 'POST',

@@ -28,6 +28,17 @@
 			toggleMessage: 'Have an account? Login here.'
 		}
 	}[mode]);
+
+	$: errorMessage =
+		form?.error &&
+		{
+			[LoginError.INVALID]: 'Invalid email or password',
+			[SignupError.VALIDATION]: 'Invalid email or password',
+			[SignupError.EMAIL_TAKEN]: 'Email already in use.',
+			[LoginError.EMAIL_MISSING]: 'Email and password required.',
+			[LoginError.UNKNOWN]: 'Unknown error',
+			[SignupError.UNKNOWN]: 'Unknown error'
+		}[form.error];
 </script>
 
 <svelte:head>
@@ -61,27 +72,20 @@
 				class="w-64 m-1 p-2 border rounded bg-green-700 text-white text-lg cursor-pointer hover:bg-green-800"
 			/>
 
-			{#if form?.error && [LoginError.INVALID, SignupError.VALIDATION].includes(form.error)}
-				<p class="pt-4 text-christmasRed">Invalid email or password</p>
-			{:else if form?.error === SignupError.EMAIL_TAKEN}
-				<p class="pt-4 text-christmasRed">Email already in use.</p>
-			{:else if form?.error === LoginError.EMAIL_MISSING}
-				<p class="pt-4 text-christmasRed">Email and password required.</p>
-			{:else if form?.error && [LoginError.UNKNOWN, SignupError.UNKNOWN].includes(form.error)}
-				<p class="pt-4 text-christmasRed">Unknown error</p>
+			{#if errorMessage}
+				<p class="pt-4 text-christmasRed">{errorMessage}</p>
 			{/if}
 
-			<div class="pt-4">
-				<GoogleButton {onGoogleError} />
-			</div>
+			<div class="pt-4"><GoogleButton {onGoogleError} /></div>
 
-			<p
+			<button
 				on:click={toggleMode}
 				on:keyup={toggleMode}
 				class="text-green-700 pt-4 cursor-pointer hover:underline"
+				type="button"
 			>
 				{toggleMessage}
-			</p>
+			</button>
 		</form>
 		<div>{googleError}</div>
 	</section>

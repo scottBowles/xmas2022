@@ -1,4 +1,5 @@
 import { addKey } from '$lib/utils';
+import type { Challenge } from '@prisma/client';
 
 type IsLastMinimalInput = { challenges: { id: number }[] };
 type IsLast = <T extends IsLastMinimalInput>(
@@ -33,16 +34,11 @@ type CorrectAnswers = <T extends CorrectAnswersMinimalInput>(challenge: T) => st
 
 type ResponseIsCorrect = <T extends CorrectAnswersMinimalInput>(challenge: T) => boolean;
 
-type ScoreNonWordleMinimalInput = CorrectAnswersMinimalInput & { points: number };
-type ScoreNonWordle = <T extends ScoreNonWordleMinimalInput>(challenge: T) => number;
-
-type ScoreWordleMinimalInput = { responses: { response: string }[] };
-type ScoreWordle = <T extends ScoreWordleMinimalInput>(challenge: T) => number;
-
-type ScoreChallengeMinimalInput = ScoreNonWordleMinimalInput &
-	ScoreWordleMinimalInput & { type: string };
+type ScoreChallengeMinimalInput = CorrectAnswersMinimalInput & {
+	points: number;
+	type: Challenge['type'];
+};
 type ScoreChallenge = <T extends ScoreChallengeMinimalInput>(challenge: T) => number;
-
 type ScoreChallenges = <T extends ScoreChallengeMinimalInput>(challenges: T[]) => number;
 
 // remove all characters that are not letters or numbers and convert to lowercase
@@ -77,14 +73,53 @@ const responseIsCorrect: ResponseIsCorrect = (challenge) =>
 		(answer) => normalize(answer) === normalize(response(challenge))
 	);
 
-const scoreWordle: ScoreWordle = (challenge) =>
-	({ '1': 15, '2': 10, '3': 8, '4': 6, '5': 4, '6': 2 }[response(challenge)] || 0);
+const score2022Wordle: ScoreChallenge = (challenge) => {
+	const numberOfGuesses = response(challenge);
+	const pointsForNumberOfGuesses = {
+		'1': 15,
+		'2': 10,
+		'3': 8,
+		'4': 6,
+		'5': 4,
+		'6': 2
+	} as Record<string, number>;
+	const points = pointsForNumberOfGuesses[numberOfGuesses] || 0;
+	return points;
+};
 
-const scoreNonWordle: ScoreNonWordle = (challenge) =>
+const score2023Wordle: ScoreChallenge = (challenge) => {
+	const givenResponse = response(challenge);
+	const answer = correctAnswerFromAcceptedResponses(challenge);
+	if (!givenResponse || !answer) return 0;
+
+	const guesses = givenResponse.split(',');
+	const numberOfGuesses = (guesses.indexOf(answer) + 1).toString();
+	const pointsForNumberOfGuesses = {
+		'1': 10,
+		'2': 8,
+		'3': 6,
+		'4': 4,
+		'5': 2,
+		'6': 1
+	} as Record<string, number>;
+	const points = pointsForNumberOfGuesses[numberOfGuesses] || 0;
+	return points;
+};
+
+const scoreNonWordle: ScoreChallenge = (challenge) =>
 	responseIsCorrect(challenge) ? challenge.points : 0;
 
-const scoreChallenge: ScoreChallenge = (challenge) =>
-	challenge.type === 'WORDLE' ? scoreWordle(challenge) : scoreNonWordle(challenge);
+const scoreChallenge: ScoreChallenge = (challenge) => {
+	switch (challenge.type) {
+		case 'WORDLE':
+			return score2022Wordle(challenge);
+		case 'WORDLE_2023':
+			return score2023Wordle(challenge);
+		case 'MULTIPLE_CHOICE':
+		case 'OPEN_RESPONSE':
+			return scoreNonWordle(challenge);
+	}
+};
 
 const scoreChallenges: ScoreChallenges = (challenges) =>
 	challenges.reduce((acc, challenge) => acc + scoreChallenge(challenge), 0);
@@ -102,7 +137,7 @@ export {
 	correctAnswer,
 	response,
 	responseIsCorrect,
-	scoreWordle,
+	score2022Wordle as scoreWordle,
 	scoreNonWordle,
 	scoreChallenge,
 	scoreChallenges,

@@ -30,7 +30,7 @@
 
 	export let solution: string;
 	export let storageKey: string;
-	export let onCompletion: (numGuesses: number | null) => void;
+	export let onCompletion: (guessesString: string) => void;
 
 	const stores = gameStores.getOrInit(storageKey, solution);
 	const { guessStore, gameStateStore } = stores;
@@ -43,6 +43,9 @@
 	let currentGuess: CharValue[] = [];
 	const RESPONSE_TIMEOUT = KEYBOARD_DELAY + CELL_ANIMATION_DURATION;
 
+	const getGuessesString = (store: typeof $guessStore) =>
+		store.map((g) => g.guess.join('')).join(',');
+
 	// const guessStore = createGuessStore(solution);
 
 	// consider moving into onMount function
@@ -52,10 +55,10 @@
 			dismissible: false,
 			message: WIN_MESSAGES[$guessStore.length - 1],
 			id: 'wintoast',
-			timeout: 2000
+			timeout: 3000
 		});
-		setTimeout(() => statsModalState.set(true), 2000);
-		onCompletion($guessStore.length);
+		setTimeout(() => statsModalState.set(true), 3000);
+		onCompletion(getGuessesString($guessStore));
 	}
 	// GAME LOST
 	$: if ($gameStateStore.gameLost) {
@@ -64,10 +67,10 @@
 			message: CORRECT_WORD_MSG(solution),
 			type: 'error',
 			id: 'losetoast',
-			timeout: 2000
+			timeout: 3000
 		});
-		setTimeout(() => statsModalState.set(true), 2000);
-		onCompletion(null);
+		setTimeout(() => statsModalState.set(true), 3000);
+		onCompletion(getGuessesString($guessStore));
 	}
 	$: if (browser) {
 		saveGameToLocalStorage(storageKey, {

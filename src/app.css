@@ -12,5 +12,7 @@ html {
   
   body {
     font-family: "Jost", sans-serif !important;
+    height: 100vh;
+		position: relative;
   }
   

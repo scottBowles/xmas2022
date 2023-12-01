@@ -4,6 +4,7 @@
 	import { clickOutside } from '$lib/actions.js';
 	import DropdownMenu from '$lib/components/DropdownMenu.svelte';
 	import { menu } from '$lib/stores';
+	import type { JwtUser } from '$lib/utils/types';
 
 	export let user: JwtUser | null;
 
@@ -18,13 +19,12 @@
 <nav
 	class:loggedOut={!user}
 	use:clickOutside={handleOutsideClick}
-	on:keydown={handleKeydown}
 	transition:slide={{ duration: 500 }}
 	class="text-lg"
 >
-	Christmas Trivia 2022
+	Christmas Trivia 2023
 	{#if user}
-		<MenuToggle {menuIsOpen} />
+		<MenuToggle {handleKeydown} {menuIsOpen} />
 	{/if}
 </nav>
 

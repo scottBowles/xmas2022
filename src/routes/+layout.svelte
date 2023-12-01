@@ -1,10 +1,22 @@
 <script lang="ts">
 	import '../app.css';
 	import Nav from '$lib/components/Nav.svelte';
-	import type { LayoutData } from './$types';
 
-	export let data: LayoutData;
+	export let data;
 </script>
 
+<svelte:head>
+	<title>Aunt Susan's Christmas</title>
+</svelte:head>
+
 <Nav user={data.user} />
-<slot />
+
+<main>
+	<slot />
+</main>
+
+<style>
+	main {
+		width: 100vw;
+	}
+</style>
