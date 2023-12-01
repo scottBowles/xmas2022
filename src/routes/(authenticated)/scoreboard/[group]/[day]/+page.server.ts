@@ -96,11 +96,14 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 
 	const groupNames = groups.map((g) => g.name);
 
-	const days = Object.keys(challengeSetsByDate).sort((a, b) => {
-		if (a === 'Invalid Date') return 1;
-		if (b === 'Invalid Date') return -1;
-		return a > b ? 1 : -1;
-	});
+	const days = Object.keys(challengeSetsByDate)
+		.sort((a, b) => {
+			if (a === 'Invalid Date') return 1;
+			if (b === 'Invalid Date') return -1;
+			return a > b ? 1 : -1;
+		})
+		// filter out dates that are invalid or before 02/01/2023 just for now
+		.filter((d) => d === 'Invalid Date' || new Date(d) < new Date('2023-02-01'));
 
 	const dayShown = days[day ? parseInt(day, 10) : 0];
 
