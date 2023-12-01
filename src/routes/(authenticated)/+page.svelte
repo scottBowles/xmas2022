@@ -2,6 +2,9 @@
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { urls } from '$lib/utils';
 	import type { PageData } from './$types';
+	import * as R from 'ramda';
+	import * as CS from '$lib/prisma/models/challengeSet';
+	import PastYearsChallengeSet from '$lib/components/PastYearsChallengeSet.svelte';
 
 	export let data: PageData;
 
@@ -14,6 +17,14 @@
 		if (startedAt) return { class: 'font-bold', text: '(Started)' };
 		return { class: '', text: '' };
 	}
+
+	$: groupedPastChallengeSets = R.groupBy(CS.year, pastChallengeSets);
+	const currentYear = new Date().getFullYear();
+	$: thisYearsPastChallengeSets = groupedPastChallengeSets[currentYear] ?? [];
+	$: pastYearsChallengeSets = R.omit([currentYear.toString()], groupedPastChallengeSets) as Record<
+		string,
+		PageData['pastChallengeSets']
+	>;
 </script>
 
 <svelte:head>
@@ -45,9 +56,9 @@
 					</span>
 				{/each}
 			{/if}
-			{#if pastChallengeSets.length > 0}
+			{#if thisYearsPastChallengeSets.length > 0}
 				<h2 class="text-2xl mt-16 mb-1">Past Challenges</h2>
-				{#each pastChallengeSets as challengeSet (challengeSet.id)}
+				{#each thisYearsPastChallengeSets as challengeSet (challengeSet.id)}
 					{@const status = getStatus(challengeSet)}
 					<span class="mt-3 mb-1">
 						<a
@@ -61,6 +72,13 @@
 					</span>
 				{/each}
 			{/if}
+			{#if pastYearsChallengeSets && R.keys(pastYearsChallengeSets).length > 0}
+				<h2 class="text-2xl mt-32 mb-1">Past Years</h2>
+				{#each R.toPairs(pastYearsChallengeSets) as [year, challengeSets]}
+					<PastYearsChallengeSet {year} {challengeSets} />
+				{/each}
+			{/if}
+
 			<!-- <p class="text-lg mt-3 mb-1">
 	Check out the <a href={"/scoreboard/"} class="text-lg text-blue-500">scoreboard</a>?
 	</p> -->
