@@ -22,7 +22,7 @@
 	transition:slide={{ duration: 500 }}
 	class="text-lg"
 >
-	Christmas Trivia 2022
+	Christmas Trivia 2023
 	{#if user}
 		<MenuToggle {handleKeydown} {menuIsOpen} />
 	{/if}
