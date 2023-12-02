@@ -4,8 +4,7 @@ import { HIDDEN_USER_EMAILS } from '../../../utils';
 
 export const load = async ({ locals, params, parent }) => {
 	const { day } = params;
-	const { playerScores, groupNames, group, years, year, days, users, challengeSetsByDate } =
-		await parent();
+	const { playerScores, days, users, challengeSetsByDate } = await parent();
 
 	const playerFilter = (player: (typeof users)[number]) => {
 		if (locals?.user?.isAdmin) return true;
@@ -43,15 +42,5 @@ export const load = async ({ locals, params, parent }) => {
 		})
 		.map(pick(['id', 'firstName', 'lastName', 'username', 'email']));
 
-	return {
-		challengeSets,
-		playerScores,
-		players,
-		groupNames,
-		group,
-		years,
-		year,
-		days,
-		dayShown
-	};
+	return { challengeSets, players, dayShown };
 };

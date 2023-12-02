@@ -108,11 +108,6 @@ export const load = async ({ locals, params }) => {
 		{} as { [playerId: number]: { [challengeSetId: number]: PlayerStats } }
 	);
 
-	// const playerFilter = (player: (typeof users)[number]) => {
-	// 	if (locals?.user?.isAdmin) return true;
-	// 	return !HIDDEN_USER_EMAILS.includes(player.email) || player.id === locals?.user?.id;
-	// };
-
 	const groupByDate = groupBy((set: (typeof challengeSetsInYear)[number]) => {
 		if (!set.timeAvailableStart) return 'Invalid Date';
 		const date = new Date(set.timeAvailableStart);
@@ -136,37 +131,6 @@ export const load = async ({ locals, params }) => {
 		// filter out dates that are invalid or before 02/01/2023 just for now
 		.filter((d) => d === 'Invalid Date' || new Date(d) < new Date('2023-02-01'));
 
-	// const dayShown = days[day ? parseInt(day, 10) : 0];
-
-	// const challengeSets = sort(descend(numScoreboardStats), challengeSetsByDate[dayShown] ?? []);
-
-	// const getDayShownScore = (player: (typeof users)[number]) =>
-	// 	challengeSets.reduce((acc, cur) => acc + (playerScores[player.id]?.[cur.id]?.points ?? 0), 0);
-
-	// const players: {
-	// 	id: number;
-	// 	firstName: string | null;
-	// 	lastName: string | null;
-	// 	username: string | null;
-	// 	email: string;
-	// }[] = users
-	// 	.filter(playerFilter)
-	// 	.sort((a, b) => {
-	// 		const aScore = getDayShownScore(a);
-	// 		const bScore = getDayShownScore(b);
-	// 		if (aScore === bScore) {
-	// 			const aTime = challengeSets
-	// 				.filter((cs) => cs.isTimed)
-	// 				.reduce((acc, cur) => acc + (playerScores[a.id]?.[cur.id]?.time ?? 0), 0);
-	// 			const bTime = challengeSets
-	// 				.filter((cs) => cs.isTimed)
-	// 				.reduce((acc, cur) => acc + (playerScores[b.id]?.[cur.id]?.time ?? 0), 0);
-	// 			return aTime - bTime;
-	// 		}
-	// 		return bScore - aScore;
-	// 	})
-	// 	.map(pick(['id', 'firstName', 'lastName', 'username', 'email']));
-
 	const years = uniq(
 		allChallengeSetResponses
 			.map((cs) => cs.startedAt?.getFullYear())
@@ -175,9 +139,7 @@ export const load = async ({ locals, params }) => {
 	);
 
 	return {
-		// challengeSets,
 		playerScores,
-		// players,
 		groupNames,
 		group,
 		years,
@@ -185,6 +147,5 @@ export const load = async ({ locals, params }) => {
 		days,
 		users,
 		challengeSetsByDate
-		// dayShown
 	};
 };
