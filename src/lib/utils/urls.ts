@@ -6,6 +6,10 @@ export default {
 	challengeSetResults: (id: number) => `/challenge-set/${id}/results`,
 	challengeSetReview: (id: number) => `/challenge-set/${id}/review`,
 	settings: () => '/settings',
-	scoreboard: (groupName?: string, dayIdx?: number | 'total') =>
-		`/scoreboard/${groupName ? encodeURIComponent(groupName) + '/' : ''}${dayIdx ?? ''}`
+	scoreboard: (groupName?: string, year?: number, dayIdx?: number | 'total') => {
+		const groupParam = groupName ? encodeURIComponent(groupName) : '';
+		const yearParam = year ? `/${year}` : '';
+		const dayIdxParam = dayIdx ? `/${dayIdx}` : '';
+		return `/scoreboard/${groupParam}${yearParam}${dayIdxParam}`;
+	}
 };

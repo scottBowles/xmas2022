@@ -5,7 +5,7 @@ import { dateToYYYYMMDD, urls } from '$lib/utils';
 import { redirect } from '@sveltejs/kit';
 import { displayName } from '$lib/prisma/models/user';
 import { filter, groupBy, pipe, prop } from 'ramda';
-import { HIDDEN_USER_EMAILS } from '../../utils';
+import { HIDDEN_USER_EMAILS } from '../../../utils';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const { group: _group } = params;

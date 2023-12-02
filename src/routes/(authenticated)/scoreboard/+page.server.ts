@@ -32,7 +32,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	const groupName = groups[0].name;
 
-	const groupByDate = groupBy((set: typeof challengeSets[number]) => {
+	const groupByDate = groupBy((set: (typeof challengeSets)[number]) => {
 		if (!set.timeAvailableStart) return 'Invalid Date';
 		const date = new Date(set.timeAvailableStart);
 		if (isNaN(date.getTime())) return 'Invalid Date';
@@ -50,10 +50,13 @@ export const load: PageServerLoad = async ({ locals }) => {
 		return a > b ? 1 : -1;
 	});
 
+	const latestDay = days.at(-1);
+	const yearShown = latestDay ? new Date(latestDay).getFullYear() : 2023;
+
 	const dayShown =
 		dateToYYYYMMDD(new Date()) in challengeSetsByDate
-			? days.indexOf(dateToYYYYMMDD(new Date()))
+			? days.indexOf(dateToYYYYMMDD(new Date())) + 1
 			: 'total';
 
-	throw redirect(302, urls.scoreboard(groupName, dayShown));
+	throw redirect(302, urls.scoreboard(groupName, yearShown, dayShown));
 };

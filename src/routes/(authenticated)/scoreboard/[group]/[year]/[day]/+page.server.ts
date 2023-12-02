@@ -1,28 +1,43 @@
 import prisma from '$lib/prisma';
 import type { PageServerLoad } from './$types';
 import { timeTaken } from '$lib/prisma/models/challengeSetResponse';
-import { dateToYYYYMMDD, urls } from '$lib/utils';
+import { dateToYYYYMMDD, truthy, urls } from '$lib/utils';
 import { redirect } from '@sveltejs/kit';
-import { descend, filter, groupBy, pick, pipe, prop, sort } from 'ramda';
+import { descend, filter, groupBy, pick, pipe, prop, sort, uniq } from 'ramda';
 import { numScoreboardStats } from '$lib/prisma/models/challengeSet';
-import { HIDDEN_USER_EMAILS } from '../../utils';
+import { HIDDEN_USER_EMAILS } from '../../../utils';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-	const { group: _group, day } = params;
+	const { group: _group, year, day } = params;
 	const group = decodeURIComponent(_group);
 	const userId = locals.user?.id;
 	const now = new Date();
 
 	if (!userId) throw redirect(302, urls.login());
 
+	/** QUERY SNIPPETS **/
+
 	// if this isn't a group but is just the page for a single user, the players should include just that user
 	// otherwise, we need to get all the users in the group
-	const usersWhere =
+	const userIsInGroup =
 		group === 'user' ? { id: userId } : { groups: { some: { group: { name: group } } } };
+	const isTimeWithinYear = {
+		not: null,
+		gte: new Date(`${year}-01-01`),
+		lte: locals.user?.isAdmin
+			? new Date(`${year}-12-31`)
+			: now.getTime() < new Date(`${year}-12-31`).getTime()
+			? now
+			: new Date(`${year}-12-31`)
+	};
+	const userHasCompletedChallengeSetThisYear = {
+		challengeSetResponses: { some: { completedAt: isTimeWithinYear } }
+	};
 
-	const [allChallengeSets, groups, users] = await Promise.all([
+	/** QUERY **/
+	const [challengeSetsInYear, groups, users, allChallengeSetResponses] = await Promise.all([
 		prisma.challengeSet.findMany({
-			...(!locals.user?.isAdmin && { where: { timeAvailableStart: { lte: now } } }),
+			where: { timeAvailableStart: isTimeWithinYear },
 			select: {
 				id: true,
 				title: true,
@@ -40,7 +55,10 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			}
 		}),
 		prisma.user.findMany({
-			where: usersWhere,
+			where: {
+				...userIsInGroup,
+				...userHasCompletedChallengeSetThisYear
+			},
 			select: {
 				id: true,
 				firstName: true,
@@ -49,11 +67,15 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 				email: true,
 				challengeSetResponses: {
 					where: {
-						startedAt: { not: null },
+						startedAt: isTimeWithinYear,
 						completedAt: { not: null }
 					}
 				}
 			}
+		}),
+		prisma.challengeSetResponse.findMany({
+			where: { player: userIsInGroup, completedAt: { not: null } },
+			select: { startedAt: true }
 		})
 	]);
 
@@ -82,7 +104,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		return !HIDDEN_USER_EMAILS.includes(player.email) || player.id === locals?.user?.id;
 	};
 
-	const groupByDate = groupBy((set: (typeof allChallengeSets)[number]) => {
+	const groupByDate = groupBy((set: (typeof challengeSetsInYear)[number]) => {
 		if (!set.timeAvailableStart) return 'Invalid Date';
 		const date = new Date(set.timeAvailableStart);
 		if (isNaN(date.getTime())) return 'Invalid Date';
@@ -92,7 +114,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	const challengeSetsByDate = pipe(
 		filter(pipe(prop('timeAvailableStart'), Boolean)),
 		groupByDate
-	)(allChallengeSets);
+	)(challengeSetsInYear);
 
 	const groupNames = groups.map((g) => g.name);
 
@@ -136,12 +158,21 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		})
 		.map(pick(['id', 'firstName', 'lastName', 'username', 'email']));
 
+	const years = uniq(
+		allChallengeSetResponses
+			.map((cs) => cs.startedAt?.getFullYear())
+			.filter(truthy)
+			.sort((a, b) => b - a)
+	);
+
 	return {
 		challengeSets,
 		playerScores,
 		players,
 		groupNames,
 		group,
+		years,
+		year,
 		days,
 		dayShown
 	};

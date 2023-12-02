@@ -4,8 +4,8 @@
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { formatDuration, urls } from '$lib/utils';
 	import type { PageData } from './$types';
-	import DayNavigation from '../../DayNavigation.svelte';
-	import GroupSelect from '../../GroupSelect.svelte';
+	import DayNavigation from '../../../DayNavigation.svelte';
+	import GroupSelect from '../../../GroupSelect.svelte';
 	import { goto } from '$app/navigation';
 
 	export let data: PageData;

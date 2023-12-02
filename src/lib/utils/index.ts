@@ -23,6 +23,8 @@ export function capitalize(str: string) {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+export const truthy = <T>(x: T | null | undefined | false | ''): x is T => Boolean(x);
+
 export function formatDuration(ms: number, withUnits = true) {
 	const s = Math.floor(ms / 1000);
 	const m = Math.floor(s / 60);
