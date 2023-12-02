@@ -66,6 +66,18 @@ export const load = async ({ locals, params }) => {
 					where: {
 						startedAt: isTimeWithinYear,
 						completedAt: { not: null }
+					},
+					select: {
+						points: true,
+						startedAt: true,
+						completedAt: true,
+						challengeSet: {
+							select: {
+								isScored: true,
+								isTimed: true
+							}
+						},
+						challengeSetId: true
 					}
 				}
 			}

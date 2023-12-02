@@ -16,14 +16,14 @@
 	$: ({ challengeSets, playerScores, players, groupNames, group, years, year, days, dayShown } =
 		data);
 
-	const onGroupChange = (e: any) => {
-		const groupName = e.target.value;
+	const onGroupChange = (e: Event) => {
+		const groupName = (e.target as HTMLSelectElement).value;
 		const dayIdx = days.indexOf(dayShown);
 		goto(urls.scoreboard(groupName, year, dayIdx === -1 ? 'total' : dayIdx));
 	};
 
-	const onYearChange = (e: any) => {
-		const year = e.target.value;
+	const onYearChange = (e: Event) => {
+		const year = (e.target as HTMLSelectElement).value;
 		goto(urls.scoreboard(group, year, days.indexOf(dayShown)));
 	};
 
