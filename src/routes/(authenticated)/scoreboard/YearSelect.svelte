@@ -4,7 +4,6 @@
 	export let onYearChange: (e: Event) => void;
 	export let years: number[];
 	export let year: string;
-	$: console.log({ years, year });
 </script>
 
 {#if isEmpty(years)}
@@ -14,7 +13,7 @@
 {:else}
 	<div class="flex justify-evenly h-10 mt-1">
 		<select class="text-lg text-green-800" on:change={onYearChange}>
-			{#each [...years, 2222] as yearOption}
+			{#each years as yearOption}
 				<option value={yearOption} selected={yearOption === Number(year)}>
 					{yearOption}
 				</option>
