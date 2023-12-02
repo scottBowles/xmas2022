@@ -4,31 +4,41 @@
 	import FaHashtag from 'svelte-icons/fa/FaHashtag.svelte';
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { formatDuration, urls } from '$lib/utils';
-	import type { PageData } from './$types';
 	import { displayName } from '$lib/prisma/models/user';
 	import { numScoreboardStats } from '$lib/prisma/models/challengeSet';
 	import { goto } from '$app/navigation';
-	import DayNavigation from '../../DayNavigation.svelte';
-	import GroupSelect from '../../GroupSelect.svelte';
+	import DayNavigation from '../../../DayNavigation.svelte';
+	import GroupSelect from '../../../GroupSelect.svelte';
+	import YearSelect from '../../../YearSelect.svelte';
 
-	export let data: PageData;
+	export let data;
 
-	$: ({ challengeSets, playerScores, players, groupNames, group, days, dayShown } = data);
+	$: ({ challengeSets, playerScores, players, groupNames, group, years, year, days, dayShown } =
+		data);
 
-	const onGroupChange = (e: any) => {
-		const groupName = e.target.value;
-		goto(urls.scoreboard(groupName, days.indexOf(dayShown)));
+	const onGroupChange = (e: Event) => {
+		const groupName = (e.target as HTMLSelectElement).value;
+		const dayIdx = days.indexOf(dayShown);
+		goto(urls.scoreboard(groupName, year, dayIdx === -1 ? 'total' : dayIdx));
 	};
 
-	const getDayShownScore = (player: typeof players[number]) =>
+	const onYearChange = (e: Event) => {
+		const year = (e.target as HTMLSelectElement).value;
+		goto(urls.scoreboard(group, year, days.indexOf(dayShown)));
+	};
+
+	const getDayShownScore = (player: (typeof players)[number]) =>
 		challengeSets.reduce((acc, cur) => acc + (playerScores[player.id]?.[cur.id]?.points ?? 0), 0);
 </script>
 
-<!-- CHALLENGE DAY NAVIGATION -->
-<DayNavigation {group} {days} {dayShown} />
-
 <!-- GROUP SELECT -->
-<GroupSelect {groupNames} {onGroupChange} />
+<GroupSelect {group} {groupNames} {onGroupChange} />
+
+<!-- YEAR SELECT -->
+<YearSelect {year} {years} {onYearChange} />
+
+<!-- CHALLENGE DAY NAVIGATION -->
+<DayNavigation {group} {year} {days} {dayShown} />
 
 <!-- SCORES TABLE -->
 <PageMargin>
@@ -114,24 +124,10 @@
 </PageMargin>
 
 <style>
-	.days {
-		top: var(--nav-height);
-	}
-
-	/* table,
-    .no-challenges {
-      margin-top: calc(var(--nav-height) * 1.5);
-    } */
-
 	th,
 	td {
 		height: 2rem;
 		text-align: center;
 		vertical-align: middle;
-	}
-
-	.loader {
-		top: calc(var(--nav-height));
-		height: 2px;
 	}
 </style>

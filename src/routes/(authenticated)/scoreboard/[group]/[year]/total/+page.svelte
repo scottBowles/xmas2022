@@ -4,30 +4,34 @@
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { formatDuration, urls } from '$lib/utils';
 	import type { PageData } from './$types';
-	import DayNavigation from '../../DayNavigation.svelte';
-	import GroupSelect from '../../GroupSelect.svelte';
+	import DayNavigation from '../../../DayNavigation.svelte';
+	import GroupSelect from '../../../GroupSelect.svelte';
 	import { goto } from '$app/navigation';
+	import YearSelect from '../../../YearSelect.svelte';
 
 	export let data: PageData;
 
-	$: ({ userTotals, group, groupNames, days } = data);
+	$: ({ userTotals, group, groupNames, year, years, days } = data);
 
 	const onGroupChange = (e: Event) => {
 		const groupName = (e.target as HTMLSelectElement).value;
-		goto(urls.scoreboard(groupName, 'total'));
+		goto(urls.scoreboard(groupName, year, 'total'));
+	};
+
+	const onYearChange = (e: Event) => {
+		const year = (e.target as HTMLSelectElement).value;
+		goto(urls.scoreboard(group, year, 'total'));
 	};
 </script>
 
-<!-- CHALLENGE DAY NAVIGATION -->
-<DayNavigation {group} {days} dayShown="total" />
-
-<div class="flex flex-col items-center mt-8">
-	<h1 class="text-4xl text-green-700">Merry Christmas!</h1>
-	<h3 class="text-2xl text-christmasRed">Thanks for playing!</h3>
-</div>
-
 <!-- GROUP SELECT -->
-<GroupSelect {groupNames} {onGroupChange} />
+<GroupSelect {groupNames} {group} {onGroupChange} />
+
+<!-- YEAR SELECT -->
+<YearSelect {year} {years} {onYearChange} />
+
+<!-- CHALLENGE DAY NAVIGATION -->
+<DayNavigation {group} {days} {year} dayShown="total" />
 
 <!-- SCORES TABLE -->
 <PageMargin>
