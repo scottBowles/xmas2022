@@ -52,10 +52,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	const latestDay = days.at(-1);
 	const yearShown = latestDay ? new Date(latestDay).getFullYear() : 2023;
+	const daysInYear = days.filter((day) => new Date(day).getFullYear() === yearShown);
 
 	const dayShown =
 		dateToYYYYMMDD(new Date()) in challengeSetsByDate
-			? days.indexOf(dateToYYYYMMDD(new Date())) + 1
+			? daysInYear.indexOf(dateToYYYYMMDD(new Date())) + 1
 			: 'total';
 
 	throw redirect(302, urls.scoreboard(groupName, yearShown, dayShown));
