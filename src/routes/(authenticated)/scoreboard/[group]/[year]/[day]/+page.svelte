@@ -18,7 +18,8 @@
 
 	const onGroupChange = (e: any) => {
 		const groupName = e.target.value;
-		goto(urls.scoreboard(groupName, Number(year), days.indexOf(dayShown)));
+		const dayIdx = days.indexOf(dayShown);
+		goto(urls.scoreboard(groupName, year, dayIdx === -1 ? 'total' : dayIdx));
 	};
 
 	const onYearChange = (e: any) => {
@@ -123,24 +124,10 @@
 </PageMargin>
 
 <style>
-	.days {
-		top: var(--nav-height);
-	}
-
-	/* table,
-    .no-challenges {
-      margin-top: calc(var(--nav-height) * 1.5);
-    } */
-
 	th,
 	td {
 		height: 2rem;
 		text-align: center;
 		vertical-align: middle;
-	}
-
-	.loader {
-		top: calc(var(--nav-height));
-		height: 2px;
 	}
 </style>
