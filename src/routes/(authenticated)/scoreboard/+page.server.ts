@@ -56,7 +56,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	const dayShown =
 		dateToYYYYMMDD(new Date()) in challengeSetsByDate
-			? daysInYear.indexOf(dateToYYYYMMDD(new Date())) + 1
+			? daysInYear.indexOf(dateToYYYYMMDD(new Date()))
 			: 'total';
 
 	throw redirect(302, urls.scoreboard(groupName, yearShown, dayShown));
