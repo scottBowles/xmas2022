@@ -5,3 +5,4 @@ export type JwtUser = {
 	displayName: string;
 	isAdmin: boolean;
 };
+export type cryptoUuid = `${string}-${string}-${string}-${string}-${string}`;

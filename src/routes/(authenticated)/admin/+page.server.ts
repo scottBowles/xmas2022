@@ -1,18 +1,10 @@
-import { error } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
 import prisma from '$lib/prisma';
 import { scoreChallenges } from '$lib/prisma/models/challenge';
 
-export const load: PageServerLoad = async ({ parent }) => {
-	const { user } = await parent();
-
-	if (!user.isAdmin) {
-		throw error(403, 'Forbidden');
-	}
-
+export const load: PageServerLoad = async () => {
 	const users = await prisma.user.findMany();
-
 	return { users };
 };
 
