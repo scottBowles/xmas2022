@@ -117,6 +117,7 @@ const scoreChallenge: ScoreChallenge = (challenge) => {
 			return score2023Wordle(challenge);
 		case 'MULTIPLE_CHOICE':
 		case 'OPEN_RESPONSE':
+		default:
 			return scoreNonWordle(challenge);
 	}
 };
