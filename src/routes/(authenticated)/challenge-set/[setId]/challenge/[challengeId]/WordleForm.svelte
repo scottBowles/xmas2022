@@ -9,7 +9,7 @@
 
 	export let data: PageData;
 
-	$: ({ challenge, challengeSet } = data);
+	$: ({ challenge, challengeSet, setHasAnotherChallenge } = data);
 
 	let isComplete = false;
 
@@ -22,7 +22,10 @@
 	const onCompletion = async (guessesString: string) => {
 		const formData = new FormData();
 		formData.append('answer', guessesString);
-		formData.append('submit_action', challenge.isLast ? SUBMIT_INPUT_VALUE : NEXT_INPUT_VALUE);
+		formData.append(
+			'submit_action',
+			setHasAnotherChallenge ? NEXT_INPUT_VALUE : SUBMIT_INPUT_VALUE
+		);
 		const response = await fetch(`/challenge-set/${challengeSet.id}/challenge/${challenge.id}`, {
 			method: 'POST',
 			body: formData

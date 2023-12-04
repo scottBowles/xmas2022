@@ -2,7 +2,7 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
 import prisma from '$lib/prisma';
-import { isLast, scoreChallenges } from '$lib/prisma/models/challenge';
+import { isLastOnline, scoreChallenges } from '$lib/prisma/models/challenge';
 import { isAvailable, nextChallengeUrl } from '$lib/prisma/models/challengeSet';
 import { isLive } from '$lib/prisma/models/challengeSetResponse';
 import { getNow, urls } from '$lib/utils';
@@ -21,6 +21,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 				select: { startedAt: true, completedAt: true }
 			},
 			challenges: {
+				where: { type: { notIn: ['OFFLINE'] } },
 				include: {
 					options: true,
 					responses: {
@@ -49,10 +50,8 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 
 	return {
 		challengeSet,
-		challenge: {
-			...challenge,
-			isLast: isLast(challengeSet)(challenge)
-		}
+		challenge,
+		setHasAnotherChallenge: !isLastOnline(challengeSet)(challenge)
 	};
 };
 

@@ -1,8 +1,8 @@
 import { addKey } from '$lib/utils';
 import type { Challenge } from '@prisma/client';
 
-type IsLastMinimalInput = { challenges: { id: number }[] };
-type IsLast = <T extends IsLastMinimalInput>(
+type IsLastOnlineMinimalInput = { challenges: Pick<Challenge, 'id' | 'type'>[] };
+type IsLastOnline = <T extends IsLastOnlineMinimalInput>(
 	challengeSet: T
 ) => (challenge: T['challenges'][number]) => boolean;
 
@@ -34,18 +34,17 @@ type CorrectAnswers = <T extends CorrectAnswersMinimalInput>(challenge: T) => st
 
 type ResponseIsCorrect = <T extends CorrectAnswersMinimalInput>(challenge: T) => boolean;
 
-type ScoreChallengeMinimalInput = CorrectAnswersMinimalInput & {
-	points: number;
-	type: Challenge['type'];
-};
+type ScoreChallengeMinimalInput = CorrectAnswersMinimalInput & Pick<Challenge, 'points' | 'type'>;
 type ScoreChallenge = <T extends ScoreChallengeMinimalInput>(challenge: T) => number;
 type ScoreChallenges = <T extends ScoreChallengeMinimalInput>(challenges: T[]) => number;
 
 // remove all characters that are not letters or numbers and convert to lowercase
 const normalize = (str: string) => str.replace(/[^a-z0-9]/gi, '').toLowerCase();
 
-const isLast: IsLast = (challengeSet) => (challenge) =>
-	challengeSet.challenges[challengeSet.challenges.length - 1].id === challenge.id;
+const isLastOnline: IsLastOnline = (challengeSet) => (challenge) => {
+	const onlineChallenges = challengeSet.challenges.filter((c) => c.type !== 'OFFLINE');
+	return onlineChallenges[challengeSet.challenges.length - 1].id === challenge.id;
+};
 
 const correctAnswerFromOptions: CorrectAnswerFromOptions = (challenge) =>
 	challenge.options.find((option) => option.isCorrect)?.text;
@@ -125,14 +124,15 @@ const scoreChallenge: ScoreChallenge = (challenge) => {
 const scoreChallenges: ScoreChallenges = (challenges) =>
 	challenges.reduce((acc, challenge) => acc + scoreChallenge(challenge), 0);
 
-const addIsLast = <T extends { challenges: { id: number }[] }>(challengeSet: T) =>
-	addKey('isLast', isLast(challengeSet));
+const addIsLastOnline = <T extends { challenges: { id: number; type: Challenge['type'] }[] }>(
+	challengeSet: T
+) => addKey('isLastOnline', isLastOnline(challengeSet));
 const addCorrectAnswer = addKey('correctAnswer', correctAnswer);
 const addResponse = addKey('response', response);
 const addResponseIsCorrect = addKey('responseIsCorrect', responseIsCorrect);
 
 export {
-	isLast,
+	isLastOnline,
 	correctAnswerFromOptions,
 	correctAnswerFromAcceptedResponses,
 	correctAnswer,
@@ -142,7 +142,7 @@ export {
 	scoreNonWordle,
 	scoreChallenge,
 	scoreChallenges,
-	addIsLast,
+	addIsLastOnline,
 	addCorrectAnswer,
 	addResponse,
 	addResponseIsCorrect

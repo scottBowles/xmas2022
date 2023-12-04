@@ -1,13 +1,12 @@
 <script lang="ts">
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { onMount } from 'svelte';
-	import type { PageData, ActionData } from './$types';
 	import InstructionsToggle from './InstructionsToggle.svelte';
 	import NonWordleForm from './NonWordleForm.svelte';
 	import WordleForm from './WordleForm.svelte';
 
-	export let data: PageData;
-	export let form: ActionData;
+	export let data;
+	export let form;
 
 	$: ({ challenge, challengeSet } = data);
 	$: ({ instructions } = challengeSet);

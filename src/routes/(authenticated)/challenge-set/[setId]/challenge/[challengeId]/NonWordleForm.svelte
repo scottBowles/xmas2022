@@ -5,8 +5,8 @@
 
 	export let data: PageData;
 
-	$: challenge = data.challenge;
-	$: response = data.challenge?.responses[0]?.response ?? '';
+	$: ({ challenge, setHasAnotherChallenge } = data);
+	$: response = challenge?.responses[0]?.response ?? '';
 
 	let textInput: HTMLInputElement;
 </script>
@@ -45,7 +45,7 @@
 	</fieldset>
 	<input
 		type="submit"
-		value={challenge.isLast ? SUBMIT_INPUT_VALUE : NEXT_INPUT_VALUE}
+		value={setHasAnotherChallenge ? NEXT_INPUT_VALUE : SUBMIT_INPUT_VALUE}
 		name="submit_action"
 		class="bg-green-700 text-white font-bold py-3 px-6 rounded w-full text-lg my-8 block"
 	/>
