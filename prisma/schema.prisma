@@ -63,6 +63,7 @@ enum ChallengeType {
   WORDLE
   WORDLE_2023
   SELECT_ELF_NAME
+  OFFLINE
 }
 
 model Challenge {
