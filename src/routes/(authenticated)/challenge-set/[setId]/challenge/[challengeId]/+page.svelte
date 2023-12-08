@@ -1,13 +1,13 @@
 <script lang="ts">
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { onMount } from 'svelte';
-	import type { PageData, ActionData } from './$types';
 	import InstructionsToggle from './InstructionsToggle.svelte';
 	import NonWordleForm from './NonWordleForm.svelte';
 	import WordleForm from './WordleForm.svelte';
+	import SelectElfNameForm from './SelectElfNameForm.svelte';
 
-	export let data: PageData;
-	export let form: ActionData;
+	export let data;
+	export let form;
 
 	$: ({ challenge, challengeSet } = data);
 	$: ({ instructions } = challengeSet);
@@ -27,6 +27,8 @@
 			<WordleForm {data} />
 		{:else if ['MULTIPLE_CHOICE', 'OPEN_RESPONSE'].includes(challenge.type)}
 			<NonWordleForm {data} />
+		{:else if 'SELECT_ELF_NAME' === challenge.type}
+			<SelectElfNameForm {data} {form} />
 		{:else}
 			<p>Loading Challenge...</p>
 		{/if}

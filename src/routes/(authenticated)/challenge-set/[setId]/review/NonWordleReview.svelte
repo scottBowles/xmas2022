@@ -1,16 +1,8 @@
 <script lang="ts">
 	import { capitalize } from '$lib/utils';
+	import type { PageData } from './$types';
 
-	export let challenge: {
-		title: string;
-		type: string;
-		prompt: string;
-		options: { text: string }[];
-		response: string;
-		correctAnswer: string | false | undefined;
-		responseIsCorrect: boolean;
-		points: number;
-	};
+	export let challenge: PageData['challenges'][number];
 </script>
 
 <form>

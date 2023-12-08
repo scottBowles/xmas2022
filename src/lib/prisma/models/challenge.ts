@@ -1,8 +1,8 @@
 import { addKey } from '$lib/utils';
 import type { Challenge } from '@prisma/client';
 
-type IsLastMinimalInput = { challenges: { id: number }[] };
-type IsLast = <T extends IsLastMinimalInput>(
+type IsLastOnlineMinimalInput = { challenges: Pick<Challenge, 'id' | 'type'>[] };
+type IsLastOnline = <T extends IsLastOnlineMinimalInput>(
 	challengeSet: T
 ) => (challenge: T['challenges'][number]) => boolean;
 
@@ -26,6 +26,8 @@ type CorrectAnswer = <T extends CorrectAnswerMinimalInput>(
 
 type ResponseMinimalInput = { responses: { response: string }[] };
 type Response = <T extends ResponseMinimalInput>(challenge: T) => string;
+type OwnElfNameMinimalInput = { responses: { response: string }[]; type: Challenge['type'] };
+type OwnElfName = <T extends OwnElfNameMinimalInput>(challenge: T) => string;
 
 type CorrectAnswersMinimalInput = { options: { isCorrect: boolean; text: string }[] } & {
 	acceptedResponsesIfOpen: string[];
@@ -34,18 +36,17 @@ type CorrectAnswers = <T extends CorrectAnswersMinimalInput>(challenge: T) => st
 
 type ResponseIsCorrect = <T extends CorrectAnswersMinimalInput>(challenge: T) => boolean;
 
-type ScoreChallengeMinimalInput = CorrectAnswersMinimalInput & {
-	points: number;
-	type: Challenge['type'];
-};
+type ScoreChallengeMinimalInput = CorrectAnswersMinimalInput & Pick<Challenge, 'points' | 'type'>;
 type ScoreChallenge = <T extends ScoreChallengeMinimalInput>(challenge: T) => number;
 type ScoreChallenges = <T extends ScoreChallengeMinimalInput>(challenges: T[]) => number;
 
 // remove all characters that are not letters or numbers and convert to lowercase
 const normalize = (str: string) => str.replace(/[^a-z0-9]/gi, '').toLowerCase();
 
-const isLast: IsLast = (challengeSet) => (challenge) =>
-	challengeSet.challenges[challengeSet.challenges.length - 1].id === challenge.id;
+const isLastOnline: IsLastOnline = (challengeSet) => (challenge) => {
+	const onlineChallenges = challengeSet.challenges.filter((c) => c.type !== 'OFFLINE');
+	return onlineChallenges[challengeSet.challenges.length - 1].id === challenge.id;
+};
 
 const correctAnswerFromOptions: CorrectAnswerFromOptions = (challenge) =>
 	challenge.options.find((option) => option.isCorrect)?.text;
@@ -72,6 +73,13 @@ const responseIsCorrect: ResponseIsCorrect = (challenge) =>
 	allowableAnswers(challenge).some(
 		(answer) => normalize(answer) === normalize(response(challenge))
 	);
+
+const ownElfName: OwnElfName = (challenge) => {
+	if (challenge.type !== 'SELECT_ELF_NAME') return null;
+	const ownElfNameJson = response(challenge);
+	const { selectedFirstName, selectedLastName } = JSON.parse(ownElfNameJson || '{}');
+	return `${selectedFirstName} ${selectedLastName}`;
+};
 
 const score2022Wordle: ScoreChallenge = (challenge) => {
 	const numberOfGuesses = response(challenge);
@@ -117,31 +125,36 @@ const scoreChallenge: ScoreChallenge = (challenge) => {
 			return score2023Wordle(challenge);
 		case 'MULTIPLE_CHOICE':
 		case 'OPEN_RESPONSE':
+		case 'SELECT_ELF_NAME':
 			return scoreNonWordle(challenge);
+		default:
+			return 0;
 	}
 };
 
 const scoreChallenges: ScoreChallenges = (challenges) =>
 	challenges.reduce((acc, challenge) => acc + scoreChallenge(challenge), 0);
 
-const addIsLast = <T extends { challenges: { id: number }[] }>(challengeSet: T) =>
-	addKey('isLast', isLast(challengeSet));
+const addIsLastOnline = <T extends { challenges: { id: number; type: Challenge['type'] }[] }>(
+	challengeSet: T
+) => addKey('isLastOnline', isLastOnline(challengeSet));
 const addCorrectAnswer = addKey('correctAnswer', correctAnswer);
 const addResponse = addKey('response', response);
 const addResponseIsCorrect = addKey('responseIsCorrect', responseIsCorrect);
 
 export {
-	isLast,
+	isLastOnline,
 	correctAnswerFromOptions,
 	correctAnswerFromAcceptedResponses,
 	correctAnswer,
+	ownElfName,
 	response,
 	responseIsCorrect,
-	score2022Wordle as scoreWordle,
+	score2022Wordle,
 	scoreNonWordle,
 	scoreChallenge,
 	scoreChallenges,
-	addIsLast,
+	addIsLastOnline,
 	addCorrectAnswer,
 	addResponse,
 	addResponseIsCorrect
