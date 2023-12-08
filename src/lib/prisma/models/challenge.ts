@@ -26,6 +26,8 @@ type CorrectAnswer = <T extends CorrectAnswerMinimalInput>(
 
 type ResponseMinimalInput = { responses: { response: string }[] };
 type Response = <T extends ResponseMinimalInput>(challenge: T) => string;
+type OwnElfNameMinimalInput = { responses: { response: string }[]; type: Challenge['type'] };
+type OwnElfName = <T extends OwnElfNameMinimalInput>(challenge: T) => string;
 
 type CorrectAnswersMinimalInput = { options: { isCorrect: boolean; text: string }[] } & {
 	acceptedResponsesIfOpen: string[];
@@ -72,6 +74,13 @@ const responseIsCorrect: ResponseIsCorrect = (challenge) =>
 		(answer) => normalize(answer) === normalize(response(challenge))
 	);
 
+const ownElfName: OwnElfName = (challenge) => {
+	if (challenge.type !== 'SELECT_ELF_NAME') return null;
+	const ownElfNameJson = response(challenge);
+	const { selectedFirstName, selectedLastName } = JSON.parse(ownElfNameJson || '{}');
+	return `${selectedFirstName} ${selectedLastName}`;
+};
+
 const score2022Wordle: ScoreChallenge = (challenge) => {
 	const numberOfGuesses = response(challenge);
 	const pointsForNumberOfGuesses = {
@@ -116,8 +125,10 @@ const scoreChallenge: ScoreChallenge = (challenge) => {
 			return score2023Wordle(challenge);
 		case 'MULTIPLE_CHOICE':
 		case 'OPEN_RESPONSE':
-		default:
+		case 'SELECT_ELF_NAME':
 			return scoreNonWordle(challenge);
+		default:
+			return 0;
 	}
 };
 
@@ -136,9 +147,10 @@ export {
 	correctAnswerFromOptions,
 	correctAnswerFromAcceptedResponses,
 	correctAnswer,
+	ownElfName,
 	response,
 	responseIsCorrect,
-	score2022Wordle as scoreWordle,
+	score2022Wordle,
 	scoreNonWordle,
 	scoreChallenge,
 	scoreChallenges,

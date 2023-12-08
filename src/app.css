@@ -9,10 +9,13 @@ html {
     --text-gray: #333;
     --nav-height: 48px;
   }
+
+body {
+  font-family: "Jost", sans-serif !important;
+  height: 100vh;
+  position: relative;
+}
   
-  body {
-    font-family: "Jost", sans-serif !important;
-    height: 100vh;
-		position: relative;
-  }
-  
+.bg-red {
+  background: var(--red);
+}

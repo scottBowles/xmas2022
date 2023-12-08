@@ -2,11 +2,9 @@
 	import Grid from '$lib/wordle/components/Grid/Grid.svelte';
 	import { createGameStateStore } from '$lib/wordle/stores/gameState';
 	import { createGuessStore } from '$lib/wordle/stores/guess';
+	import type { PageData } from './$types';
 
-	export let challenge: {
-		response: string;
-		correctAnswer: string | false | undefined;
-	};
+	export let challenge: PageData['challenges'][number];
 	export let storageKey: string;
 
 	$: guesses = challenge.response.split(',');

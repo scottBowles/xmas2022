@@ -142,7 +142,6 @@
 	};
 </script>
 
-<Container />
 <!-- <Header /> -->
 
 <div class="flex grow flex-col items-center justify-center">

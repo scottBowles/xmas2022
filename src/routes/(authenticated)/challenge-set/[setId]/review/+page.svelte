@@ -3,6 +3,7 @@
 	import { formatDuration } from '$lib/utils';
 	import type { PageData } from './$types';
 	import NonWordleReview from './NonWordleReview.svelte';
+	import SelectElfNameReview from './SelectElfNameReview.svelte';
 	import Wordle2022Review from './Wordle2022Review.svelte';
 	import Wordle2023Review from './Wordle2023Review.svelte';
 
@@ -33,6 +34,8 @@
 				<Wordle2023Review {challenge} storageKey={`${challengeSet.id}|${challenge.id}`} />
 			{:else if ['MULTIPLE_CHOICE', 'OPEN_RESPONSE'].includes(challenge.type)}
 				<NonWordleReview {challenge} />
+			{:else if challenge.type === 'SELECT_ELF_NAME'}
+				<SelectElfNameReview {challenge} />
 			{:else}
 				<p>Loading Challenge...</p>
 			{/if}

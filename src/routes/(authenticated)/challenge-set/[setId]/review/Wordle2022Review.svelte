@@ -1,8 +1,7 @@
 <script lang="ts">
-	export let challenge: {
-		response: string;
-		correctAnswer: string | false | undefined;
-	};
+	import type { PageData } from './$types';
+
+	export let challenge: PageData['challenges'][number];
 </script>
 
 <div class="flex grow flex-col items-center justify-center">
