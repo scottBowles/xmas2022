@@ -30,7 +30,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		})
 	]);
 
-	const groupName = groups[0]?.name ?? 'self';
+	const groupName = groups[0]?.name ?? 'user';
 
 	const groupByDate = groupBy((set: (typeof challengeSets)[number]) => {
 		if (!set.timeAvailableStart) return 'Invalid Date';

@@ -35,10 +35,6 @@
 			});
 		}
 	}
-	$: {
-		console.log({ data });
-		console.log({ form });
-	}
 </script>
 
 <!-- create a ui where a user can select a first name and a last name
@@ -88,6 +84,7 @@ radio inputs, but the user should just see names that get highlighted when selec
 		type="submit"
 		value={SUBMIT_INPUT_VALUE}
 		name="submit_action"
-		class="bg-green-700 text-white py-2 px-6 rounded w-full my-8"
+		class="bg-green-700 text-white py-2 px-6 rounded w-full my-8 disabled:opacity-50 disabled:cursor-not-allowed"
+		disabled={!selectedFirstName || !selectedLastName}
 	/>
 </form>
