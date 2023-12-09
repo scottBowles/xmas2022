@@ -63,7 +63,7 @@ export const ELF_LAST_NAMES = [
 	'O’Mittens',
 	'Frostchester',
 	'Muffintop',
-	'Breckinridge',
+	'Breckenridge',
 	'Grindlewald',
 	'Snowfield',
 	'Pitterpat',
