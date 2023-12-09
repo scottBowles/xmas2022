@@ -117,6 +117,9 @@ const score2023Wordle: ScoreChallenge = (challenge) => {
 const scoreNonWordle: ScoreChallenge = (challenge) =>
 	responseIsCorrect(challenge) ? challenge.points : 0;
 
+const scoreSelectElfName: ScoreChallenge = (challenge) =>
+	response(challenge) ? challenge.points : 0;
+
 const scoreChallenge: ScoreChallenge = (challenge) => {
 	switch (challenge.type) {
 		case 'WORDLE':
@@ -125,8 +128,9 @@ const scoreChallenge: ScoreChallenge = (challenge) => {
 			return score2023Wordle(challenge);
 		case 'MULTIPLE_CHOICE':
 		case 'OPEN_RESPONSE':
-		case 'SELECT_ELF_NAME':
 			return scoreNonWordle(challenge);
+		case 'SELECT_ELF_NAME':
+			return scoreSelectElfName(challenge);
 		default:
 			return 0;
 	}
