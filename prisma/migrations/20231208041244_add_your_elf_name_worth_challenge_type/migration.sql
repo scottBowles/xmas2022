@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "ChallengeType" ADD VALUE 'YOUR_ELF_NAME_WORTH';

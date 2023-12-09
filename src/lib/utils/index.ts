@@ -53,3 +53,10 @@ export const dateToYYYYMMDD = (date: Date) => {
 	const day = date.getDate().toString().padStart(2, '0');
 	return `${year}-${month}-${day}`;
 };
+
+export const getElfNameWorth = (elfName: string) =>
+	elfName
+		.replace(/[^a-z]/gi, '')
+		.toLowerCase()
+		.split('')
+		.reduce((sum, char) => sum + char.charCodeAt(0) - 96, 0);
