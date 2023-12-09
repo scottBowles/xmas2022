@@ -1,6 +1,12 @@
 import { addKey } from '$lib/utils';
 import type { Challenge, ChallengeResponse } from '@prisma/client';
 import { response } from './utils';
+import * as multipleChoice from './multipleChoice';
+import * as openResponse from './openResponse';
+import * as selectElfName from './selectElfName';
+import * as wordle2022 from './wordle2022';
+import * as wordle2023 from './wordle2023';
+import * as yourElfNameWorth from './yourElfNameWorth';
 
 type IsLastOnlineMinimalInput = { challenges: Pick<Challenge, 'id' | 'type'>[] };
 type IsLastOnline = <T extends IsLastOnlineMinimalInput>(
@@ -42,15 +48,13 @@ const ownElfName: OwnElfName = (challenge) => {
 };
 
 const scoreChallenge: ScoreChallenge = (challenge, extra) => {
-	if (challenge.type === 'WORDLE') return score2022Wordle(challenge, extra);
-	if (challenge.type === 'WORDLE_2023') return score2023Wordle(challenge, extra);
-	if (challenge.type === 'YOUR_ELF_NAME_WORTH') return scoreYourNameWorth(challenge, extra);
-	if (
-		challenge.type === 'MULTIPLE_CHOICE' ||
-		challenge.type === 'OPEN_RESPONSE' ||
-		challenge.type === 'SELECT_ELF_NAME'
-	)
-		return scoreNonWordle(challenge, extra);
+	if (challenge.type === 'WORDLE') return wordle2022.scoreChallenge(challenge, extra);
+	if (challenge.type === 'WORDLE_2023') return wordle2023.scoreChallenge(challenge, extra);
+	if (challenge.type === 'MULTIPLE_CHOICE') return multipleChoice.scoreChallenge(challenge, extra);
+	if (challenge.type === 'OPEN_RESPONSE') return openResponse.scoreChallenge(challenge, extra);
+	if (challenge.type === 'SELECT_ELF_NAME') return selectElfName.scoreChallenge(challenge, extra);
+	if (challenge.type === 'YOUR_ELF_NAME_WORTH')
+		return yourElfNameWorth.scoreChallenge(challenge, extra.elfNameChallengeResponse);
 	return 0;
 };
 
