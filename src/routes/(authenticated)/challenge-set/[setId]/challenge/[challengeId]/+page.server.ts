@@ -176,16 +176,24 @@ export const actions: Actions = {
 		if (submitting) {
 			// end and score the challengeSetResponse
 			const completedAt = getNow();
-			const challenges = await prisma.challenge.findMany({
-				where: { challengeSetId: setId },
-				include: {
-					options: true,
-					responses: {
-						where: { playerId }
+
+			const [challenges, elfNameChallengeResponse] = await Promise.all([
+				prisma.challenge.findMany({
+					where: { challengeSetId: setId },
+					include: {
+						options: true,
+						responses: {
+							where: { playerId }
+						}
 					}
-				}
-			});
-			const points = scoreChallenges(challenges);
+				}),
+				prisma.challengeResponse.findFirst({
+					where: { playerId, challenge: { type: 'SELECT_ELF_NAME' } },
+					orderBy: { createdAt: 'desc' }
+				})
+			]);
+			console.log({ challenges, elfNameChallengeResponse });
+			const points = scoreChallenges(challenges, { elfNameChallengeResponse });
 
 			await prisma.challengeSetResponse.update({
 				where: { id: challengeSetResponse.id },

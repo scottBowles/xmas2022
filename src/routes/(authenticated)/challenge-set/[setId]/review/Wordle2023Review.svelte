@@ -7,8 +7,8 @@
 	export let challenge: PageData['challenges'][number];
 	export let storageKey: string;
 
-	$: guesses = challenge.response.split(',');
-	$: showCorrectAnswer = !guesses.includes(challenge.correctAnswer || '');
+	$: guesses = challenge.response?.split(',');
+	$: showCorrectAnswer = guesses && !guesses.includes(challenge.correctAnswer || '');
 
 	$: gameStateStore = createGameStateStore();
 	$: guessStore = createGuessStore(

@@ -3,9 +3,8 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import prisma from '$lib/prisma';
 import { timeTaken } from '$lib/prisma/models/challengeSetResponse';
-import * as C from '$lib/prisma/models/challenge';
 import { isAvailable } from '$lib/prisma/models/challengeSet';
-import { displayName } from '$lib/prisma/models/user';
+import getChallengeData from './getChallengeData';
 
 export const load: PageServerLoad = async ({ params, parent }) => {
 	/** Request data */
@@ -35,50 +34,12 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 		}
 	});
 
-	const getElfNameData = (challenge: NonNullable<typeof challengeSet>['challenges'][number]) => {
-		if (challenge.type !== 'SELECT_ELF_NAME') return null;
-		return prisma.challengeResponse
-			.findMany({
-				where: { challengeId: challenge.id },
-				include: {
-					player: {
-						select: {
-							email: true,
-							firstName: true,
-							lastName: true,
-							username: true
-						}
-					}
-				}
-			})
-			.then((responses) =>
-				responses.map((response) => {
-					const { selectedFirstName, selectedLastName } = JSON.parse(response.response || '{}');
-					return {
-						player: displayName(response.player),
-						elfFirstName: selectedFirstName,
-						elfLastName: selectedLastName
-					} as { player: string; elfFirstName: string; elfLastName: string };
-				})
-			);
-	};
-
 	/** Derived */
 	const challengeSetResponse = challengeSet?.challengeSetResponses[0];
 	const challenges =
 		challengeSetResponse &&
 		(await Promise.all(
-			challengeSet?.challenges.map(async (challenge) => {
-				const elfNameData = await getElfNameData(challenge);
-				return {
-					correctAnswer: C.correctAnswer(challenge),
-					response: C.response(challenge),
-					responseIsCorrect: C.responseIsCorrect(challenge),
-					ownElfName: C.ownElfName(challenge),
-					allElfNames: elfNameData,
-					...challenge
-				};
-			})
+			challengeSet?.challenges.map(async (challenge) => getChallengeData(challenge, user))
 		));
 
 	/** Ensure it's ok for the user to see this data */

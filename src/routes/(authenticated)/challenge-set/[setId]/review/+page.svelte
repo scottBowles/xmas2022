@@ -6,6 +6,7 @@
 	import SelectElfNameReview from './SelectElfNameReview.svelte';
 	import Wordle2022Review from './Wordle2022Review.svelte';
 	import Wordle2023Review from './Wordle2023Review.svelte';
+	import YourElfNameWorthReview from './YourElfNameWorthReview.svelte';
 
 	export let data: PageData;
 
@@ -36,6 +37,8 @@
 				<NonWordleReview {challenge} />
 			{:else if challenge.type === 'SELECT_ELF_NAME'}
 				<SelectElfNameReview {challenge} />
+			{:else if challenge.type === 'YOUR_ELF_NAME_WORTH'}
+				<YourElfNameWorthReview {challenge} />
 			{:else}
 				<p>Loading Challenge...</p>
 			{/if}

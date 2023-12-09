@@ -25,7 +25,7 @@
 
 		{#if ['WORDLE', 'WORDLE_2023'].includes(challenge.type)}
 			<WordleForm {data} />
-		{:else if ['MULTIPLE_CHOICE', 'OPEN_RESPONSE'].includes(challenge.type)}
+		{:else if ['MULTIPLE_CHOICE', 'OPEN_RESPONSE', 'YOUR_ELF_NAME_WORTH'].includes(challenge.type)}
 			<NonWordleForm {data} />
 		{:else if 'SELECT_ELF_NAME' === challenge.type}
 			<SelectElfNameForm {data} {form} />
