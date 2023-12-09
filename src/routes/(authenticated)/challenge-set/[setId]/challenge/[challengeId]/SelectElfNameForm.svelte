@@ -45,6 +45,7 @@
 from the ELF_FIRST_NAMES and ELF_LAST_NAMES arrays. the markup should use
 radio inputs, but the user should just see names that get highlighted when selected -->
 <form class="mt-6 mb-64" method="POST" use:enhance>
+	<legend class="mb-4 text-lg">{@html data.challenge.prompt}</legend>
 	<input
 		type="hidden"
 		name="answer"
