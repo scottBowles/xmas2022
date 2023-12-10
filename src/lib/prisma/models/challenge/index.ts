@@ -8,6 +8,7 @@ import * as wordle2022 from './wordle2022';
 import * as wordle2023 from './wordle2023';
 import * as yourElfNameWorth from './yourElfNameWorth';
 import * as offline from './offline';
+import * as match from './match';
 
 type IsLastMinimalInput = { challenges: Pick<Challenge, 'id' | 'type'>[] };
 type IsLast = <T extends IsLastMinimalInput>(
@@ -57,6 +58,7 @@ const scoreChallenge: ScoreChallenge = (challenge, extra) => {
 	if (challenge.type === 'YOUR_ELF_NAME_WORTH')
 		return yourElfNameWorth.scoreChallenge(challenge, extra.elfNameChallengeResponse);
 	if (challenge.type === 'OFFLINE') return offline.scoreChallenge(challenge, extra);
+	if (challenge.type === 'MATCH') return match.scoreChallenge(challenge, extra);
 	return 0;
 };
 

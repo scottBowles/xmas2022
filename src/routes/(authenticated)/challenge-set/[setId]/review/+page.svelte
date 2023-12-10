@@ -2,6 +2,7 @@
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { formatDuration } from '$lib/utils';
 	import type { PageData } from './$types';
+	import MatchReview from './MatchReview.svelte';
 	import NonWordleReview from './NonWordleReview.svelte';
 	import OfflineReview from './OfflineReview.svelte';
 	import SelectElfNameReview from './SelectElfNameReview.svelte';
@@ -36,6 +37,8 @@
 				<Wordle2023Review {challenge} storageKey={`${challengeSet.id}|${challenge.id}`} />
 			{:else if ['MULTIPLE_CHOICE', 'OPEN_RESPONSE'].includes(challenge.type)}
 				<NonWordleReview {challenge} />
+			{:else if challenge.type === 'MATCH'}
+				<MatchReview {challenge} />
 			{:else if challenge.type === 'SELECT_ELF_NAME'}
 				<SelectElfNameReview {challenge} />
 			{:else if challenge.type === 'YOUR_ELF_NAME_WORTH'}

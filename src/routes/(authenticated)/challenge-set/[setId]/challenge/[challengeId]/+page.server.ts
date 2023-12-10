@@ -191,7 +191,7 @@ export const actions: Actions = {
 					orderBy: { createdAt: 'desc' }
 				})
 			]);
-			console.log({ challenges, elfNameChallengeResponse });
+
 			const points = scoreChallenges(challenges, { elfNameChallengeResponse });
 
 			await prisma.challengeSetResponse.update({

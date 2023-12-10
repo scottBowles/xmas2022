@@ -6,6 +6,7 @@
 	import WordleForm from './WordleForm.svelte';
 	import SelectElfNameForm from './SelectElfNameForm.svelte';
 	import OfflineForm from './OfflineForm.svelte';
+	import MatchForm from './MatchForm.svelte';
 
 	export let data;
 	export let form;
@@ -28,6 +29,8 @@
 			<WordleForm {data} />
 		{:else if ['MULTIPLE_CHOICE', 'OPEN_RESPONSE', 'YOUR_ELF_NAME_WORTH'].includes(challenge.type)}
 			<NonWordleForm {data} />
+		{:else if 'MATCH' === challenge.type}
+			<MatchForm {data} />
 		{:else if 'SELECT_ELF_NAME' === challenge.type}
 			<SelectElfNameForm {data} {form} />
 		{:else if 'OFFLINE' === challenge.type}

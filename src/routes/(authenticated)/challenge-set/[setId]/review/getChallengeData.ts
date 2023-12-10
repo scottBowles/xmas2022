@@ -7,6 +7,7 @@ import * as wordle2023 from '$lib/prisma/models/challenge/wordle2023';
 import * as multipleChoice from '$lib/prisma/models/challenge/multipleChoice';
 import * as openResponse from '$lib/prisma/models/challenge/openResponse';
 import * as offline from '$lib/prisma/models/challenge/offline';
+import * as match from '$lib/prisma/models/challenge/match';
 import { response } from '$lib/prisma/models/challenge/utils';
 import { ownElfName } from '$lib/prisma/models/challenge';
 import type { Challenge } from '@prisma/client';
@@ -35,7 +36,8 @@ const challengeTypeFns = {
 	MULTIPLE_CHOICE: multipleChoice,
 	OPEN_RESPONSE: openResponse,
 	SELECT_ELF_NAME: selectElfName,
-	YOUR_ELF_NAME_WORTH: yourElfNameWorth
+	YOUR_ELF_NAME_WORTH: yourElfNameWorth,
+	MATCH: match
 };
 
 const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
@@ -77,6 +79,15 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			...challenge
 		};
 	if (type === 'OPEN_RESPONSE')
+		return {
+			correctAnswer: challengeTypeFns[type].correctAnswer(challenge),
+			response: response(challenge),
+			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
+			ownElfName: null,
+			allElfNames: null,
+			...challenge
+		};
+	if (type === 'MATCH')
 		return {
 			correctAnswer: challengeTypeFns[type].correctAnswer(challenge),
 			response: response(challenge),
