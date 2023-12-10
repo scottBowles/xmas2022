@@ -2,7 +2,7 @@ import { response } from './utils';
 import type {
 	CorrectAnswerMinimalInput,
 	CorrectAnswersMinimalInput,
-	ScoreChallengeMinimalInput
+	ScoreChallengeMinimalInput,
 } from './types';
 import { getElfNameWorth } from '$lib/utils';
 import type { ChallengeResponse } from '@prisma/client';
@@ -20,6 +20,8 @@ type ResponseIsCorrectYourElfNameWorth = <T extends CorrectAnswersMinimalInput>(
 	elfNameChallengeResponse: ChallengeResponse | undefined | null
 ) => boolean;
 
+const clean = (str: string) => str.replace(/\D/g, '');
+
 const correctAnswer: CorrectAnswerYourElfNameWorth = (challenge, elfNameChallengeResponse) => {
 	if (!elfNameChallengeResponse?.response) return 'No elf name found!';
 	const { selectedFirstName, selectedLastName } = JSON.parse(elfNameChallengeResponse.response);
@@ -29,7 +31,9 @@ const correctAnswer: CorrectAnswerYourElfNameWorth = (challenge, elfNameChalleng
 const responseIsCorrect: ResponseIsCorrectYourElfNameWorth = (
 	challenge,
 	elfNameChallengeResponse
-) => response(challenge) === correctAnswer(challenge, elfNameChallengeResponse);
+) =>
+	parseInt(clean(response(challenge))) ===
+	parseInt(clean(correctAnswer(challenge, elfNameChallengeResponse) || '-9999'));
 
 const scoreChallenge: ScoreChallengeYourElfNameWorth = (challenge, elfNameChallengeResponse) => {
 	if (!elfNameChallengeResponse?.response) return 0;

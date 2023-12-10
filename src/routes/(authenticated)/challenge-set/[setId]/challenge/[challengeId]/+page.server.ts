@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 	/** Kick off promises that may not be needed */
 	const challengeResponsesPromise = prisma.challengeResponse.findMany({
 		where: { challengeId },
-		select: { response: true }
+		select: { response: true },
 	});
 
 	/** Query challengeSet */
@@ -28,18 +28,18 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 		include: {
 			challengeSetResponses: {
 				where: { playerId: user.id },
-				select: { startedAt: true, completedAt: true }
+				select: { startedAt: true, completedAt: true },
 			},
 			challenges: {
 				include: {
 					options: true,
 					responses: {
-						where: { playerId: user.id }
-					}
+						where: { playerId: user.id },
+					},
 				},
-				orderBy: { id: 'asc' }
-			}
-		}
+				orderBy: { id: 'asc' },
+			},
+		},
 	});
 	const challenge = challengeSet?.challenges.find((challenge) => challenge.id === challengeId);
 	const challengeSetResponse = challengeSet?.challengeSetResponses[0];
@@ -73,7 +73,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 		challenge,
 		takenElfFirstNames,
 		takenElfLastNames,
-		setHasAnotherChallenge: !isLast(challengeSet)(challenge)
+		setHasAnotherChallenge: !isLast(challengeSet)(challenge),
 	};
 };
 
@@ -98,7 +98,7 @@ const createFormError = (obj: {
 	type: obj.type,
 	message: obj.message,
 	takenFirstNames: obj.takenFirstNames,
-	takenLastNames: obj.takenLastNames
+	takenLastNames: obj.takenLastNames,
 });
 
 export const actions: Actions = {
@@ -113,8 +113,6 @@ export const actions: Actions = {
 
 		if (!playerId) throw redirect(302, urls.login());
 
-		// currently we aren't validating the response, but we could do that here
-
 		const challengeSet = await prisma.challengeSet.findUnique({
 			where: { id: setId },
 			select: {
@@ -122,9 +120,9 @@ export const actions: Actions = {
 				challenges: { select: { id: true, type: true }, orderBy: { id: 'asc' } },
 				challengeSetResponses: {
 					where: { playerId },
-					select: { id: true, startedAt: true, completedAt: true }
-				}
-			}
+					select: { id: true, startedAt: true, completedAt: true },
+				},
+			},
 		});
 		const challengeSetResponse = challengeSet?.challengeSetResponses[0];
 		const challenge = challengeSet?.challenges.find((challenge) => challenge.id === challengeId);
@@ -137,12 +135,14 @@ export const actions: Actions = {
 		if (!challengeSetResponse || !isLive(challengeSetResponse))
 			throw redirect(302, urls.challengeSetReview(setId));
 
+		// we aren't currently but we could validate the response here
+
 		// if SELECT_ELF_NAME, check if name is taken
 		if (challenge.type === 'SELECT_ELF_NAME') {
 			const { selectedFirstName, selectedLastName } = JSON.parse(response ?? '[]');
 			const challengeResponses = await prisma.challengeResponse.findMany({
 				where: { challengeId },
-				select: { response: true }
+				select: { response: true },
 			});
 			const { takenFirstNames, takenLastNames } = takenElfNames(challengeResponses) ?? {};
 			const firstNameIsTaken = takenFirstNames?.includes(selectedFirstName);
@@ -159,7 +159,7 @@ export const actions: Actions = {
 								? `${selectedFirstName} is taken`
 								: `${selectedLastName} is taken}`,
 						takenFirstNames,
-						takenLastNames
+						takenLastNames,
 					})
 				);
 			}
@@ -169,7 +169,7 @@ export const actions: Actions = {
 		await prisma.challengeResponse.upsert({
 			where: { playerId_challengeId: { challengeId, playerId } },
 			update: { response },
-			create: { challengeId, playerId, response }
+			create: { challengeId, playerId, response },
 		});
 
 		if (submitting) {
@@ -182,21 +182,21 @@ export const actions: Actions = {
 					include: {
 						options: true,
 						responses: {
-							where: { playerId }
-						}
-					}
+							where: { playerId },
+						},
+					},
 				}),
 				prisma.challengeResponse.findFirst({
 					where: { playerId, challenge: { type: 'SELECT_ELF_NAME' } },
-					orderBy: { createdAt: 'desc' }
-				})
+					orderBy: { createdAt: 'desc' },
+				}),
 			]);
 
 			const points = scoreChallenges(challenges, { elfNameChallengeResponse });
 
 			await prisma.challengeSetResponse.update({
 				where: { id: challengeSetResponse.id },
-				data: { completedAt, points }
+				data: { completedAt, points },
 			});
 
 			const redirectHere = !TYPES_THAT_HANDLE_THEIR_OWN_REDIRECTS.includes(challenge.type);
@@ -208,5 +208,5 @@ export const actions: Actions = {
 		if (!TYPES_THAT_HANDLE_THEIR_OWN_REDIRECTS.includes(challenge.type)) {
 			throw redirect(302, nextChallengeUrl(challengeSet, challengeId));
 		}
-	}
+	},
 };

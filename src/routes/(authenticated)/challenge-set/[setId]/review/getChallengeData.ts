@@ -37,7 +37,7 @@ const challengeTypeFns = {
 	OPEN_RESPONSE: openResponse,
 	SELECT_ELF_NAME: selectElfName,
 	YOUR_ELF_NAME_WORTH: yourElfNameWorth,
-	MATCH: match
+	MATCH: match,
 };
 
 const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
@@ -49,7 +49,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
 			ownElfName: null,
 			allElfNames: null,
-			...challenge
+			...challenge,
 		};
 	if (type === 'WORDLE')
 		return {
@@ -58,7 +58,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
 			ownElfName: null,
 			allElfNames: null,
-			...challenge
+			...challenge,
 		};
 	if (type === 'WORDLE_2023')
 		return {
@@ -67,7 +67,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
 			ownElfName: null,
 			allElfNames: null,
-			...challenge
+			...challenge,
 		};
 	if (type === 'MULTIPLE_CHOICE')
 		return {
@@ -76,7 +76,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
 			ownElfName: null,
 			allElfNames: null,
-			...challenge
+			...challenge,
 		};
 	if (type === 'OPEN_RESPONSE')
 		return {
@@ -85,7 +85,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
 			ownElfName: null,
 			allElfNames: null,
-			...challenge
+			...challenge,
 		};
 	if (type === 'MATCH')
 		return {
@@ -94,7 +94,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
 			ownElfName: null,
 			allElfNames: null,
-			...challenge
+			...challenge,
 		};
 	if (type === 'SELECT_ELF_NAME') {
 		const elfNameQuery = await prisma.challengeResponse.findMany({
@@ -105,17 +105,17 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 						email: true,
 						firstName: true,
 						lastName: true,
-						username: true
-					}
-				}
-			}
+						username: true,
+					},
+				},
+			},
 		});
 		const allElfNames = elfNameQuery.map((response) => {
 			const { selectedFirstName, selectedLastName } = JSON.parse(response.response || '{}');
 			return {
 				player: displayName(response.player),
 				elfFirstName: selectedFirstName,
-				elfLastName: selectedLastName
+				elfLastName: selectedLastName,
 			} as { player: string; elfFirstName: string; elfLastName: string };
 		});
 		return {
@@ -124,34 +124,13 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
 			ownElfName: ownElfName(challenge),
 			allElfNames,
-			...challenge
+			...challenge,
 		};
 	}
 	if (type === 'YOUR_ELF_NAME_WORTH') {
-		const elfNameQuery = await prisma.challengeResponse.findMany({
-			where: { challengeId: challenge.id },
-			include: {
-				player: {
-					select: {
-						email: true,
-						firstName: true,
-						lastName: true,
-						username: true
-					}
-				}
-			}
-		});
-		const elfNameData = elfNameQuery.map((response) => {
-			const { selectedFirstName, selectedLastName } = JSON.parse(response.response || '{}');
-			return {
-				player: displayName(response.player),
-				elfFirstName: selectedFirstName,
-				elfLastName: selectedLastName
-			} as { player: string; elfFirstName: string; elfLastName: string };
-		});
 		const elfNameResponse = await prisma.challengeResponse.findFirst({
 			where: { playerId: user.id, challenge: { type: 'SELECT_ELF_NAME' } },
-			orderBy: { createdAt: 'desc' }
+			orderBy: { createdAt: 'desc' },
 		});
 		const { selectedFirstName, selectedLastName } = JSON.parse(elfNameResponse?.response || '{}');
 		const elfName = `${selectedFirstName} ${selectedLastName}`;
@@ -160,8 +139,8 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			response: response(challenge),
 			responseIsCorrect: yourElfNameWorth.responseIsCorrect(challenge, elfNameResponse),
 			ownElfName: elfName,
-			allElfNames: elfNameData,
-			...challenge
+			allElfNames: null,
+			...challenge,
 		};
 	}
 	return {
@@ -170,7 +149,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 		responseIsCorrect: null,
 		ownElfName: null,
 		allElfNames: null,
-		...challenge
+		...challenge,
 	};
 };
 
