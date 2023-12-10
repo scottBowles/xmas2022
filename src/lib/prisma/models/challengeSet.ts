@@ -52,15 +52,15 @@ const resultsUrl: ResultsUrl = (challengeSet) => urls.challengeSetResults(challe
 const userResponseExists: UserResponseExists = (challengeSet) =>
 	Boolean(challengeSet.challengeSetResponses.length);
 
-const nextOnlineChallenge: NextChallenge = (challengeSet, thisChallengeId) => {
-	const onlineChallenges = challengeSet.challenges.filter((c) => c.type !== 'OFFLINE');
+const nextChallenge: NextChallenge = (challengeSet, thisChallengeId) => {
+	const challenges = challengeSet.challenges;
 	if (thisChallengeId) {
-		const thisChallengeIndex = onlineChallenges.findIndex(
+		const thisChallengeIndex = challenges.findIndex(
 			(challenge) => challenge.id === thisChallengeId
 		);
 		if (thisChallengeIndex === -1) throw new Error('Challenge not found');
-		if (thisChallengeIndex === onlineChallenges.length - 1) return onlineChallenges[0];
-		return onlineChallenges[thisChallengeIndex + 1];
+		if (thisChallengeIndex === challenges.length - 1) return challenges[0];
+		return challenges[thisChallengeIndex + 1];
 	}
 	// This is from when we were redirecting to the first incomplete challenge rather than
 	// the first challenge. If we add navigation between challenges, this might make sense.
@@ -69,11 +69,11 @@ const nextOnlineChallenge: NextChallenge = (challengeSet, thisChallengeId) => {
 	// 		(challenge) => challenge.responses && !challenge.responses.length
 	// 	) || challengeSet.challenges[0]
 	// );
-	return onlineChallenges[0];
+	return challenges[0];
 };
 
 const nextChallengeUrl: NextChallengeUrl = (challengeSet, lastChallengeId) =>
-	urls.challenge(challengeSet.id, nextOnlineChallenge(challengeSet, lastChallengeId).id);
+	urls.challenge(challengeSet.id, nextChallenge(challengeSet, lastChallengeId).id);
 
 const numScoreboardStats: NumScoreboardStats = ({ isTimed, isScored }) =>
 	sum([isTimed, isScored].map((a) => (a ? 1 : 0)));
@@ -94,7 +94,7 @@ const addChallengesExist = addKey('challengesExist', challengesExist);
 const addUserHasCompleted = addKey('userHasCompleted', userHasCompleted);
 const addResultsUrl = addKey('resultsUrl', resultsUrl);
 const addUserResponseExists = addKey('userResponseExists', userResponseExists);
-const addNextOnlineChallenge = addKey('nextOnlineChallenge', nextOnlineChallenge);
+const addNextChallenge = addKey('nextChallenge', nextChallenge);
 const addNextChallengeUrl = addKey('nextChallengeUrl', nextChallengeUrl);
 const addYear = addKey('year', year);
 
@@ -109,8 +109,8 @@ export {
 	addResultsUrl,
 	userResponseExists,
 	addUserResponseExists,
-	nextOnlineChallenge,
-	addNextOnlineChallenge,
+	nextChallenge,
+	addNextChallenge,
 	nextChallengeUrl,
 	addNextChallengeUrl,
 	numScoreboardStats,
