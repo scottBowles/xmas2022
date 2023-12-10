@@ -27,25 +27,33 @@ export const actions: Actions = {
 				: await prisma.user.findMany();
 
 			const promises = users.map(async (user) => {
-				const challengeSetResponses = await prisma.challengeSetResponse.findMany({
-					where: { playerId: user.id, completedAt: { not: null } },
-					include: {
-						challengeSet: {
-							include: {
-								challenges: {
-									include: {
-										options: true,
-										responses: {
-											where: { playerId: user.id }
+				const [challengeSetResponses, elfNameChallengeResponse] = await Promise.all([
+					prisma.challengeSetResponse.findMany({
+						where: { playerId: user.id, completedAt: { not: null } },
+						include: {
+							challengeSet: {
+								include: {
+									challenges: {
+										include: {
+											options: true,
+											responses: {
+												where: { playerId: user.id }
+											}
 										}
 									}
 								}
 							}
 						}
-					}
-				});
+					}),
+					prisma.challengeResponse.findFirst({
+						where: { playerId: user.id, challenge: { type: 'SELECT_ELF_NAME' } },
+						orderBy: { createdAt: 'desc' }
+					})
+				]);
 				const updatePromises = challengeSetResponses.map(async (challengeSetResponse) => {
-					const points = scoreChallenges(challengeSetResponse.challengeSet.challenges);
+					const points = scoreChallenges(challengeSetResponse.challengeSet.challenges, {
+						elfNameChallengeResponse
+					});
 					await prisma.challengeSetResponse.update({
 						where: { id: challengeSetResponse.id },
 						data: { points }
