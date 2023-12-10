@@ -65,6 +65,7 @@ enum ChallengeType {
   SELECT_ELF_NAME
   OFFLINE
   YOUR_ELF_NAME_WORTH
+  MATCH
 }
 
 model Challenge {
@@ -79,6 +80,8 @@ model Challenge {
   responses               ChallengeResponse[]
   type                    ChallengeType       @default(OPEN_RESPONSE)
   points                  Int                 @default(0)
+  matches                 String[]
+  matchOptions            String[]
 }
 
 model Option {
