@@ -3,6 +3,7 @@
 	import { formatDuration } from '$lib/utils';
 	import type { PageData } from './$types';
 	import NonWordleReview from './NonWordleReview.svelte';
+	import OfflineReview from './OfflineReview.svelte';
 	import SelectElfNameReview from './SelectElfNameReview.svelte';
 	import Wordle2022Review from './Wordle2022Review.svelte';
 	import Wordle2023Review from './Wordle2023Review.svelte';
@@ -39,6 +40,8 @@
 				<SelectElfNameReview {challenge} />
 			{:else if challenge.type === 'YOUR_ELF_NAME_WORTH'}
 				<YourElfNameWorthReview {challenge} />
+			{:else if challenge.type === 'OFFLINE'}
+				<OfflineReview {challenge} />
 			{:else}
 				<p>Loading Challenge...</p>
 			{/if}

@@ -53,7 +53,6 @@ export const actions: Actions = {
 					select: { startedAt: true, completedAt: true }
 				},
 				challenges: {
-					where: { type: { notIn: ['OFFLINE'] } },
 					select: {
 						id: true,
 						responses: { select: { response: true }, where: { playerId: user.id } },

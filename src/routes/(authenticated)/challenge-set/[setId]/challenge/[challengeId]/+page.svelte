@@ -5,6 +5,7 @@
 	import NonWordleForm from './NonWordleForm.svelte';
 	import WordleForm from './WordleForm.svelte';
 	import SelectElfNameForm from './SelectElfNameForm.svelte';
+	import OfflineForm from './OfflineForm.svelte';
 
 	export let data;
 	export let form;
@@ -29,6 +30,8 @@
 			<NonWordleForm {data} />
 		{:else if 'SELECT_ELF_NAME' === challenge.type}
 			<SelectElfNameForm {data} {form} />
+		{:else if 'OFFLINE' === challenge.type}
+			<OfflineForm {data} />
 		{:else}
 			<p>Loading Challenge...</p>
 		{/if}

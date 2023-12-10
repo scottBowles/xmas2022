@@ -7,9 +7,10 @@ import * as selectElfName from './selectElfName';
 import * as wordle2022 from './wordle2022';
 import * as wordle2023 from './wordle2023';
 import * as yourElfNameWorth from './yourElfNameWorth';
+import * as offline from './offline';
 
-type IsLastOnlineMinimalInput = { challenges: Pick<Challenge, 'id' | 'type'>[] };
-type IsLastOnline = <T extends IsLastOnlineMinimalInput>(
+type IsLastMinimalInput = { challenges: Pick<Challenge, 'id' | 'type'>[] };
+type IsLast = <T extends IsLastMinimalInput>(
 	challengeSet: T
 ) => (challenge: T['challenges'][number]) => boolean;
 
@@ -35,9 +36,9 @@ type ScoreChallenges = <T extends ScoreChallengeMinimalInput>(
 	extra: { elfNameChallengeResponse: ChallengeResponse | null }
 ) => number;
 
-const isLastOnline: IsLastOnline = (challengeSet) => (challenge) => {
-	const onlineChallenges = challengeSet.challenges.filter((c) => c.type !== 'OFFLINE');
-	return onlineChallenges[challengeSet.challenges.length - 1].id === challenge.id;
+const isLast: IsLast = (challengeSet) => (challenge) => {
+	const { challenges } = challengeSet;
+	return challenges[challenges.length - 1].id === challenge.id;
 };
 
 const ownElfName: OwnElfName = (challenge) => {
@@ -55,14 +56,15 @@ const scoreChallenge: ScoreChallenge = (challenge, extra) => {
 	if (challenge.type === 'SELECT_ELF_NAME') return selectElfName.scoreChallenge(challenge, extra);
 	if (challenge.type === 'YOUR_ELF_NAME_WORTH')
 		return yourElfNameWorth.scoreChallenge(challenge, extra.elfNameChallengeResponse);
+	if (challenge.type === 'OFFLINE') return offline.scoreChallenge(challenge, extra);
 	return 0;
 };
 
 const scoreChallenges: ScoreChallenges = (challenges, extra) =>
 	challenges.reduce((acc, challenge) => acc + scoreChallenge(challenge, extra), 0);
 
-const addIsLastOnline = <T extends { challenges: { id: number; type: Challenge['type'] }[] }>(
+const addIsLast = <T extends { challenges: { id: number; type: Challenge['type'] }[] }>(
 	challengeSet: T
-) => addKey('isLastOnline', isLastOnline(challengeSet));
+) => addKey('isLast', isLast(challengeSet));
 
-export { isLastOnline, ownElfName, response, scoreChallenge, scoreChallenges, addIsLastOnline };
+export { isLast, ownElfName, response, scoreChallenge, scoreChallenges, addIsLast };
