@@ -17,21 +17,21 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 		select: {
 			challengeSetResponses: {
 				where: { playerId: user.id },
-				select: { startedAt: true, completedAt: true, points: true }
+				select: { startedAt: true, completedAt: true, points: true },
 			},
 			challenges: {
 				include: {
 					options: true,
 					responses: {
-						where: { playerId: user.id }
-					}
+						where: { playerId: user.id },
+					},
 				},
-				orderBy: { id: 'asc' }
+				orderBy: { id: 'asc' },
 			},
 			title: true,
 			timeAvailableStart: true,
-			id: true
-		}
+			id: true,
+		},
 	});
 
 	/** Derived */
@@ -55,6 +55,6 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 		challengeSet: pickAll(['title', 'timeAvailableStart', 'id'], challengeSet),
 		challenges,
 		timeTaken: timeTaken(challengeSetResponse),
-		points: challengeSetResponse.points
+		points: challengeSetResponse.points,
 	};
 };

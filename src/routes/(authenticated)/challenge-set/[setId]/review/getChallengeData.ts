@@ -28,6 +28,7 @@ type ChallengeQuery = {
 		response: string;
 		pointsEarned: number | null;
 		submittedAfterSetEnd: boolean;
+		pointsManuallyAwarded: number | null;
 	}[];
 } & Challenge;
 

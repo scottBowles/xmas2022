@@ -6,6 +6,7 @@
 
 <form>
 	<fieldset disabled>
+		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 		<p class="mb-3 text-lg">{@html challenge.prompt}</p>
 		<p class="mb-3 text-lg">
 			Your elf name is {challenge.ownElfName}

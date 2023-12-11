@@ -18,6 +18,7 @@
 </script>
 
 <form class="flex flex-col justify-between grow sm:justify-start" method="POST" use:enhance>
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 	<legend class="mb-4 text-lg">{@html challenge.prompt}</legend>
 
 	<ol class="mb-6">
@@ -41,6 +42,7 @@
 		{#each values as _, i}
 			<label class="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
 				<span>{i + 1}</span>
+				<!-- svelte-ignore a11y-autofocus -->
 				<input
 					type="text"
 					name={`match_${i}`}

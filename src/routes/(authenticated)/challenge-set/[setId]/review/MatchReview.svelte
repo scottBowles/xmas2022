@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import * as match from '$lib/prisma/models/challenge/match';
+	import { match } from '$lib/prisma/models/challenge/challengeTypeFns';
 
 	export let challenge: PageData['challenges'][number];
 	$: correctValues = JSON.parse(challenge.correctAnswer || '[]');
@@ -9,6 +9,7 @@
 </script>
 
 <form class="flex flex-col justify-between grow sm:justify-start">
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 	<legend class="mb-4 text-lg">{@html challenge.prompt}</legend>
 
 	<ol class="mb-6">
