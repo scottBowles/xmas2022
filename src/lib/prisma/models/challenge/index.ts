@@ -1,41 +1,25 @@
 import { addKey } from '$lib/utils';
-import type { Challenge, ChallengeResponse } from '@prisma/client';
+import type { Challenge } from '@prisma/client';
 import { response } from './utils';
-import * as multipleChoice from './multipleChoice';
-import * as openResponse from './openResponse';
-import * as selectElfName from './selectElfName';
-import * as wordle2022 from './wordle2022';
-import * as wordle2023 from './wordle2023';
-import * as yourElfNameWorth from './yourElfNameWorth';
-import * as offline from './offline';
-import * as match from './match';
+import {
+	multipleChoice,
+	openResponse,
+	selectElfName,
+	wordle2022,
+	wordle2023,
+	yourElfNameWorth,
+	offline,
+	match,
+} from './challengeTypeFns';
+import type { ScoreChallenge, ScoreChallenges } from './types';
 
 type IsLastMinimalInput = { challenges: Pick<Challenge, 'id' | 'type'>[] };
 type IsLast = <T extends IsLastMinimalInput>(
 	challengeSet: T
 ) => (challenge: T['challenges'][number]) => boolean;
 
-type ResponseMinimalInput = { responses: { response: string }[] };
 type OwnElfNameMinimalInput = { responses: { response: string }[]; type: Challenge['type'] };
 type OwnElfName = <T extends OwnElfNameMinimalInput>(challenge: T) => string | null;
-
-type CorrectAnswersMinimalInput = { options: { isCorrect: boolean; text: string }[] } & {
-	acceptedResponsesIfOpen: string[];
-	type: Challenge['type'];
-} & ResponseMinimalInput;
-
-type ScoreChallengeMinimalInput = CorrectAnswersMinimalInput & {
-	points: Challenge['points'];
-	type: Challenge['type'];
-};
-type ScoreChallenge = <T extends ScoreChallengeMinimalInput>(
-	challenge: T,
-	extra: { elfNameChallengeResponse: ChallengeResponse | null }
-) => number;
-type ScoreChallenges = <T extends ScoreChallengeMinimalInput>(
-	challenges: T[],
-	extra: { elfNameChallengeResponse: ChallengeResponse | null }
-) => number;
 
 const isLast: IsLast = (challengeSet) => (challenge) => {
 	const { challenges } = challengeSet;

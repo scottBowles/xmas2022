@@ -2,7 +2,8 @@ import type {
 	CorrectAnswerFromAcceptedResponses,
 	CorrectAnswerFromOptions,
 	CorrectAnswers,
-	GetResponse
+	GetResponse,
+	PointsManuallyAwarded,
 } from './types';
 
 // remove all characters that are not letters or numbers and convert to lowercase
@@ -19,3 +20,5 @@ export const allowableAnswers: CorrectAnswers = (challenge) => {
 	}
 	return challenge.acceptedResponsesIfOpen;
 };
+export const pointsManuallyAwarded: PointsManuallyAwarded = (challenge) =>
+	challenge.responses[0]?.pointsManuallyAwarded ?? 0;

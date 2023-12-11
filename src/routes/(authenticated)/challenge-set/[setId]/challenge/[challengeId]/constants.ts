@@ -42,7 +42,7 @@ export const ELF_FIRST_NAMES = [
 	'Boo',
 	'Lovey',
 	'Sissie',
-	'Scooter'
+	'Scooter',
 ];
 
 export const ELF_LAST_NAMES = [
@@ -85,5 +85,5 @@ export const ELF_LAST_NAMES = [
 	'Mischief',
 	'Troublemaker',
 	'Fluffernutter',
-	'Chocolatechips'
+	'Chocolatechips',
 ];

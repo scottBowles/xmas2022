@@ -98,12 +98,12 @@
 								<td class={idx % 2 ? 'text-christmasRed' : 'text-green-700'}>
 									{displayName(player)}
 								</td>
-								{#each challengeSets as challenge}
-									{@const { time, points } = playerScores[player.id]?.[challenge.id] || {}}
-									{#if challenge.isTimed}
+								{#each challengeSets as challengeSet}
+									{@const { time, points } = playerScores[player.id]?.[challengeSet.id] || {}}
+									{#if challengeSet.isTimed}
 										<td>{time ? formatDuration(time, false) : '–'}</td>
 									{/if}
-									{#if challenge.isScored}
+									{#if challengeSet.isScored}
 										<td>{points ?? '–'}</td>
 									{/if}
 								{/each}

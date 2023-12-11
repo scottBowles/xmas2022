@@ -1,13 +1,15 @@
 import prisma from '$lib/prisma';
 import { displayName } from '$lib/prisma/models/user';
-import * as yourElfNameWorth from '$lib/prisma/models/challenge/yourElfNameWorth';
-import * as selectElfName from '$lib/prisma/models/challenge/selectElfName';
-import * as wordle2022 from '$lib/prisma/models/challenge/wordle2022';
-import * as wordle2023 from '$lib/prisma/models/challenge/wordle2023';
-import * as multipleChoice from '$lib/prisma/models/challenge/multipleChoice';
-import * as openResponse from '$lib/prisma/models/challenge/openResponse';
-import * as offline from '$lib/prisma/models/challenge/offline';
-import * as match from '$lib/prisma/models/challenge/match';
+import {
+	yourElfNameWorth,
+	selectElfName,
+	wordle2022,
+	wordle2023,
+	multipleChoice,
+	openResponse,
+	offline,
+	match,
+} from '$lib/prisma/models/challenge/challengeTypeFns';
 import { response } from '$lib/prisma/models/challenge/utils';
 import { ownElfName } from '$lib/prisma/models/challenge';
 import type { Challenge } from '@prisma/client';

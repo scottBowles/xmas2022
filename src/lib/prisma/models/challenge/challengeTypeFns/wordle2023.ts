@@ -1,5 +1,5 @@
-import { correctAnswerFromAcceptedResponses, response } from './utils';
-import type { CorrectAnswer, ResponseIsCorrect, ScoreChallenge } from './types';
+import { correctAnswerFromAcceptedResponses, pointsManuallyAwarded, response } from '../utils';
+import type { CorrectAnswer, ResponseIsCorrect, ScoreChallenge } from '../types';
 
 const correctAnswer: CorrectAnswer = correctAnswerFromAcceptedResponses;
 
@@ -24,10 +24,10 @@ const scoreChallenge: ScoreChallenge = (challenge) => {
 		'3': 6,
 		'4': 4,
 		'5': 2,
-		'6': 1
+		'6': 1,
 	} as Record<string, number>;
-	const points = pointsForNumberOfGuesses[numberOfGuesses] || 0;
-	return points;
+	const pointsForCorrect = pointsForNumberOfGuesses[numberOfGuesses] || 0;
+	return pointsForCorrect + pointsManuallyAwarded(challenge);
 };
 
 export { correctAnswer, responseIsCorrect, scoreChallenge };

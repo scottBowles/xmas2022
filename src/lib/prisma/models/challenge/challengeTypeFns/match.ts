@@ -1,5 +1,10 @@
-import { correctAnswerFromAcceptedResponses, normalize, response } from './utils';
-import type { CorrectAnswer, ResponseIsCorrect, ScoreChallenge } from './types';
+import {
+	correctAnswerFromAcceptedResponses,
+	normalize,
+	pointsManuallyAwarded,
+	response,
+} from '../utils';
+import type { CorrectAnswer, ResponseIsCorrect, ScoreChallenge } from '../types';
 
 const correctAnswer: CorrectAnswer = correctAnswerFromAcceptedResponses;
 
@@ -16,7 +21,8 @@ const scoreChallenge: ScoreChallenge = (challenge) => {
 			normalize(val) === normalize(res[index]) ? acc + 1 : acc,
 		0
 	);
-	return Math.round((numIndicesInCommon / answer.length) * challenge.points);
+	const pointsForCorrect = Math.round((numIndicesInCommon / answer.length) * challenge.points);
+	return pointsForCorrect + pointsManuallyAwarded(challenge);
 };
 
 export { correctAnswer, responseIsCorrect, scoreChallenge };

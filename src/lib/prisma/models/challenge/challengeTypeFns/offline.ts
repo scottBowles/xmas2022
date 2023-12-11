@@ -1,5 +1,5 @@
-import { correctAnswerFromAcceptedResponses, response } from './utils';
-import type { CorrectAnswer, ResponseIsCorrect, ScoreChallenge } from './types';
+import { correctAnswerFromAcceptedResponses, pointsManuallyAwarded, response } from '../utils';
+import type { CorrectAnswer, ResponseIsCorrect, ScoreChallenge } from '../types';
 
 const correctAnswer: CorrectAnswer = correctAnswerFromAcceptedResponses;
 
@@ -10,7 +10,9 @@ const responseIsCorrect: ResponseIsCorrect = (challenge) => {
 	return givenResponse.toLowerCase() === answer.toLowerCase();
 };
 
-const scoreChallenge: ScoreChallenge = (challenge) =>
-	responseIsCorrect(challenge) ? challenge.points : 0;
+const scoreChallenge: ScoreChallenge = (challenge) => {
+	const pointsForCorrect = responseIsCorrect(challenge) ? challenge.points : 0;
+	return pointsForCorrect + pointsManuallyAwarded(challenge);
+};
 
 export { correctAnswer, responseIsCorrect, scoreChallenge };

@@ -1,9 +1,9 @@
-import { response } from './utils';
+import { pointsManuallyAwarded, response } from '../utils';
 import type {
 	CorrectAnswerMinimalInput,
 	CorrectAnswersMinimalInput,
 	ScoreChallengeMinimalInput,
-} from './types';
+} from '../types';
 import { getElfNameWorth } from '$lib/utils';
 import type { ChallengeResponse } from '@prisma/client';
 
@@ -37,12 +37,10 @@ const responseIsCorrect: ResponseIsCorrectYourElfNameWorth = (
 
 const scoreChallenge: ScoreChallengeYourElfNameWorth = (challenge, elfNameChallengeResponse) => {
 	if (!elfNameChallengeResponse?.response) return 0;
-	return responseIsCorrect(challenge, elfNameChallengeResponse) ? challenge.points : 0;
+	const pointsForCorrect = responseIsCorrect(challenge, elfNameChallengeResponse)
+		? challenge.points
+		: 0;
+	return pointsForCorrect + pointsManuallyAwarded(challenge);
 };
 
 export { correctAnswer, responseIsCorrect, scoreChallenge };
-
-// our data pipe will be:
-// common promise
-// handed off to challenge type functions that can add to those promises and return data
-// handed off to challenge type functions that turn that data into our response object
