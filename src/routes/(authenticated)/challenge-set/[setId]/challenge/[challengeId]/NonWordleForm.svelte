@@ -13,6 +13,7 @@
 
 <form class="flex flex-col justify-between grow sm:justify-start" method="POST" use:enhance>
 	<fieldset class="flex flex-col mt-4">
+		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 		<legend class="mb-4 text-lg">{@html challenge.prompt}</legend>
 		{#if challenge.type === 'MULTIPLE_CHOICE'}
 			{#key data}

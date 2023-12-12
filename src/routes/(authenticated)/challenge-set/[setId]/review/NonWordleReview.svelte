@@ -7,6 +7,7 @@
 
 <form>
 	<fieldset disabled>
+		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 		<p class="mb-3 text-lg">{@html challenge.prompt}</p>
 		{#if challenge.options.length > 0}
 			{#each challenge.options as option}
