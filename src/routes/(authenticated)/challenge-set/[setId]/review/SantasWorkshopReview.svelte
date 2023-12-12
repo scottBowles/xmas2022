@@ -103,7 +103,7 @@
 	<form class="mt-6 mb-64" method="POST" use:enhance>
 		<fieldset disabled>
 			<legend
-				>List the elves in each area using first names only as they appear in the clues:</legend
+				>List the elves in each area using first names only, as they appear in the clues:</legend
 			>
 			<div class="grid grid-cols-2 gap-4">
 				{#each workshopAreaImgData as { src, alt }, i}

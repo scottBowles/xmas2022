@@ -101,7 +101,8 @@
 
 <div class="mb-32">
 	<form class="mt-6 mb-64" method="POST" use:enhance>
-		<legend>List the elves in each area, as their names appear in the clues:</legend>
+		<legend>List the elves in each area using first names only, as they appear in the clues:</legend
+		>
 		<input type="hidden" value={answerJson} name="answer" />
 		<div class="grid grid-cols-2 gap-4">
 			{#each workshopAreaImgData as { src, alt }, i}
