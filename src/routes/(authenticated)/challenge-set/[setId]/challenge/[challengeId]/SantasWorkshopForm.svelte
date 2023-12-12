@@ -67,7 +67,7 @@
 			or the mail room.
 		</li>
 		<li>
-			3. <span class="text-green-700">{helpers[0].shortName}</span> work on the runway.
+			3. <span class="text-green-700">{helpers[1].shortName}</span> work on the runway.
 		</li>
 		<li>
 			4. <span class="text-christmasRed">{managers[0].shortName}</span> don’t work in the mail room.
