@@ -6,6 +6,7 @@
 	import mailroom from '$lib/assets/santas_workshop_mailroom.png';
 	import runway from '$lib/assets/santas_workshop_runway.png';
 	import ShowHideToggle from '$lib/components/ShowHideToggle.svelte';
+	import { normalize } from '$lib/prisma/models/challenge/utils';
 
 	export let challenge: PageData['challenges'][number];
 
@@ -111,7 +112,7 @@
 						<img {src} {alt} />
 						<div>
 							<label class={'text-green-700'}>
-								{#if givenAnswer[i * 3] === correctAnswer[i * 3]}
+								{#if normalize(givenAnswer[i * 3]) === normalize(correctAnswer[i * 3])}
 									<span class="text-green-700">Manager ✅</span>
 								{:else}
 									<span class="text-christmasRed">Manager ❌ ({correctAnswer[i * 3]})</span>
@@ -123,7 +124,7 @@
 								/>
 							</label>
 							<label class={'text-christmasRed'}>
-								{#if givenAnswer[i * 3 + 1] === correctAnswer[i * 3 + 1]}
+								{#if normalize(givenAnswer[i * 3 + 1]) === normalize(correctAnswer[i * 3 + 1])}
 									<span class="text-green-700">Helper ✅</span>
 								{:else}
 									<span class="text-christmasRed">Helper ❌ ({correctAnswer[i * 3]})</span>
@@ -135,7 +136,7 @@
 								/>
 							</label>
 							<label class={'text-green-700'}>
-								{#if givenAnswer[i * 3 + 2] === correctAnswer[i * 3 + 2]}
+								{#if normalize(givenAnswer[i * 3 + 2]) === normalize(correctAnswer[i * 3 + 2])}
 									<span class="text-green-700">Assistant ✅</span>
 								{:else}
 									<span class="text-christmasRed">Assistant ❌ ({correctAnswer[i * 3]})</span>
