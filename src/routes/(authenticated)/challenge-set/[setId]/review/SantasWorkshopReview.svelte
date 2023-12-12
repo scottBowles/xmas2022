@@ -127,7 +127,7 @@
 								{#if normalize(givenAnswer[i * 3 + 1]) === normalize(correctAnswer[i * 3 + 1])}
 									<span class="text-green-700">Helper ✅</span>
 								{:else}
-									<span class="text-christmasRed">Helper ❌ ({correctAnswer[i * 3]})</span>
+									<span class="text-christmasRed">Helper ❌ ({correctAnswer[i * 3 + 1]})</span>
 								{/if}
 								<input
 									name="controlRoom2"
@@ -139,7 +139,7 @@
 								{#if normalize(givenAnswer[i * 3 + 2]) === normalize(correctAnswer[i * 3 + 2])}
 									<span class="text-green-700">Assistant ✅</span>
 								{:else}
-									<span class="text-christmasRed">Assistant ❌ ({correctAnswer[i * 3]})</span>
+									<span class="text-christmasRed">Assistant ❌ ({correctAnswer[i * 3 + 2]})</span>
 								{/if}
 								<input
 									name="controlRoom3"
