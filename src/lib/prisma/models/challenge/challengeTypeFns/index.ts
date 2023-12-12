@@ -6,3 +6,4 @@ export * as wordle2022 from './wordle2022';
 export * as wordle2023 from './wordle2023';
 export * as yourElfNameWorth from './yourElfNameWorth';
 export * as offline from './offline';
+export * as santasWorkshop from './santasWorkshop';

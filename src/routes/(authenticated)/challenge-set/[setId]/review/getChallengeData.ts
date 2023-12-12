@@ -9,6 +9,7 @@ import {
 	openResponse,
 	offline,
 	match,
+	santasWorkshop,
 } from '$lib/prisma/models/challenge/challengeTypeFns';
 import { response } from '$lib/prisma/models/challenge/utils';
 import { ownElfName } from '$lib/prisma/models/challenge';
@@ -41,6 +42,7 @@ const challengeTypeFns = {
 	SELECT_ELF_NAME: selectElfName,
 	YOUR_ELF_NAME_WORTH: yourElfNameWorth,
 	MATCH: match,
+	SANTAS_WORKSHOP: santasWorkshop,
 };
 
 const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
@@ -91,6 +93,15 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			...challenge,
 		};
 	if (type === 'MATCH')
+		return {
+			correctAnswer: challengeTypeFns[type].correctAnswer(challenge),
+			response: response(challenge),
+			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
+			ownElfName: null,
+			allElfNames: null,
+			...challenge,
+		};
+	if (type === 'SANTAS_WORKSHOP')
 		return {
 			correctAnswer: challengeTypeFns[type].correctAnswer(challenge),
 			response: response(challenge),

@@ -5,6 +5,7 @@
 	import MatchReview from './MatchReview.svelte';
 	import NonWordleReview from './NonWordleReview.svelte';
 	import OfflineReview from './OfflineReview.svelte';
+	import SantasWorkshopReview from './SantasWorkshopReview.svelte';
 	import SelectElfNameReview from './SelectElfNameReview.svelte';
 	import Wordle2022Review from './Wordle2022Review.svelte';
 	import Wordle2023Review from './Wordle2023Review.svelte';
@@ -45,6 +46,8 @@
 				<YourElfNameWorthReview {challenge} />
 			{:else if challenge.type === 'OFFLINE'}
 				<OfflineReview {challenge} />
+			{:else if challenge.type === 'SANTAS_WORKSHOP'}
+				<SantasWorkshopReview {challenge} />
 			{:else}
 				<p>Loading Challenge...</p>
 			{/if}

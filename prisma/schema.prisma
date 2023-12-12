@@ -66,6 +66,7 @@ enum ChallengeType {
   OFFLINE
   YOUR_ELF_NAME_WORTH
   MATCH
+  SANTAS_WORKSHOP
 }
 
 model Challenge {

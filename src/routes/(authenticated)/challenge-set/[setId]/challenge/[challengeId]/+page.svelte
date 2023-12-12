@@ -7,6 +7,7 @@
 	import SelectElfNameForm from './SelectElfNameForm.svelte';
 	import OfflineForm from './OfflineForm.svelte';
 	import MatchForm from './MatchForm.svelte';
+	import SantasWorkshopForm from './SantasWorkshopForm.svelte';
 
 	export let data;
 	export let form;
@@ -35,11 +36,14 @@
 			<SelectElfNameForm {data} {form} />
 		{:else if 'OFFLINE' === challenge.type}
 			<OfflineForm {data} />
+		{:else if 'SANTAS_WORKSHOP' === challenge.type}
+			<SantasWorkshopForm {data} />
 		{:else}
 			<p>Loading Challenge...</p>
 		{/if}
 
 		{#if form?.message}
+			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			<p class="text-christmasRed">{@html form.message}</p>
 		{/if}
 	</div>
