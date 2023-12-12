@@ -10,43 +10,49 @@
 	export let data: PageData;
 
 	$: ({ challenge, setHasAnotherChallenge } = data);
-	$: response = challenge?.responses[0]?.response ?? '';
-
 	$: ({ assistants, helpers, managers } = JSON.parse(challenge.prompt));
-	$: console.log({ assistants, helpers, managers });
 
 	let answer = ['', '', '', '', '', '', '', '', '', '', '', ''];
-	$: console.log(answer);
+	$: answerJson = JSON.stringify(answer);
+
+	const workshopAreaImgData = [
+		{ src: controlRoom, alt: 'Control room' },
+		{ src: garage, alt: 'Garage' },
+		{ src: mailroom, alt: 'Mailroom' },
+		{ src: runway, alt: 'Runway' },
+	];
 </script>
 
-<p class="mt-4 mb-4">
-	With Christmas Day fast approaching, Santa has hired 24 elves to help him in his workshop. The
-	elves work in pairs. Sadly, the job assignment list for each pair was lost! Use the clues to help
-	Santa assign the elf pairs to the correct job.
-</p>
+<div class="mt-4 mb-4">
+	<p class="mb-2">
+		With Christmas Day fast approaching, Santa has hired 24 elves to help him in his workshop. The
+		elves work in pairs. Sadly, the job assignment list for each pair was lost!
+	</p>
+	<p>Use the clues to help Santa assign the elf pairs to the correct job.</p>
+</div>
 
 <div class="mb-4">
 	<div class="mb-2">
 		<h2 class="font-bold">MANAGERS</h2>
 		<ul>
-			{#each managers as manager}
-				<li>{manager.longName}</li>
+			{#each managers as manager, i}
+				<li class={i % 2 === 0 ? 'text-green-700' : 'text-christmasRed'}>{manager.longName}</li>
 			{/each}
 		</ul>
 	</div>
 	<div class="mb-2">
 		<h2 class="font-bold">ASSISTANTS</h2>
 		<ul>
-			{#each assistants as assistant}
-				<li>{assistant.longName}</li>
+			{#each assistants as assistant, i}
+				<li class={i % 2 === 0 ? 'text-green-700' : 'text-christmasRed'}>{assistant.longName}</li>
 			{/each}
 		</ul>
 	</div>
 	<div>
 		<h2 class="font-bold">HELPERS</h2>
 		<ul>
-			{#each helpers as helper}
-				<li>{helper.longName}</li>
+			{#each helpers as helper, i}
+				<li class={i % 2 === 0 ? 'text-green-700' : 'text-christmasRed'}>{helper.longName}</li>
 			{/each}
 		</ul>
 	</div>
@@ -94,128 +100,47 @@
 </div>
 
 <div class="mb-32">
-	<form>
-		<legend>List the elves in each area:</legend>
-		<input type="hidden" value={answer} name="answer" />
+	<form class="mt-6 mb-64" method="POST" use:enhance>
+		<legend>List the elves in each area, as their names appear in the clues:</legend>
+		<input type="hidden" value={answerJson} name="answer" />
 		<div class="grid grid-cols-2 gap-4">
-			<div class="flex flex-col justify-between">
-				<img src={controlRoom} alt="Control room" />
-				<div>
-					<label class="text-green-700">
-						Manager
-						<input
-							name="controlRoom1"
-							bind:value={answer[0]}
-							class="text-green-700 border border-green-700 rounded focus:border-green-700 focus:outline-none w-full px-2 py-1"
-						/>
-					</label>
-					<label class="text-green-700">
-						Helper
-						<input
-							name="controlRoom2"
-							bind:value={answer[1]}
-							class="text-green-700 border border-green-700 rounded focus:border-green-700 focus:outline-none w-full px-2 py-1"
-						/>
-					</label>
-					<label class="text-green-700">
-						Assistant
-						<input
-							name="controlRoom3"
-							bind:value={answer[2]}
-							class="text-green-700 border border-green-700 rounded focus:border-green-700 focus:outline-none w-full px-2 py-1"
-						/>
-					</label>
+			{#each workshopAreaImgData as { src, alt }, i}
+				<div class="flex flex-col justify-between">
+					<img {src} {alt} />
+					<div>
+						<label class={'text-green-700'}>
+							Manager
+							<input
+								name="controlRoom1"
+								bind:value={answer[i * 3]}
+								class="text-green-700 border border-green-700 rounded focus:border-green-700 focus:outline-none w-full px-2 py-1"
+							/>
+						</label>
+						<label class={'text-christmasRed'}>
+							Helper
+							<input
+								name="controlRoom2"
+								bind:value={answer[i * 3 + 1]}
+								class="text-green-700 border border-green-700 rounded focus:border-green-700 focus:outline-none w-full px-2 py-1"
+							/>
+						</label>
+						<label class={'text-green-700'}>
+							Assistant
+							<input
+								name="controlRoom3"
+								bind:value={answer[i * 3 + 2]}
+								class="text-green-700 border border-green-700 rounded focus:border-green-700 focus:outline-none w-full px-2 py-1"
+							/>
+						</label>
+					</div>
 				</div>
-			</div>
-			<div class="flex flex-col justify-between">
-				<img src={garage} alt="Garage" />
-				<div>
-					<label class="text-green-700">
-						Manager
-						<input
-							name="garage1"
-							bind:value={answer[3]}
-							class="text-green-700 border border-green-700 rounded focus:border-green-700 focus:outline-none w-full px-2 py-1"
-						/>
-					</label>
-					<label class="text-green-700">
-						Helper
-						<input
-							name="garage2"
-							bind:value={answer[4]}
-							class="text-green-700 border border-green-700 rounded focus:border-green-700 focus:outline-none w-full px-2 py-1"
-						/>
-					</label>
-					<label class="text-green-700">
-						Assistant
-						<input
-							name="garage3"
-							bind:value={answer[5]}
-							class="text-green-700 border border-green-700 rounded focus:border-green-700 focus:outline-none w-full px-2 py-1"
-						/>
-					</label>
-				</div>
-			</div>
-			<div class="flex flex-col justify-between">
-				<img src={mailroom} alt="Mailroom" />
-				<div>
-					<label class="text-green-700">
-						Manager
-						<input
-							name="mailroom1"
-							bind:value={answer[6]}
-							class="text-green-700 border border-green-700 rounded focus:border-green-700 focus:outline-none w-full px-2 py-1"
-						/>
-					</label>
-					<label class="text-green-700">
-						Helper
-						<input
-							name="mailroom2"
-							bind:value={answer[7]}
-							class="text-green-700 border border-green-700 rounded focus:border-green-700 focus:outline-none w-full px-2 py-1"
-						/>
-					</label>
-					<label class="text-green-700">
-						Assistant
-						<input
-							name="mailroom3"
-							bind:value={answer[8]}
-							class="text-green-700 border border-green-700 rounded focus:border-green-700 focus:outline-none w-full px-2 py-1"
-						/>
-					</label>
-				</div>
-			</div>
-			<div class="flex flex-col justify-between">
-				<img src={runway} alt="Runway" />
-				<div>
-					<label class="text-green-700">
-						Manager
-						<input
-							name="runway1"
-							bind:value={answer[9]}
-							class="text-green-700 border border-green-700 rounded focus:border-green-700 focus:outline-none w-full px-2 py-1"
-						/>
-					</label>
-					<label class="text-green-700">
-						Helper
-						<input
-							name="runway2"
-							bind:value={answer[10]}
-							class="text-green-700 border border-green-700 rounded focus:border-green-700 focus:outline-none w-full px-2 py-1"
-						/>
-					</label>
-					<label class="text-green-700">
-						Assistant
-						<input
-							name="runway3"
-							bind:value={answer[11]}
-							class="text-green-700 border border-green-700 rounded focus:border-green-700 focus:outline-none w-full px-2 py-1"
-						/>
-					</label>
-				</div>
-			</div>
+			{/each}
 		</div>
-		<!-- NEED A SUBMIT BUTTON WITH THE RIGHT ACTION/NAME OR WHATEVER -->
-		<!-- ALSO NEED TO PUT THE RIGHT STUFF ON THE FORM ELEMENT -->
+		<input
+			type="submit"
+			name="submit_action"
+			value={setHasAnotherChallenge ? NEXT_INPUT_VALUE : SUBMIT_INPUT_VALUE}
+			class="bg-green-700 text-white py-2 px-6 rounded w-full my-8 disabled:opacity-50 disabled:cursor-not-allowed"
+		/>
 	</form>
 </div>

@@ -10,6 +10,7 @@ import {
 	yourElfNameWorth,
 	offline,
 	match,
+	santasWorkshop,
 } from './challengeTypeFns';
 import type { ScoreChallenge, ScoreChallenges } from './types';
 
@@ -43,6 +44,7 @@ const scoreChallenge: ScoreChallenge = (challenge, extra) => {
 		return yourElfNameWorth.scoreChallenge(challenge, extra.elfNameChallengeResponse);
 	if (challenge.type === 'OFFLINE') return offline.scoreChallenge(challenge, extra);
 	if (challenge.type === 'MATCH') return match.scoreChallenge(challenge, extra);
+	if (challenge.type === 'SANTAS_WORKSHOP') return santasWorkshop.scoreChallenge(challenge, extra);
 	return 0;
 };
 
