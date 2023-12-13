@@ -12,7 +12,7 @@
 			Your elf name is {challenge.ownElfName}
 		</p>
 		<p class="mb-3 text-lg">
-			Your elf name is worth {challenge.correctAnswer} points
+			Your elf name is worth ${challenge.correctAnswer}
 		</p>
 
 		You entered:
