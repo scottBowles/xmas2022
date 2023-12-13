@@ -8,6 +8,7 @@
 	import GroupSelect from '../../../GroupSelect.svelte';
 	import { goto } from '$app/navigation';
 	import YearSelect from '../../../YearSelect.svelte';
+	import DaySelect from '../../../DaySelect.svelte';
 
 	export let data: PageData;
 
@@ -22,6 +23,12 @@
 		const year = (e.target as HTMLSelectElement).value;
 		goto(urls.scoreboard(group, year, 'total'));
 	};
+
+	const onDayChange = (e: Event) => {
+		const day = (e.target as HTMLSelectElement).value;
+		const dayIdx = day === 'total' ? day : days.indexOf(day);
+		goto(urls.scoreboard(group, year, dayIdx));
+	};
 </script>
 
 <!-- GROUP SELECT -->
@@ -31,7 +38,11 @@
 <YearSelect {year} {years} {onYearChange} />
 
 <!-- CHALLENGE DAY NAVIGATION -->
-<DayNavigation {group} {days} {year} dayShown="total" />
+{#if days.length > 10}
+	<DaySelect {days} dayShown="total" {onDayChange} />
+{:else}
+	<DayNavigation {group} {year} {days} dayShown="total" />
+{/if}
 
 <!-- SCORES TABLE -->
 <PageMargin>

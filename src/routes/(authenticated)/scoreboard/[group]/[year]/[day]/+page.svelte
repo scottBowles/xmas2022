@@ -10,6 +10,7 @@
 	import DayNavigation from '../../../DayNavigation.svelte';
 	import GroupSelect from '../../../GroupSelect.svelte';
 	import YearSelect from '../../../YearSelect.svelte';
+	import DaySelect from '../../../DaySelect.svelte';
 
 	export let data;
 
@@ -27,6 +28,12 @@
 		goto(urls.scoreboard(group, year, days.indexOf(dayShown)));
 	};
 
+	const onDayChange = (e: Event) => {
+		const day = (e.target as HTMLSelectElement).value;
+		const dayIdx = day === 'total' ? day : days.indexOf(day);
+		goto(urls.scoreboard(group, year, dayIdx));
+	};
+
 	const getDayShownScore = (player: (typeof players)[number]) =>
 		challengeSets.reduce((acc, cur) => acc + (playerScores[player.id]?.[cur.id]?.points ?? 0), 0);
 </script>
@@ -38,7 +45,11 @@
 <YearSelect {year} {years} {onYearChange} />
 
 <!-- CHALLENGE DAY NAVIGATION -->
-<DayNavigation {group} {year} {days} {dayShown} />
+{#if days.length > 10}
+	<DaySelect {days} {dayShown} {onDayChange} />
+{:else}
+	<DayNavigation {group} {year} {days} {dayShown} />
+{/if}
 
 <!-- SCORES TABLE -->
 <PageMargin>
