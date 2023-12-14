@@ -10,6 +10,7 @@ import {
 	offline,
 	match,
 	santasWorkshop,
+	multipleOpenResponse,
 } from '$lib/prisma/models/challenge/challengeTypeFns';
 import { response } from '$lib/prisma/models/challenge/utils';
 import { ownElfName } from '$lib/prisma/models/challenge';
@@ -31,6 +32,15 @@ type ChallengeQuery = {
 		submittedAfterSetEnd: boolean;
 		pointsManuallyAwarded: number | null;
 	}[];
+	cldImages: {
+		id: number;
+		publicId: string;
+		createdAt: Date;
+		updatedAt: Date;
+		height: number;
+		width: number;
+		alt: string | null;
+	}[];
 } & Challenge;
 
 const challengeTypeFns = {
@@ -43,6 +53,7 @@ const challengeTypeFns = {
 	YOUR_ELF_NAME_WORTH: yourElfNameWorth,
 	MATCH: match,
 	SANTAS_WORKSHOP: santasWorkshop,
+	MULTIPLE_OPEN_RESPONSE: multipleOpenResponse,
 };
 
 const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
@@ -93,6 +104,15 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			...challenge,
 		};
 	if (type === 'MATCH')
+		return {
+			correctAnswer: challengeTypeFns[type].correctAnswer(challenge),
+			response: response(challenge),
+			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
+			ownElfName: null,
+			allElfNames: null,
+			...challenge,
+		};
+	if (type === 'MULTIPLE_OPEN_RESPONSE')
 		return {
 			correctAnswer: challengeTypeFns[type].correctAnswer(challenge),
 			response: response(challenge),

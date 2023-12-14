@@ -3,6 +3,7 @@
 	import { formatDuration } from '$lib/utils';
 	import type { PageData } from './$types';
 	import MatchReview from './MatchReview.svelte';
+	import MultipleOpenResponseReview from './MultipleOpenResponseReview.svelte';
 	import NonWordleReview from './NonWordleReview.svelte';
 	import OfflineReview from './OfflineReview.svelte';
 	import SantasWorkshopReview from './SantasWorkshopReview.svelte';
@@ -48,6 +49,8 @@
 				<OfflineReview {challenge} />
 			{:else if challenge.type === 'SANTAS_WORKSHOP'}
 				<SantasWorkshopReview {challenge} />
+			{:else if challenge.type === 'MULTIPLE_OPEN_RESPONSE'}
+				<MultipleOpenResponseReview {challenge} />
 			{:else}
 				<p>Loading Challenge...</p>
 			{/if}

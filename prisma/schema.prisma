@@ -67,6 +67,7 @@ enum ChallengeType {
   YOUR_ELF_NAME_WORTH
   MATCH
   SANTAS_WORKSHOP
+  MULTIPLE_OPEN_RESPONSE
 }
 
 model Challenge {
@@ -83,6 +84,7 @@ model Challenge {
   points                  Int                 @default(0)
   matches                 String[]
   matchOptions            String[]
+  cldImages               CldImage[]
 }
 
 model Option {
@@ -124,4 +126,15 @@ model ChallengeSetResponse {
   points             Int          @default(0)
 
   @@unique([playerId, challengeSetId])
+}
+
+model CldImage {
+  id         Int         @id @default(autoincrement())
+  publicId   String      @unique @db.VarChar(255)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  height     Int
+  width      Int
+  alt        String?
+  challenges Challenge[]
 }
