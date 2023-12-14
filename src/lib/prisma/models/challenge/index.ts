@@ -11,6 +11,7 @@ import {
 	offline,
 	match,
 	santasWorkshop,
+	multipleOpenResponse,
 } from './challengeTypeFns';
 import type { ScoreChallenge, ScoreChallenges } from './types';
 
@@ -45,6 +46,8 @@ const scoreChallenge: ScoreChallenge = (challenge, extra) => {
 	if (challenge.type === 'OFFLINE') return offline.scoreChallenge(challenge, extra);
 	if (challenge.type === 'MATCH') return match.scoreChallenge(challenge, extra);
 	if (challenge.type === 'SANTAS_WORKSHOP') return santasWorkshop.scoreChallenge(challenge, extra);
+	if (challenge.type === 'MULTIPLE_OPEN_RESPONSE')
+		return multipleOpenResponse.scoreChallenge(challenge, extra);
 	return 0;
 };
 

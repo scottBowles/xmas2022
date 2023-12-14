@@ -25,6 +25,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 					responses: {
 						where: { playerId: user.id },
 					},
+					cldImages: true,
 				},
 				orderBy: { id: 'asc' },
 			},
