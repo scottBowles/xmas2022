@@ -1,14 +1,17 @@
-import { correctAnswerFromAcceptedResponses, pointsManuallyAwarded, response } from '../utils';
+import {
+	correctAnswerFromAcceptedResponses,
+	normalize,
+	pointsManuallyAwarded,
+	response,
+} from '../utils';
 import type { CorrectAnswer, ResponseIsCorrect, ScoreChallenge } from '../types';
 
 const correctAnswer: CorrectAnswer = correctAnswerFromAcceptedResponses;
 
-const responseIsCorrect: ResponseIsCorrect = (challenge) => {
-	const givenResponse = response(challenge);
-	const answer = correctAnswer(challenge);
-	if (!givenResponse || !answer) return false;
-	return givenResponse.toLowerCase() === answer.toLowerCase();
-};
+const responseIsCorrect: ResponseIsCorrect = (challenge) =>
+	challenge.acceptedResponsesIfOpen.some(
+		(answer) => normalize(answer) === normalize(response(challenge))
+	);
 
 const scoreChallenge: ScoreChallenge = (challenge) => {
 	const pointsForCorrect = responseIsCorrect(challenge) ? challenge.points : 0;

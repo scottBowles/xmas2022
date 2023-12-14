@@ -14,16 +14,22 @@ const responseIsCorrect: ResponseIsCorrect = (challenge) =>
 	);
 
 const scoreChallenge: ScoreChallenge = (challenge) => {
-	const answer = JSON.parse(correctAnswer(challenge) || '[]');
 	const res = JSON.parse(response(challenge) || '[]');
-	const numIndicesInCommon = answer.reduce(
-		(acc: number, val: string, index: number) =>
-			normalize(val) === normalize(res[index]) ? acc + 1 : acc,
-		0
+	const numQuestions = JSON.parse(correctAnswer(challenge) || '[]').length;
+	const maxIndicesInCommonWithAnAcceptedResponse = Math.max(
+		...challenge.acceptedResponsesIfOpen.map((acceptedResponse) => {
+			const answer = JSON.parse(acceptedResponse || '[]');
+			const numIndicesInCommon: number = answer.reduce(
+				(acc: number, val: string, index: number) =>
+					normalize(val) === normalize(res[index]) ? acc + 1 : acc,
+				0
+			);
+			return numIndicesInCommon;
+		})
 	);
-	const pointsForCorrect = answer.length
-		? Math.round((numIndicesInCommon / answer.length) * challenge.points)
-		: 0;
+	const pointsForCorrect =
+		numQuestions &&
+		Math.round((maxIndicesInCommonWithAnAcceptedResponse / numQuestions) * challenge.points);
 	return pointsForCorrect + pointsManuallyAwarded(challenge);
 };
 
