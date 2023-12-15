@@ -211,3 +211,25 @@ export const actions: Actions = {
 		}
 	},
 };
+
+// const text = {
+// 	mainPrompt: 'Answer the questions without getting two wrong!',
+// 	prompts: [
+// 		{
+// 			prompt: 'What is 1 + 1?',
+// 			acceptedAnswers: ['2'],
+// 		},
+// 		{
+// 			prompt: 'What is 2 + 2?',
+// 			acceptedAnswers: ['4'],
+// 		},
+// 		{
+// 			prompt: 'What is the square root of 16?',
+// 			acceptedAnswers: ['4', '-4'],
+// 		},
+// 		{
+// 			prompt: 'What is the square root of 25?',
+// 			acceptedAnswers: ['5', '-5'],
+// 		},
+// 	],
+// };

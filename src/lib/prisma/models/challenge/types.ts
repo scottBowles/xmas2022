@@ -17,12 +17,16 @@ export type CorrectAnswerFromAcceptedResponses = <
 	challenge: T
 ) => string | false | undefined;
 export type CorrectAnswerMinimalInput = CorrectAnswerFromOptionsMinimalInput &
-	CorrectAnswerFromAcceptedResponsesMinimalInput & { type: Challenge['type'] };
+	CorrectAnswerFromAcceptedResponsesMinimalInput & {
+		type: Challenge['type'];
+		prompt: Challenge['prompt'];
+	};
 export type CorrectAnswer = (challenge: CorrectAnswerMinimalInput) => string | false | undefined;
 export type ResponseIsCorrect = <T extends CorrectAnswersMinimalInput>(challenge: T) => boolean;
 export type CorrectAnswersMinimalInput = { options: { isCorrect: boolean; text: string }[] } & {
 	acceptedResponsesIfOpen: string[];
 	type: Challenge['type'];
+	prompt: Challenge['prompt'];
 } & ResponseMinimalInput;
 export type CorrectAnswers = <T extends CorrectAnswersMinimalInput>(challenge: T) => string[];
 export type PointsManuallyAwardedMinimalInput = {
@@ -35,6 +39,7 @@ export type ScoreChallengeMinimalInput = CorrectAnswersMinimalInput &
 	PointsManuallyAwardedMinimalInput & {
 		points: Challenge['points'];
 		type: Challenge['type'];
+		prompt: Challenge['prompt'];
 	};
 export type ScoreChallenge = <T extends ScoreChallengeMinimalInput>(
 	challenge: T,
