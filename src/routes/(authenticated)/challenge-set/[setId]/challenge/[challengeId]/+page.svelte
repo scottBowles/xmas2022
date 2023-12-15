@@ -9,6 +9,7 @@
 	import MatchForm from './MatchForm.svelte';
 	import SantasWorkshopForm from './SantasWorkshopForm.svelte';
 	import MultipleOpenResponse from './MultipleOpenResponse.svelte';
+	import WinLoseOrStopForm from './WinLoseOrStopForm.svelte';
 
 	export let data;
 	export let form;
@@ -41,6 +42,8 @@
 			<SantasWorkshopForm {data} />
 		{:else if 'MULTIPLE_OPEN_RESPONSE' === challenge.type}
 			<MultipleOpenResponse {data} />
+		{:else if 'WIN_LOSE_OR_STOP' === challenge.type}
+			<WinLoseOrStopForm {data} />
 		{:else}
 			<p>Loading Challenge...</p>
 		{/if}

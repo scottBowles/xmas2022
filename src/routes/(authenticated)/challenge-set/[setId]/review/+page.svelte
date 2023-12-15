@@ -8,6 +8,7 @@
 	import OfflineReview from './OfflineReview.svelte';
 	import SantasWorkshopReview from './SantasWorkshopReview.svelte';
 	import SelectElfNameReview from './SelectElfNameReview.svelte';
+	import WinLoseOrStopReview from './WinLoseOrStopReview.svelte';
 	import Wordle2022Review from './Wordle2022Review.svelte';
 	import Wordle2023Review from './Wordle2023Review.svelte';
 	import YourElfNameWorthReview from './YourElfNameWorthReview.svelte';
@@ -51,6 +52,8 @@
 				<SantasWorkshopReview {challenge} />
 			{:else if challenge.type === 'MULTIPLE_OPEN_RESPONSE'}
 				<MultipleOpenResponseReview {challenge} />
+			{:else if challenge.type === 'WIN_LOSE_OR_STOP'}
+				<WinLoseOrStopReview {challenge} />
 			{:else}
 				<p>Loading Challenge...</p>
 			{/if}

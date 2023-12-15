@@ -37,26 +37,26 @@ export const actions: Actions = {
 										include: {
 											options: true,
 											responses: {
-												where: { playerId: user.id }
-											}
-										}
-									}
-								}
-							}
-						}
+												where: { playerId: user.id },
+											},
+										},
+									},
+								},
+							},
+						},
 					}),
 					prisma.challengeResponse.findFirst({
 						where: { playerId: user.id, challenge: { type: 'SELECT_ELF_NAME' } },
-						orderBy: { createdAt: 'desc' }
-					})
+						orderBy: { createdAt: 'desc' },
+					}),
 				]);
 				const updatePromises = challengeSetResponses.map(async (challengeSetResponse) => {
 					const points = scoreChallenges(challengeSetResponse.challengeSet.challenges, {
-						elfNameChallengeResponse
+						elfNameChallengeResponse,
 					});
 					await prisma.challengeSetResponse.update({
 						where: { id: challengeSetResponse.id },
-						data: { points }
+						data: { points },
 					});
 				});
 				await Promise.all(updatePromises);
@@ -67,5 +67,5 @@ export const actions: Actions = {
 		}
 
 		return { recalculateSuccess: true, recalculateError: false };
-	}
+	},
 };

@@ -68,6 +68,7 @@ enum ChallengeType {
   MATCH
   SANTAS_WORKSHOP
   MULTIPLE_OPEN_RESPONSE
+  WIN_LOSE_OR_STOP
 }
 
 model Challenge {
