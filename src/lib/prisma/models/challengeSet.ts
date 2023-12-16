@@ -29,7 +29,14 @@ type NextChallengeUrl = <
 	challengeSet: T,
 	lastChallengeId?: number
 ) => string;
-type NumScoreboardStats = <T extends { isTimed: boolean; isScored: boolean }>(
+type NumScoreboardStats = <
+	T extends {
+		isTimed: boolean;
+		isScored: boolean;
+		hasBonusPoints?: boolean;
+		hasTimeBonusPoints?: boolean;
+	}
+>(
 	challenge: T
 ) => number;
 type YearFn = WithMinimumInput<{ timeAvailableStart: Date | null }, string>;
@@ -75,8 +82,12 @@ const nextChallenge: NextChallenge = (challengeSet, thisChallengeId) => {
 const nextChallengeUrl: NextChallengeUrl = (challengeSet, lastChallengeId) =>
 	urls.challenge(challengeSet.id, nextChallenge(challengeSet, lastChallengeId).id);
 
-const numScoreboardStats: NumScoreboardStats = ({ isTimed, isScored }) =>
-	sum([isTimed, isScored].map((a) => (a ? 1 : 0)));
+const numScoreboardStats: NumScoreboardStats = ({
+	isTimed,
+	isScored,
+	hasBonusPoints,
+	hasTimeBonusPoints,
+}) => sum([isTimed, isScored, hasBonusPoints, hasTimeBonusPoints].map((a) => (a ? 1 : 0)));
 
 const year: YearFn = (challengeSet) => {
 	if (!challengeSet.timeAvailableStart) return 'Unknown';
@@ -115,5 +126,5 @@ export {
 	addNextChallengeUrl,
 	numScoreboardStats,
 	year,
-	addYear
+	addYear,
 };

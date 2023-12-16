@@ -1,7 +1,8 @@
 <script lang="ts">
-	import FaPercentage from 'svelte-icons/fa/FaPercentage.svelte';
 	import FaRegClock from 'svelte-icons/fa/FaRegClock.svelte';
 	import FaHashtag from 'svelte-icons/fa/FaHashtag.svelte';
+	import FaPlus from 'svelte-icons/fa/FaPlus.svelte';
+	import FaEquals from 'svelte-icons/fa/FaEquals.svelte';
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { formatDuration, urls } from '$lib/utils';
 	import { displayName } from '$lib/prisma/models/user';
@@ -35,7 +36,12 @@
 	};
 
 	const getDayShownScore = (player: (typeof players)[number]) =>
-		challengeSets.reduce((acc, cur) => acc + (playerScores[player.id]?.[cur.id]?.points ?? 0), 0);
+		challengeSets.reduce((acc, cur) => {
+			const mainPoints = playerScores[player.id]?.[cur.id]?.points ?? 0;
+			const bonusPoints = playerScores[player.id]?.[cur.id]?.bonusPoints ?? 0;
+			const timeBonusPoints = playerScores[player.id]?.[cur.id]?.timeBonusPoints ?? 0;
+			return acc + mainPoints + bonusPoints + timeBonusPoints;
+		}, 0);
 </script>
 
 <!-- GROUP SELECT -->
@@ -61,8 +67,12 @@
 				<thead>
 					<tr>
 						<th />
+
 						{#each challengeSets as challengeSet}
-							<th colspan={numScoreboardStats(challengeSet)}>
+							<th
+								colspan={numScoreboardStats(challengeSet)}
+								class="border-x border-solid border-x-green-700"
+							>
 								{challengeSet.title}
 							</th>
 						{/each}
@@ -83,6 +93,15 @@
 									</div>
 								</th>
 							{/if}
+							{#if challengeSet.hasTimeBonusPoints}
+								<th class="odd:text-green-700 even:text-christmasRed">
+									<div class="flex justify-center items-center">
+										<div class="h-5 w-5">
+											<FaRegClock />
+										</div>
+									</div>
+								</th>
+							{/if}
 							{#if challengeSet.isScored}
 								<th class="odd:text-green-700 even:text-christmasRed">
 									<div class="flex justify-center items-center">
@@ -92,11 +111,20 @@
 									</div>
 								</th>
 							{/if}
+							{#if challengeSet.hasBonusPoints}
+								<th class="odd:text-green-700 even:text-christmasRed">
+									<div class="flex justify-center items-center">
+										<div class="h-5 w-5">
+											<FaPlus />
+										</div>
+									</div>
+								</th>
+							{/if}
 						{/each}
 						<th class="odd:text-green-700 even:text-christmasRed">
 							<div class="flex justify-center items-center">
 								<div class="h-5 w-5">
-									<FaPercentage />
+									<FaEquals />
 								</div>
 							</div>
 						</th>
@@ -110,12 +138,19 @@
 									{displayName(player)}
 								</td>
 								{#each challengeSets as challengeSet}
-									{@const { time, points } = playerScores[player.id]?.[challengeSet.id] || {}}
+									{@const { time, points, bonusPoints, timeBonusPoints } =
+										playerScores[player.id]?.[challengeSet.id] || {}}
 									{#if challengeSet.isTimed}
 										<td>{time ? formatDuration(time, false) : '–'}</td>
 									{/if}
+									{#if challengeSet.hasTimeBonusPoints}
+										<td>{timeBonusPoints ?? '–'}</td>
+									{/if}
 									{#if challengeSet.isScored}
 										<td>{points ?? '–'}</td>
+									{/if}
+									{#if challengeSet.hasBonusPoints}
+										<td>{bonusPoints ?? '–'}</td>
 									{/if}
 								{/each}
 								<td>

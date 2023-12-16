@@ -16,14 +16,14 @@ export const load = async ({ locals, parent }) => {
 			const display = displayName(user);
 			const totalScore = user.challengeSetResponses
 				.filter((csr) => csr.challengeSet.isScored)
-				.reduce((acc, cur) => acc + cur.points, 0);
+				.reduce((acc, cur) => acc + cur.points + cur.bonusPoints + cur.timeBonusPoints, 0);
 			const totalTime = user.challengeSetResponses
 				.filter((csr) => csr.challengeSet.isTimed)
 				.reduce((acc, cur) => acc + (timeTaken(cur) ?? 0), 0);
 			return {
 				display,
 				score: totalScore,
-				time: totalTime
+				time: totalTime,
 			};
 		})
 		.sort((a, b) => {

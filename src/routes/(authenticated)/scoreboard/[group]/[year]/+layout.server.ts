@@ -25,10 +25,10 @@ export const load = async ({ locals, params }) => {
 			? new Date(`${year}-12-31`)
 			: now.getTime() < new Date(`${year}-12-31`).getTime()
 			? now
-			: new Date(`${year}-12-31`)
+			: new Date(`${year}-12-31`),
 	};
 	const userHasCompletedChallengeSetThisYear = {
-		challengeSetResponses: { some: { completedAt: isTimeWithinYear } }
+		challengeSetResponses: { some: { completedAt: isTimeWithinYear } },
 	};
 
 	/** QUERY **/
@@ -41,20 +41,20 @@ export const load = async ({ locals, params }) => {
 				timeAvailableStart: true,
 				isTimed: true,
 				isScored: true,
-				challenges: { select: { id: true }, orderBy: { id: 'asc' } }
-			}
+				challenges: { select: { id: true }, orderBy: { id: 'asc' } },
+			},
 		}),
 		prisma.group.findMany({
 			where: { users: { some: { user: { id: userId } } } },
 			select: {
 				name: true,
-				id: true
-			}
+				id: true,
+			},
 		}),
 		prisma.user.findMany({
 			where: {
 				...userIsInGroup,
-				...userHasCompletedChallengeSetThisYear
+				...userHasCompletedChallengeSetThisYear,
 			},
 			select: {
 				id: true,
@@ -65,7 +65,7 @@ export const load = async ({ locals, params }) => {
 				challengeSetResponses: {
 					where: {
 						startedAt: isTimeWithinYear,
-						completedAt: { not: null }
+						completedAt: { not: null },
 					},
 					select: {
 						points: true,
@@ -73,19 +73,22 @@ export const load = async ({ locals, params }) => {
 						completedAt: true,
 						challengeSet: {
 							select: {
+								id: true,
 								isScored: true,
-								isTimed: true
-							}
+								isTimed: true,
+							},
 						},
-						challengeSetId: true
-					}
-				}
-			}
+						challengeSetId: true,
+						bonusPoints: true,
+						timeBonusPoints: true,
+					},
+				},
+			},
 		}),
 		prisma.challengeSetResponse.findMany({
 			where: { player: userIsInGroup, completedAt: { not: null } },
-			select: { startedAt: true }
-		})
+			select: { startedAt: true },
+		}),
 	]);
 
 	// if the user is not in this group, we need to deny entry
@@ -93,22 +96,60 @@ export const load = async ({ locals, params }) => {
 		throw redirect(302, urls.scoreboard());
 	}
 
-	type PlayerStats = { time: number | null; points: number | undefined };
+	type PlayerStats = {
+		time: number | null;
+		points: number | undefined;
+		bonusPoints: number;
+		timeBonusPoints: number;
+	};
 	const playerScores = users.reduce(
 		(acc, user) => ({
 			...acc,
 			[user.id]: user.challengeSetResponses.reduce(
 				(acc, csr) => ({
 					...acc,
-					[csr.challengeSetId]: { time: timeTaken(csr), points: csr.points }
+					[csr.challengeSetId]: {
+						time: timeTaken(csr),
+						points: csr.points,
+						bonusPoints: csr.bonusPoints,
+						timeBonusPoints: csr.timeBonusPoints,
+					},
 				}),
 				{} as { [challengeSetId: number]: PlayerStats }
-			)
+			),
 		}),
 		{} as { [playerId: number]: { [challengeSetId: number]: PlayerStats } }
 	);
 
-	const groupByDate = groupBy((set: (typeof challengeSetsInYear)[number]) => {
+	const challengeSetsWithBonusPointBooleans = challengeSetsInYear.map((cs) => {
+		const hasBonusPoints = users.some((user) => {
+			const userBonusPoints = user.challengeSetResponses.find(
+				(csr) => csr.challengeSet.id === cs.id
+			)?.bonusPoints;
+			return userBonusPoints && userBonusPoints > 0;
+		});
+		const hasTimeBonusPoints = users.some((user) => {
+			const userTimeBonusPoints = user.challengeSetResponses.find(
+				(csr) => csr.challengeSet.id === cs.id
+			)?.timeBonusPoints;
+			return userTimeBonusPoints && userTimeBonusPoints > 0;
+		});
+		console.log(
+			JSON.stringify({
+				userChallengeSetResponses: users.map((u) => u.challengeSetResponses),
+				hasBonusPoints,
+				hasTimeBonusPoints,
+				id: cs.id,
+			})
+		);
+		return {
+			...cs,
+			hasBonusPoints,
+			hasTimeBonusPoints,
+		};
+	});
+
+	const groupByDate = groupBy((set: (typeof challengeSetsWithBonusPointBooleans)[number]) => {
 		if (!set.timeAvailableStart) return 'Invalid Date';
 		const date = new Date(set.timeAvailableStart);
 		if (isNaN(date.getTime())) return 'Invalid Date';
@@ -118,7 +159,7 @@ export const load = async ({ locals, params }) => {
 	const challengeSetsByDate = pipe(
 		filter(pipe(prop('timeAvailableStart'), Boolean)),
 		groupByDate
-	)(challengeSetsInYear);
+	)(challengeSetsWithBonusPointBooleans);
 
 	const groupNames = groups.map((g) => g.name);
 
@@ -145,6 +186,6 @@ export const load = async ({ locals, params }) => {
 		year,
 		days,
 		users,
-		challengeSetsByDate
+		challengeSetsByDate,
 	};
 };
