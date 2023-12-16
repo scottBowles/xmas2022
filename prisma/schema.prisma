@@ -125,6 +125,8 @@ model ChallengeSetResponse {
   updatedAt          DateTime     @updatedAt
   clientRecordedTime Int?
   points             Int          @default(0)
+  bonusPoints        Int          @default(0)
+  timeBonusPoints    Int          @default(0)
 
   @@unique([playerId, challengeSetId])
 }

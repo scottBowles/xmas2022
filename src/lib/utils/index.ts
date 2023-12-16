@@ -41,10 +41,10 @@ export function formatDuration(ms: number, withUnits = true) {
 		return daysStr + hoursStr + minStr + secStr;
 	}
 	const hoursStr = hours ? `${hours}:` : '';
-	const minStr = min ? `${min}:` : '';
+	const minStr = min ? `${min}` : '00';
 	const secStr = sec.toString().padStart(2, '0');
 	const daysStr = days ? `${days}:` : '';
-	return `${daysStr}${hoursStr}${minStr}${secStr}`;
+	return `${daysStr}${hoursStr}${minStr}:${secStr}`;
 }
 
 export const dateToYYYYMMDD = (date: Date) => {
