@@ -150,7 +150,7 @@
 										<td>{points ?? '–'}</td>
 									{/if}
 									{#if challengeSet.hasBonusPoints}
-										<td>{bonusPoints ?? '–'}</td>
+										<td>{bonusPoints || '–'}</td>
 									{/if}
 								{/each}
 								<td>
