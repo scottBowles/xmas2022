@@ -16,7 +16,12 @@ export const load = async ({ locals, params, parent }) => {
 	const challengeSets = sort(descend(numScoreboardStats), challengeSetsByDate[dayShown] ?? []);
 
 	const getDayShownScore = (player: (typeof users)[number]) =>
-		challengeSets.reduce((acc, cur) => acc + (playerScores[player.id]?.[cur.id]?.points ?? 0), 0);
+		challengeSets.reduce((acc, cur) => {
+			const mainPoints = playerScores[player.id]?.[cur.id]?.points ?? 0;
+			const bonusPoints = playerScores[player.id]?.[cur.id]?.bonusPoints ?? 0;
+			const timeBonusPoints = playerScores[player.id]?.[cur.id]?.timeBonusPoints ?? 0;
+			return acc + mainPoints + bonusPoints + timeBonusPoints;
+		}, 0);
 
 	const players: {
 		id: number;
