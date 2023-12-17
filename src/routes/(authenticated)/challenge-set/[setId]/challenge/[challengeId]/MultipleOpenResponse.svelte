@@ -10,6 +10,16 @@
 	$: ({ mainPrompt, inputPrompts } = JSON.parse(challenge.prompt));
 
 	let answer: string[] = [];
+
+	const clearInputs = () => {
+		answer = [];
+	};
+
+	$: {
+		if (challenge.id) {
+			clearInputs();
+		}
+	}
 </script>
 
 <form class="flex flex-col justify-between grow sm:justify-start" method="POST" use:enhance>
@@ -19,7 +29,7 @@
 		{#each challenge.cldImages as { publicId, alt, width, height }}
 			<CldImage src={publicId} {alt} {width} {height} class="w-full mb-4" />
 		{/each}
-		{#key data}
+		{#key challenge.id}
 			{#each inputPrompts as prompt, i}
 				<label class="mb-4">
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
