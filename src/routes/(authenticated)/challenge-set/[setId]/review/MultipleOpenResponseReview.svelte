@@ -6,7 +6,7 @@
 	export let challenge: PageData['challenges'][number];
 
 	$: ({ mainPrompt, inputPrompts } = JSON.parse(challenge.prompt));
-	$: correctValues = JSON.parse(challenge.correctAnswer || '[]');
+	$: correctValues = challenge.correctAnswer;
 	$: givenValues = JSON.parse(challenge.responses[0]?.response || '[]');
 	$: points = multipleOpenResponse.scoreChallenge(challenge, { elfNameChallengeResponse: null });
 </script>
@@ -31,10 +31,12 @@
 						disabled
 					/>
 				</label>
-				{#if value === correctValues[i]}
+				{#if multipleOpenResponse.answerIsCorrect(challenge, value, i)}
 					<p class="text-green-700">✅ Correct!</p>
 				{:else}
-					<p class="text-red-700">❌ {correctValues[i]}</p>
+					<p class="text-red-700">
+						❌ {correctValues && correctValues[i] ? correctValues[i] : 'No answer found'}
+					</p>
 				{/if}
 			</div>
 		{/each}

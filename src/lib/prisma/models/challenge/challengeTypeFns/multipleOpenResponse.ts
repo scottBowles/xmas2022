@@ -1,30 +1,52 @@
-import {
-	correctAnswerFromAcceptedResponses,
-	normalize,
-	pointsManuallyAwarded,
-	response,
-} from '../utils';
+import { normalize, pointsManuallyAwarded, response } from '../utils';
 import type { CorrectAnswer, ResponseIsCorrect, ScoreChallenge } from '../types';
 
-const correctAnswer: CorrectAnswer = correctAnswerFromAcceptedResponses;
+// challenge.prompt expects a stringified object of form:
+// { mainPrompt: string, inputPrompts: string[] }
 
-const responseIsCorrect: ResponseIsCorrect = (challenge) =>
-	challenge.acceptedResponsesIfOpen.some(
-		(answer) => normalize(answer) === normalize(response(challenge))
+// challenge.acceptedResponsesIfOpen expects a stringified array of arrays of strings,
+// where each inner array is a set of responses that are considered correct for the
+// corresponding input prompt in challenge.prompt.inputPrompts
+
+const correctAnswer: CorrectAnswer = (challenge) =>
+	JSON.parse(challenge.acceptedResponsesIfOpen[0]).map(
+		(acceptableAnswers: string[]) => acceptableAnswers[0]
 	);
+
+const responseIsCorrect: ResponseIsCorrect = (challenge) => {
+	const resp = JSON.parse(response(challenge) || '[]');
+	return challenge.acceptedResponsesIfOpen.some((arrayOfAcceptedResponsesJson) => {
+		const arrayOfAcceptedResponses: string[][] = JSON.parse(arrayOfAcceptedResponsesJson || '[]');
+		return arrayOfAcceptedResponses.every((acceptableAnswers, i) =>
+			acceptableAnswers.map(normalize).includes(normalize(resp[i]))
+		);
+	});
+};
+
+const answerIsCorrect = <T extends { acceptedResponsesIfOpen: string[] }>(
+	challenge: T,
+	answer: string,
+	index: number
+) => {
+	return challenge.acceptedResponsesIfOpen.some((arrayOfAcceptedResponsesJson) => {
+		const arrayOfAcceptedResponses: string[][] = JSON.parse(arrayOfAcceptedResponsesJson || '[]');
+		return arrayOfAcceptedResponses[index].map(normalize).includes(normalize(answer));
+	});
+};
 
 const scoreChallenge: ScoreChallenge = (challenge) => {
 	const res = JSON.parse(response(challenge) || '[]');
-	const numQuestions = JSON.parse(correctAnswer(challenge) || '[]').length;
+	const answer = correctAnswer(challenge);
+	const numQuestions: number = answer ? answer.length : 0;
 	const maxIndicesInCommonWithAnAcceptedResponse = Math.max(
-		...challenge.acceptedResponsesIfOpen.map((acceptedResponse) => {
-			const answer = JSON.parse(acceptedResponse || '[]');
-			const numIndicesInCommon: number = answer.reduce(
-				(acc: number, val: string, index: number) =>
-					normalize(val) === normalize(res[index]) ? acc + 1 : acc,
+		...challenge.acceptedResponsesIfOpen.map((arrayOfAcceptedResponsesJson) => {
+			const arrayOfAcceptedResponses: string[][] = JSON.parse(arrayOfAcceptedResponsesJson || '[]');
+			const numCorrectAnswers: number = arrayOfAcceptedResponses.reduce(
+				(acc: number, val: string[], index: number) =>
+					acc + (val.map(normalize).includes(normalize(res[index])) ? 1 : 0),
 				0
 			);
-			return numIndicesInCommon;
+			return numCorrectAnswers;
 		})
 	);
 	const pointsForCorrect =
@@ -33,4 +55,4 @@ const scoreChallenge: ScoreChallenge = (challenge) => {
 	return pointsForCorrect + pointsManuallyAwarded(challenge);
 };
 
-export { correctAnswer, responseIsCorrect, scoreChallenge };
+export { correctAnswer, responseIsCorrect, scoreChallenge, answerIsCorrect };
