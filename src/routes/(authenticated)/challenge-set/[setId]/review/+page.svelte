@@ -68,7 +68,7 @@
 				extra 20 points by completing the exit poll. Thanks for playing!
 			</p>
 		{/if}
-		<div class="mt-4 mb-12 flex justify-between">
+		<div class="mt-4 pb-12 flex justify-between">
 			<a href="/" class="nav-links" data-sveltekit-preload-data="hover">
 				&larr; Back to Challenges</a
 			>
