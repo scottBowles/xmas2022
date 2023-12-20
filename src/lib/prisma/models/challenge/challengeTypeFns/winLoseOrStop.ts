@@ -16,7 +16,7 @@ const responseIsCorrect: ResponseIsCorrect = (challenge) => {
 	const prompt = JSON.parse(challenge.prompt || '[]') as { mainPrompt: string; prompts: Prompt[] };
 	const answer = JSON.parse(response(challenge) || '[]');
 	return prompt.prompts.every((val, index) => {
-		const allCorrect = val.acceptedAnswers.map(normalize).includes(normalize(answer[index]));
+		const allCorrect = val.acceptedAnswers.map(normalize).includes(normalize(answer[index] || ''));
 		return allCorrect;
 	});
 };
