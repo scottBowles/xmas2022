@@ -30,7 +30,7 @@
 						value={R.isNotNil(resp) && resp !== 'RESPONSE_FAIL' ? resp : '—'}
 						class="text-green-700 border focus:border-2 border-green-700 rounded focus:border-green-700 focus:outline-none w-full px-2 py-1"
 					/>
-					{#if acceptedAnswers?.map(normalize).includes(normalize(resp))}
+					{#if acceptedAnswers?.map(normalize).includes(normalize(resp || ''))}
 						<span class="text-green-700">✅</span>
 					{:else}
 						<span class="text-christmasRed">
