@@ -6,6 +6,7 @@
 	import { CldImage } from 'svelte-cloudinary';
 	import { applyAction, deserialize } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
+	import { normalize } from '$lib/prisma/models/challenge/utils';
 
 	export let data: PageData;
 
@@ -23,7 +24,7 @@
 		const numWrong = responses.filter((a, i) => {
 			const acceptedAnswers = prompts[i].acceptedAnswers;
 			if (acceptedAnswers) {
-				return !acceptedAnswers.includes(a);
+				return !acceptedAnswers.map(normalize).includes(normalize(a));
 			}
 		}).length;
 		if (numWrong > 1) {
