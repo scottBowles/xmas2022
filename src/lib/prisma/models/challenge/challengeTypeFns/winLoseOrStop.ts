@@ -35,8 +35,7 @@ const scoreChallenge: ScoreChallenge = (challenge) => {
 		},
 		{ answersCorrect: 0, points: 0 }
 	);
-	const arePointsEarned =
-		!res.includes('RESPONSE_FAIL') && numQuestions && numAnswers - answersCorrect < 2;
+	const arePointsEarned = numQuestions && numAnswers - answersCorrect < 2;
 	const pointsForCorrect = arePointsEarned ? points : 0;
 	return pointsForCorrect + pointsManuallyAwarded(challenge);
 };

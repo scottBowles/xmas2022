@@ -28,7 +28,6 @@
 			}
 		}).length;
 		if (numWrong > 1) {
-			responses = [...responses, 'RESPONSE_FAIL'];
 			handleSubmit();
 		}
 		currentIndex++;
@@ -38,10 +37,7 @@
 		const data = new FormData();
 		const submit_action = setHasAnotherChallenge ? NEXT_INPUT_VALUE : SUBMIT_INPUT_VALUE;
 		data.append('submit_action', submit_action);
-		if (responses.length < prompts.length) {
-			responses[currentIndex] = 'RESPONSE_STOP';
-		}
-		data.append('answer', JSON.stringify(responses));
+		data.append('answer', JSON.stringify(responses.filter((r) => r !== '')));
 
 		const response = await fetch('', {
 			method: 'POST',
@@ -103,7 +99,10 @@
 	<ConfirmModal
 		isOpen={confirmModalIsOpen}
 		toggleIsOpen={toggleConfirmModal}
-		onConfirm={handleSubmit}
+		onConfirm={() => {
+			responses[currentIndex] = '';
+			handleSubmit();
+		}}
 	/>
 	<button
 		type="submit"
