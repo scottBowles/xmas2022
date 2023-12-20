@@ -41,10 +41,6 @@
 		<p class="incorrect mb-4 text-lg italic">Incorrect!</p>
 	{/if}
 </form>
-<p class="text-green-700">
-	This concludes the games for the 2023 Christmas Trivia Contest. However, you can receive an extra
-	20 points by completing the exit poll. Thanks for playing!
-</p>
 
 <style>
 	.incorrect {
