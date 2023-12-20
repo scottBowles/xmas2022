@@ -69,6 +69,7 @@ enum ChallengeType {
   SANTAS_WORKSHOP
   MULTIPLE_OPEN_RESPONSE
   WIN_LOSE_OR_STOP
+  FAMILY_FEUD
 }
 
 model Challenge {

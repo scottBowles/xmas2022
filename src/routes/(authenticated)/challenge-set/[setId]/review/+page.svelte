@@ -2,6 +2,7 @@
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { formatDuration } from '$lib/utils';
 	import type { PageData } from './$types';
+	import FamilyFeudReview from './FamilyFeudReview.svelte';
 	import MatchReview from './MatchReview.svelte';
 	import MultipleOpenResponseReview from './MultipleOpenResponseReview.svelte';
 	import NonWordleReview from './NonWordleReview.svelte';
@@ -54,6 +55,8 @@
 				<MultipleOpenResponseReview {challenge} />
 			{:else if challenge.type === 'WIN_LOSE_OR_STOP'}
 				<WinLoseOrStopReview {challenge} />
+			{:else if challenge.type === 'FAMILY_FEUD'}
+				<FamilyFeudReview {challenge} />
 			{:else}
 				<p>Loading Challenge...</p>
 			{/if}
