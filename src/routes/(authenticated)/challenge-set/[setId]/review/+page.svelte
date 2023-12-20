@@ -63,7 +63,7 @@
 			<hr />
 		{/each}
 		{#if challenges[0].type === 'FAMILY_FEUD'}
-			<p class="text-green-700">
+			<p class="text-green-700 my-6">
 				This concludes the games for the 2023 Christmas Trivia Contest. However, you can receive an
 				extra 20 points by completing the exit poll. Thanks for playing!
 			</p>
