@@ -28,11 +28,11 @@ const pointsForCorrect = <T extends ScoreChallengeMinimalInput>(challenge: T) =>
 	const acceptedThirdAnswers = acceptedResponses[2].map(normalize);
 	const givenResponse = normalize(response(challenge));
 	const pointsForCorrect = acceptedTopAnswers.includes(givenResponse)
-		? 3
+		? 5
 		: acceptedSecondAnswers.includes(givenResponse)
-		? 2
+		? 3
 		: acceptedThirdAnswers.includes(givenResponse)
-		? 1
+		? 2
 		: 0;
 
 	return pointsForCorrect;
