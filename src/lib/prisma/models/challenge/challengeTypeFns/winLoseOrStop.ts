@@ -26,14 +26,18 @@ const scoreChallenge: ScoreChallenge = (challenge) => {
 	const prompt = JSON.parse(challenge.prompt || '[]') as { mainPrompt: string; prompts: Prompt[] };
 	const numQuestions = prompt.prompts.length;
 	const numAnswers = res.length;
-	const answersCorrect = prompt.prompts.reduce((acc: number, val: Prompt, index: number) => {
-		const isCorrect = val.acceptedAnswers.map(normalize).includes(normalize(res[index] || ''));
-		return isCorrect ? acc + 1 : acc;
-	}, 0);
-	const pointsForCorrect =
-		res.includes('RESPONSE_FAIL') || !numQuestions || numAnswers - answersCorrect >= 2
-			? 0
-			: Math.round((answersCorrect / numQuestions) * challenge.points);
+	const { answersCorrect, points } = prompt.prompts.reduce(
+		(acc, val, index) => {
+			const isCorrect = val.acceptedAnswers.map(normalize).includes(normalize(res[index] || ''));
+			return isCorrect
+				? { answersCorrect: acc.answersCorrect + 1, points: acc.points + index + 1 }
+				: acc;
+		},
+		{ answersCorrect: 0, points: 0 }
+	);
+	const arePointsEarned =
+		!res.includes('RESPONSE_FAIL') && numQuestions && numAnswers - answersCorrect < 2;
+	const pointsForCorrect = arePointsEarned ? points : 0;
 	return pointsForCorrect + pointsManuallyAwarded(challenge);
 };
 

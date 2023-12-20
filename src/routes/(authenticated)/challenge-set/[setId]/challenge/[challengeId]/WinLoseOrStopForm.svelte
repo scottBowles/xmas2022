@@ -94,6 +94,7 @@
 					name={`response-${currentIndex}`}
 					bind:value={responses[currentIndex]}
 					class="text-green-700 border focus:border-2 border-green-700 rounded focus:border-green-700 focus:outline-none w-full px-2 py-1"
+					required
 				/>
 			</label>
 		{/key}
@@ -104,8 +105,12 @@
 		onConfirm={handleSubmit}
 	/>
 	<button
-		type="button"
-		on:click={currentIndex !== prompts.length - 1 ? handleNext : handleSubmit}
+		type="submit"
+		on:click|preventDefault={!responses[currentIndex]
+			? () => form.reportValidity()
+			: currentIndex !== prompts.length - 1
+			? handleNext
+			: handleSubmit}
 		class="bg-green-700 text-white font-bold py-3 px-6 rounded w-full text-lg mt-8 block"
 	>
 		{#if currentIndex !== prompts.length - 1}
@@ -115,12 +120,12 @@
 		{/if}
 	</button>
 	<button
-		type="submit"
+		type="button"
 		value={setHasAnotherChallenge ? NEXT_INPUT_VALUE : SUBMIT_INPUT_VALUE}
 		name="submit_action"
-		class="bg-green-700 text-white font-bold py-3 px-6 rounded w-full text-lg my-8 block"
+		class="bg-christmasRed text-white font-bold py-3 px-6 rounded w-full text-lg my-8 block"
 		on:click|preventDefault={toggleConfirmModal}
 	>
-		Quit
+		STOP
 	</button>
 </form>
