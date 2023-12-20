@@ -9,3 +9,4 @@ export * as offline from './offline';
 export * as santasWorkshop from './santasWorkshop';
 export * as multipleOpenResponse from './multipleOpenResponse';
 export * as winLoseOrStop from './winLoseOrStop';
+export * as familyFeud from './familyFeud';

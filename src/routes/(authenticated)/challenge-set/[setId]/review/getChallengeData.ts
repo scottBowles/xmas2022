@@ -12,6 +12,7 @@ import {
 	santasWorkshop,
 	multipleOpenResponse,
 	winLoseOrStop,
+	familyFeud,
 } from '$lib/prisma/models/challenge/challengeTypeFns';
 import { response } from '$lib/prisma/models/challenge/utils';
 import { ownElfName } from '$lib/prisma/models/challenge';
@@ -56,6 +57,7 @@ const challengeTypeFns = {
 	SANTAS_WORKSHOP: santasWorkshop,
 	MULTIPLE_OPEN_RESPONSE: multipleOpenResponse,
 	WIN_LOSE_OR_STOP: winLoseOrStop,
+	FAMILY_FEUD: familyFeud,
 };
 
 const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
@@ -133,6 +135,15 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			...challenge,
 		};
 	if (type === 'WIN_LOSE_OR_STOP')
+		return {
+			correctAnswer: challengeTypeFns[type].correctAnswer(challenge),
+			response: response(challenge),
+			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
+			ownElfName: null,
+			allElfNames: null,
+			...challenge,
+		};
+	if (type === 'FAMILY_FEUD')
 		return {
 			correctAnswer: challengeTypeFns[type].correctAnswer(challenge),
 			response: response(challenge),

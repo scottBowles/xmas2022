@@ -13,6 +13,7 @@ import {
 	santasWorkshop,
 	multipleOpenResponse,
 	winLoseOrStop,
+	familyFeud,
 } from './challengeTypeFns';
 import type { ScoreChallenge, ScoreChallenges } from './types';
 
@@ -50,6 +51,7 @@ const scoreChallenge: ScoreChallenge = (challenge, extra) => {
 	if (challenge.type === 'MULTIPLE_OPEN_RESPONSE')
 		return multipleOpenResponse.scoreChallenge(challenge, extra);
 	if (challenge.type === 'WIN_LOSE_OR_STOP') return winLoseOrStop.scoreChallenge(challenge, extra);
+	if (challenge.type === 'FAMILY_FEUD') return familyFeud.scoreChallenge(challenge, extra);
 	return 0;
 };
 
