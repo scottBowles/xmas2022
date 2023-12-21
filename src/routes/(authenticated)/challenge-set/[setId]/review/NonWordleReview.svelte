@@ -31,13 +31,15 @@
 			challenge.correctAnswer || 'No correct answer (something went wrong here better tell Scott)'
 		)}
 	</p>
-	<p class="my-2">
-		{challenge.responseIsCorrect ? challenge.points : 0} / {challenge.points} points
-	</p>
-	{#if challenge.responseIsCorrect}
-		<p class="mb-4 text-lg text-green-700 italic">Correct!</p>
-	{:else}
-		<p class="incorrect mb-4 text-lg italic">Incorrect!</p>
+	{#if challenge.scoreOnSubmit}
+		<p class="my-2">
+			{challenge.responseIsCorrect ? challenge.points : 0} / {challenge.points} points
+		</p>
+		{#if challenge.responseIsCorrect}
+			<p class="mb-4 text-lg text-green-700 italic">Correct!</p>
+		{:else}
+			<p class="incorrect mb-4 text-lg italic">Incorrect!</p>
+		{/if}
 	{/if}
 </form>
 
