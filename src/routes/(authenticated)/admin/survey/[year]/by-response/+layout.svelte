@@ -9,6 +9,8 @@
 
 	$: ({ year, playerId } = $page.params);
 
+	$: console.log({ playerId });
+
 	const handleResponseSelect = (e: Event) => {
 		const selectedPlayerId = parseInt((e.target as HTMLSelectElement).value);
 		goto(urls.adminSurveyForPlayer(parseInt(year), selectedPlayerId));
