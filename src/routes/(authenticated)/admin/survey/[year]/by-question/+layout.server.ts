@@ -22,7 +22,11 @@ export const load = async ({ parent, params }) => {
 			},
 		},
 		include: {
-			challenges: true,
+			challenges: {
+				orderBy: {
+					id: 'asc',
+				},
+			},
 		},
 	});
 
