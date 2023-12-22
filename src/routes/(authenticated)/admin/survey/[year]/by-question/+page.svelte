@@ -1,5 +1,4 @@
 <script lang="ts">
-	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { displayName } from '$lib/prisma/models/user.js';
 
 	export let data;

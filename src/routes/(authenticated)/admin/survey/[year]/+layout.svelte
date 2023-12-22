@@ -49,4 +49,5 @@
 			<option value="question">By Question</option>
 		</select>
 	</div>
+	<slot />
 </PageMargin>
