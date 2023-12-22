@@ -195,7 +195,7 @@ export const actions: Actions = {
 			]);
 
 			const challengePoints = scoreChallenges(challenges, { elfNameChallengeResponse });
-			const completionPoints = challengeSetResponse.completedAt ? challengeSet.completionPoints : 0;
+			const completionPoints = challengeSet.completionPoints;
 			const points = challengePoints + completionPoints;
 
 			await prisma.challengeSetResponse.update({
