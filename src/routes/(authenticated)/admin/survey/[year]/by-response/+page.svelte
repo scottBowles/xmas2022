@@ -7,7 +7,7 @@
 	let selectedSetResponseId = '';
 
 	$: selectedSetResponse = challengeSetResponses.find(
-		(csr) => csr.id.toString() === selectedSetResponseId
+		(csr) => csr.id.toString() === selectedSetResponseId.toString()
 	);
 	$: responsesData = selectedSetResponse?.challengeSet.challenges.map((challenge) => {
 		const prompt = challenge.prompt;
