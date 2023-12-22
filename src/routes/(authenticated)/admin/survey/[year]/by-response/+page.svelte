@@ -14,6 +14,12 @@
 		const response = challenge.responses[0].response;
 		return { prompt, response };
 	});
+	$: console.log({
+		challengeSetResponses,
+		selectedSetResponseId,
+		selectedSetResponse,
+		responsesData,
+	});
 </script>
 
 {#if !challengeSetResponses.length}
