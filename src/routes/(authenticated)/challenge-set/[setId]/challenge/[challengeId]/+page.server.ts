@@ -118,6 +118,7 @@ export const actions: Actions = {
 			where: { id: setId },
 			select: {
 				id: true,
+				completionPoints: true,
 				challenges: { select: { id: true, type: true }, orderBy: { id: 'asc' } },
 				challengeSetResponses: {
 					where: { playerId },
@@ -193,7 +194,9 @@ export const actions: Actions = {
 				}),
 			]);
 
-			const points = scoreChallenges(challenges, { elfNameChallengeResponse });
+			const challengePoints = scoreChallenges(challenges, { elfNameChallengeResponse });
+			const completionPoints = challengeSetResponse.completedAt ? challengeSet.completionPoints : 0;
+			const points = challengePoints + completionPoints;
 
 			await prisma.challengeSetResponse.update({
 				where: { id: challengeSetResponse.id },

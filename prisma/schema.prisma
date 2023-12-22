@@ -55,6 +55,7 @@ model ChallengeSet {
   challengeSetResponses ChallengeSetResponse[]
   isTimed               Boolean                @default(false)
   isScored              Boolean                @default(false)
+  completionPoints      Int                    @default(0)
 }
 
 enum ChallengeType {

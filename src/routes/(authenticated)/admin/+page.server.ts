@@ -51,9 +51,13 @@ export const actions: Actions = {
 					}),
 				]);
 				const updatePromises = challengeSetResponses.map(async (challengeSetResponse) => {
-					const points = scoreChallenges(challengeSetResponse.challengeSet.challenges, {
+					const challengePoints = scoreChallenges(challengeSetResponse.challengeSet.challenges, {
 						elfNameChallengeResponse,
 					});
+					const completionPoints = challengeSetResponse.completedAt
+						? challengeSetResponse.challengeSet.completionPoints
+						: 0;
+					const points = challengePoints + completionPoints;
 					await prisma.challengeSetResponse.update({
 						where: { id: challengeSetResponse.id },
 						data: { points },

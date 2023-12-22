@@ -6,7 +6,7 @@
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { formatDuration, urls } from '$lib/utils';
 	import { displayName } from '$lib/prisma/models/user';
-	import { numScoreboardStats } from '$lib/prisma/models/challengeSet';
+	import { hasScoreboardStats, numScoreboardStats } from '$lib/prisma/models/challengeSet';
 	import { goto } from '$app/navigation';
 	import DayNavigation from '../../../DayNavigation.svelte';
 	import GroupSelect from '../../../GroupSelect.svelte';
@@ -68,7 +68,7 @@
 					<tr>
 						<th />
 
-						{#each challengeSets as challengeSet}
+						{#each challengeSets.filter(hasScoreboardStats) as challengeSet}
 							<th
 								colspan={numScoreboardStats(challengeSet)}
 								class="border-x border-solid border-x-green-700"
