@@ -8,7 +8,7 @@
 
 {#if challenge}
 	<div class="my-2">
-		<div>Prompt:</div>
+		<div>Prompt</div>
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 		<div>{@html challenge.prompt}</div>
 	</div>
@@ -16,7 +16,7 @@
 		{#each challenge?.responses as response (response.id)}
 			<div class="mb-4">
 				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-				<h3>{displayName(response.player)}</h3>
+				<h3 class="font-bold">{displayName(response.player)}</h3>
 				<p>{response.response}</p>
 			</div>
 		{/each}
