@@ -38,6 +38,6 @@ export const load = async ({ parent, params }) => {
 			},
 		},
 	});
-	// surveyResponses[0].challengeSet.challenges[0].responses[0].response;
+
 	return { challengeSetResponses: surveyResponses };
 };
