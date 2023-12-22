@@ -1,13 +1,20 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { displayName } from '$lib/prisma/models/user';
+	import { urls } from '$lib/utils';
 	import type { ActionData, PageData } from './$types';
 
 	export let data: PageData;
 	export let form: ActionData;
 
-	$: ({ users } = data);
+	$: ({ users, surveyYears } = data);
+
+	const handleSurveyYearSelect = (e: Event) => {
+		const surveyYear = parseInt((e.target as HTMLSelectElement).value);
+		goto(urls.adminSurvey(surveyYear, 'response'));
+	};
 </script>
 
 <PageMargin>
@@ -42,4 +49,18 @@
 		<p class="text-lg mt-3 mb-1">Recalculation failed.</p>
 		<p>Error: {form.recalculateError}</p>
 	{/if}
+
+	<div class="h-12" />
+	<div>
+		<select
+			name="surveyId"
+			class="w-full m-1 p-2 border rounded cursor-pointer"
+			on:change={handleSurveyYearSelect}
+		>
+			<option value="">All Surveys</option>
+			{#each surveyYears as surveyYear (surveyYear)}
+				<option value={surveyYear}>{surveyYear}</option>
+			{/each}
+		</select>
+	</div>
 </PageMargin>

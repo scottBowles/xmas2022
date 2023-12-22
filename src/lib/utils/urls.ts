@@ -18,4 +18,5 @@ export default {
 	challengeSetReview: (id: number) => `/challenge-set/${id}/review`,
 	settings: () => '/settings',
 	scoreboard,
+	adminSurvey: (year: number, by: 'question' | 'response') => `/admin/survey/${year}/by-${by}`,
 };
