@@ -35,7 +35,7 @@
 		>
 			<option value="">All Surveys</option>
 			{#each surveyYears as surveyYear (surveyYear)}
-				<option value={surveyYear}>{surveyYear}</option>
+				<option value={surveyYear} selected={surveyYear === year}>{surveyYear}</option>
 			{/each}
 		</select>
 	</div>
@@ -45,8 +45,8 @@
 			class="w-full m-1 p-2 border rounded cursor-pointer"
 			on:change={handleDisplaySelect}
 		>
-			<option value="response">By Response</option>
-			<option value="question">By Question</option>
+			<option value="response" selected={byQuestionOrResponse === 'response'}>By Response</option>
+			<option value="question" selected={byQuestionOrResponse === 'question'}>By Question</option>
 		</select>
 	</div>
 	<slot />

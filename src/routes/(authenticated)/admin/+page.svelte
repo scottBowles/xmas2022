@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { displayName } from '$lib/prisma/models/user';
 	import { urls } from '$lib/utils';
@@ -10,6 +11,7 @@
 	export let form: ActionData;
 
 	$: ({ users, surveyYears } = data);
+	$: ({ year } = $page.params);
 
 	const handleSurveyYearSelect = (e: Event) => {
 		const surveyYear = parseInt((e.target as HTMLSelectElement).value);
@@ -59,7 +61,7 @@
 		>
 			<option value="">All Surveys</option>
 			{#each surveyYears as surveyYear (surveyYear)}
-				<option value={surveyYear}>{surveyYear}</option>
+				<option value={surveyYear} selected={surveyYear === parseInt(year)}>{surveyYear}</option>
 			{/each}
 		</select>
 	</div>
