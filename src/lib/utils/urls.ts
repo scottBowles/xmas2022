@@ -19,4 +19,8 @@ export default {
 	settings: () => '/settings',
 	scoreboard,
 	adminSurvey: (year: number, by: 'question' | 'response') => `/admin/survey/${year}/by-${by}`,
+	adminSurveyForPlayer: (year: number, playerId: number) =>
+		`/admin/survey/${year}/by-response/${playerId}`,
+	adminSurveyForQuestion: (year: number, challengeId: number) =>
+		`/admin/survey/${year}/by-question/${challengeId}`,
 };

@@ -9,7 +9,9 @@ export const load = async ({ parent, params }) => {
 	}
 
 	const year = parseInt(params.year);
-	const surveyResponses = await prisma.challengeSetResponse.findMany({
+	const playerId = parseInt(params.playerId);
+
+	const challengeSetResponse = await prisma.challengeSetResponse.findFirst({
 		where: {
 			// get challengeSetResponses where
 			challengeSet: {
@@ -24,6 +26,7 @@ export const load = async ({ parent, params }) => {
 					mode: 'insensitive',
 				},
 			},
+			playerId,
 		},
 		include: {
 			player: true,
@@ -31,7 +34,11 @@ export const load = async ({ parent, params }) => {
 				include: {
 					challenges: {
 						include: {
-							responses: true,
+							responses: {
+								where: {
+									playerId,
+								},
+							},
 						},
 					},
 				},
@@ -39,5 +46,10 @@ export const load = async ({ parent, params }) => {
 		},
 	});
 
-	return { challengeSetResponses: surveyResponses };
+	const challengesData = challengeSetResponse?.challengeSet.challenges.map((challenge) => ({
+		prompt: challenge.prompt,
+		response: challenge.responses[0]?.response,
+	}));
+
+	return { challengesData };
 };

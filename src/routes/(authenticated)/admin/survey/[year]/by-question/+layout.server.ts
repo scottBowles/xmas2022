@@ -22,15 +22,7 @@ export const load = async ({ parent, params }) => {
 			},
 		},
 		include: {
-			challenges: {
-				include: {
-					responses: {
-						include: {
-							player: true,
-						},
-					},
-				},
-			},
+			challenges: true,
 		},
 	});
 
