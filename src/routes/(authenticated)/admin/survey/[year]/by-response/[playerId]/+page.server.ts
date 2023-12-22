@@ -33,6 +33,9 @@ export const load = async ({ parent, params }) => {
 			challengeSet: {
 				include: {
 					challenges: {
+						orderBy: {
+							id: 'asc',
+						},
 						include: {
 							responses: {
 								where: {
