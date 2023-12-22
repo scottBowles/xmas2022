@@ -9,8 +9,6 @@
 
 	$: ({ year, playerId } = $page.params);
 
-	$: console.log({ playerId });
-
 	const handleResponseSelect = (e: Event) => {
 		const selectedPlayerId = parseInt((e.target as HTMLSelectElement).value);
 		goto(urls.adminSurveyForPlayer(parseInt(year), selectedPlayerId));
@@ -21,7 +19,7 @@
 	<p class="text-lg mt-3 mb-1">No responses found.</p>
 {:else}
 	<select class="w-full m-1 p-2 border rounded cursor-pointer" on:change={handleResponseSelect}>
-		<option value="" selected={playerId === ''} disabled>Choose a response</option>
+		<option value="" selected={playerId === undefined} disabled>Choose a response</option>
 		{#each playersWithSurveyResponseInYear as player (player.id)}
 			<option value={player.id} selected={player.id === parseInt(playerId)}>
 				{displayName(player)}
