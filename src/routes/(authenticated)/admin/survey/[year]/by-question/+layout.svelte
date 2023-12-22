@@ -22,7 +22,8 @@
 	<select class="w-full m-1 p-2 border rounded cursor-pointer" on:change={handleQuestionSelect}>
 		<option value="" selected disabled>Choose a response</option>
 		{#each challenges as challenge (challenge.id)}
-			<option value={challenge.id}>{challenge.title}<br />{challenge.prompt}</option>
+			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+			<option value={challenge.id}>{@html challenge.prompt}</option>
 		{/each}
 	</select>
 {/if}
