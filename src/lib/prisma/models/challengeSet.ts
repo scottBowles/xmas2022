@@ -1,7 +1,8 @@
 import { getNow, addKey, urls } from '$lib/utils';
 import type { WithMinimumInput } from '$lib/utils/types';
-import type { Challenge } from '.prisma/client';
 import { sum } from 'ramda';
+import type { Challenge } from '@prisma/client';
+
 
 /**
  * TYPES for what follows
