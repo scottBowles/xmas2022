@@ -14,7 +14,7 @@ export function renderGoogleButton() {
 			type: 'standard',
 			theme: 'filled_blue',
 			size: 'large',
-			width: '256'
+			width: 256,
 		});
 		google.accounts.id.prompt(); // also display the One Tap dialog
 	}
@@ -26,7 +26,7 @@ const createGoogleCallback =
 		const res = await fetch('/googleCallback', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ googleToken: response.credential })
+			body: JSON.stringify({ googleToken: response.credential }),
 		});
 
 		if (res.ok) {
@@ -57,7 +57,7 @@ export function initializeGoogleAccounts(
 
 	google.accounts.id.initialize({
 		client_id: PUBLIC_GOOGLE_CLIENT_ID,
-		callback
+		callback,
 	});
 
 	googleInitialized.set(true);
