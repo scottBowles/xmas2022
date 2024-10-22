@@ -2,9 +2,13 @@
 	import { urls } from '$lib/utils';
 	import { isEmpty } from 'ramda';
 
-	export let onGroupChange: (e: Event) => void;
-	export let groupNames: string[];
-	export let group: string;
+	interface Props {
+		onGroupChange: (e: Event) => void;
+		groupNames: string[];
+		group: string;
+	}
+
+	let { onGroupChange, groupNames, group }: Props = $props();
 </script>
 
 {#if isEmpty(groupNames)}
@@ -19,7 +23,7 @@
 	</div>
 {:else}
 	<div class="flex justify-evenly h-10 mt-2">
-		<select class="text-lg text-green-800" on:change={onGroupChange}>
+		<select class="text-lg text-green-800" onchange={onGroupChange}>
 			{#each groupNames as groupName}
 				<option value={groupName} selected={groupName === group}>
 					{groupName}

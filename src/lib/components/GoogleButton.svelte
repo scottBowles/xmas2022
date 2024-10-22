@@ -3,7 +3,11 @@
 	import { initializeGoogleAccounts, renderGoogleButton } from '$lib/utils/clientOnly/google';
 	import { writable } from 'svelte/store';
 
-	export let onGoogleError: (message: string) => void;
+	interface Props {
+		onGoogleError: (message: string) => void;
+	}
+
+	let { onGoogleError }: Props = $props();
 	const googleInitialized = writable(false);
 
 	onMount(() => {
@@ -12,4 +16,4 @@
 	});
 </script>
 
-<div id="googleButton" />
+<div id="googleButton"></div>

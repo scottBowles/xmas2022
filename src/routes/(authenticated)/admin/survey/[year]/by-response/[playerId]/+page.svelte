@@ -1,7 +1,7 @@
 <script lang="ts">
-	export let data;
+	let { data } = $props();
 
-	$: ({ challengesData } = data);
+	let { challengesData } = $derived(data);
 </script>
 
 {#if challengesData}

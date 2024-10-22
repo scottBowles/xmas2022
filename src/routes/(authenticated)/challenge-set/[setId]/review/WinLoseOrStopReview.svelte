@@ -4,10 +4,14 @@
 	import * as R from 'ramda';
 	import { normalize } from '$lib/prisma/models/challenge/utils';
 
-	export let challenge: PageData['challenges'][number];
+	interface Props {
+		challenge: PageData['challenges'][number];
+	}
 
-	$: ({ mainPrompt, prompts } = JSON.parse(challenge.prompt));
-	$: response = JSON.parse(challenge.response || '[]');
+	let { challenge }: Props = $props();
+
+	let { mainPrompt, prompts } = $derived(JSON.parse(challenge.prompt));
+	let response = $derived(JSON.parse(challenge.response || '[]'));
 </script>
 
 <form class="flex flex-col justify-between grow sm:justify-start">

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { displayName } from '$lib/prisma/models/user.js';
 
-	export let data;
+	let { data } = $props();
 
-	$: ({ challenge } = data);
+	let { challenge } = $derived(data);
 </script>
 
 {#if challenge}

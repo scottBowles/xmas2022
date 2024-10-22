@@ -1,8 +1,12 @@
 <script lang="ts">
 	import { urls } from '$lib/utils';
 
-	export let year: string;
-	export let challengeSets: any[];
+	interface Props {
+		year: string;
+		challengeSets: any[];
+	}
+
+	let { year, challengeSets }: Props = $props();
 
 	function getStatus(challengeSet: any) {
 		const { startedAt, completedAt } = challengeSet.challengeSetResponses?.[0] ?? {};
@@ -11,14 +15,14 @@
 		return { class: '', text: '' };
 	}
 
-	let show = false;
+	let show = $state(false);
 </script>
 
 <h3 class="text-xl mt-4 mb-1">
 	<button
 		class="text-blue-500 text-lg"
 		class:font-bold={show}
-		on:click={() => {
+		onclick={() => {
 			show = !show;
 		}}
 	>

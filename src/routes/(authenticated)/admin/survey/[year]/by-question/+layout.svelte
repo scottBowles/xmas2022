@@ -3,12 +3,12 @@
 	import { page } from '$app/stores';
 	import urls from '$lib/utils/urls.js';
 
-	export let data;
+	let { data, children } = $props();
 
-	$: ({ surveyChallengeSet } = data);
-	$: ({ year, challengeId } = $page.params);
+	let { surveyChallengeSet } = $derived(data);
+	let { year, challengeId } = $derived($page.params);
 
-	$: challenges = surveyChallengeSet?.challenges ?? [];
+	let challenges = $derived(surveyChallengeSet?.challenges ?? []);
 
 	const handleQuestionSelect = (e: Event) => {
 		const selectedChallengeId = parseInt((e.target as HTMLSelectElement).value);
@@ -19,7 +19,7 @@
 {#if !challenges.length}
 	<p class="text-lg mt-3 mb-1">No challenges found.</p>
 {:else}
-	<select class="w-full m-1 p-2 border rounded cursor-pointer" on:change={handleQuestionSelect}>
+	<select class="w-full m-1 p-2 border rounded cursor-pointer" onchange={handleQuestionSelect}>
 		<option value="" selected={challengeId === '' || challengeId === undefined} disabled
 			>Choose a response</option
 		>
@@ -32,4 +32,4 @@
 	</select>
 {/if}
 
-<slot />
+{@render children?.()}

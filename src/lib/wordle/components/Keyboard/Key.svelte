@@ -5,14 +5,25 @@
 	import { dummy } from '$lib/wordle/transition';
 	import type { TStores } from '$lib/wordle/stores';
 
-	export let stores: TStores;
-	export let kbKey: string;
-	export let onClick: (value: string) => void;
-	export let status: CharStatus | undefined = undefined;
-	export let heightClass = 'h-14';
-	export let widthClass = 'w-12';
+	interface Props {
+		stores: TStores;
+		kbKey: string;
+		onClick: (value: string) => void;
+		status?: CharStatus | undefined;
+		heightClass?: string;
+		widthClass?: string;
+	}
 
-	$: ({ correctedKeyStore } = stores);
+	let {
+		stores,
+		kbKey,
+		onClick,
+		status = undefined,
+		heightClass = 'h-14',
+		widthClass = 'w-12'
+	}: Props = $props();
+
+	let { correctedKeyStore } = $derived(stores);
 
 	// for when a status goes from 'present' to 'correct'
 	onDestroy(() => {
@@ -39,14 +50,14 @@
 	class:correct={status === 'correct'}
 	class:present={status === 'present'}
 	class:has-previous={$correctedKeyStore.has(kbKey)}
-	on:click={handleClick}
+	onclick={handleClick}
 	in:animate
-	on:introstart={(e) => {
+	onintrostart={(e) => {
 		if (status) {
 			e.currentTarget.classList.add('revealing');
 		}
 	}}
-	on:introend={(e) => {
+	onintroend={(e) => {
 		if (status) {
 			e.currentTarget.classList.remove('revealing');
 		}

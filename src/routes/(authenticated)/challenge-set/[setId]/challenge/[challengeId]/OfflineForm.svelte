@@ -3,9 +3,13 @@
 	import type { PageData } from './$types';
 	import { NEXT_INPUT_VALUE, SUBMIT_INPUT_VALUE } from './constants';
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
 
-	$: ({ challenge, setHasAnotherChallenge } = data);
+	let { data }: Props = $props();
+
+	let { challenge, setHasAnotherChallenge } = $derived(data);
 </script>
 
 <form class="flex flex-col justify-between grow sm:justify-start" method="POST" use:enhance>

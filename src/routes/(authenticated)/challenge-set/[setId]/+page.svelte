@@ -3,8 +3,12 @@
 	import { urls } from '$lib/utils';
 	import type { PageData, ActionData } from './$types';
 
-	export let data: PageData;
-	export let form: ActionData;
+	interface Props {
+		data: PageData;
+		form: ActionData;
+	}
+
+	let { data, form }: Props = $props();
 
 	const { id, title, instructions, challengeSetResponses } = data.challengeSet;
 	const { startedAt, completedAt } = challengeSetResponses[0] ?? {};

@@ -5,12 +5,21 @@
 	import Key from './Key.svelte';
 	import type { TStores } from '$lib/wordle/stores';
 
-	export let onChar: (value: string) => void;
-	export let onEnter: () => void;
-	export let onDelete: () => void;
-	export let stores: TStores;
+	interface Props {
+		onChar: (value: string) => void;
+		onEnter: () => void;
+		onDelete: () => void;
+		stores: TStores;
+	}
 
-	$: ({ keyStatusStore } = stores);
+	let {
+		onChar,
+		onEnter,
+		onDelete,
+		stores
+	}: Props = $props();
+
+	let { keyStatusStore } = $derived(stores);
 
 	const onKeyDown = (e: KeyboardEvent) => {
 		const value = e.key.toUpperCase();

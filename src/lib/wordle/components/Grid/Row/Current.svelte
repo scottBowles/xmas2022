@@ -3,9 +3,13 @@
 	import { MAX_WORD_LENGTH } from '$lib/wordle/constants/settings';
 	import Tile from '../Tile.svelte';
 
-	export let guess: CharValue[];
+	interface Props {
+		guess: CharValue[];
+	}
 
-	$: emptyCells = Array.from(Array(MAX_WORD_LENGTH - guess.length));
+	let { guess }: Props = $props();
+
+	let emptyCells = $derived(Array.from(Array(MAX_WORD_LENGTH - guess.length)));
 </script>
 
 <div class="grid grid-cols-5 gap-1">

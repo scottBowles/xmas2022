@@ -1,20 +1,26 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 	import { NEXT_INPUT_VALUE, SUBMIT_INPUT_VALUE } from './constants';
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
 
-	$: ({ challenge, setHasAnotherChallenge } = data);
-	$: response = JSON.parse(challenge?.responses[0]?.response ?? '[]');
+	let { data }: Props = $props();
 
-	let values: string[] = [];
-	$: {
+	let { challenge, setHasAnotherChallenge } = $derived(data);
+	let response = $derived(JSON.parse(challenge?.responses[0]?.response ?? '[]'));
+
+	let values: string[] = $state([]);
+	run(() => {
 		if (values.length === 0 && challenge?.matches?.length > 0) {
 			values = challenge?.matches?.map((_, i) => response[i] ?? '') ?? [];
 		}
-	}
-	$: json = JSON.stringify(values);
+	});
+	let json = $derived(JSON.stringify(values));
 </script>
 
 <form class="flex flex-col justify-between grow sm:justify-start" method="POST" use:enhance>
@@ -42,7 +48,7 @@
 		{#each values as _, i}
 			<label class="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
 				<span>{i + 1}</span>
-				<!-- svelte-ignore a11y-autofocus -->
+				<!-- svelte-ignore a11y_autofocus -->
 				<input
 					type="text"
 					name={`match_${i}`}

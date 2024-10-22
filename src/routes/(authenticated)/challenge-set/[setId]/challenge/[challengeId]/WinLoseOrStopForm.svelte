@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { preventDefault } from 'svelte/legacy';
+
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 	import ConfirmModal from './ConfirmModal.svelte';
@@ -8,15 +10,19 @@
 	import { invalidateAll } from '$app/navigation';
 	import { normalize } from '$lib/prisma/models/challenge/utils';
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
 
-	$: ({ challenge, setHasAnotherChallenge } = data);
-	$: ({ mainPrompt, prompts } = JSON.parse(challenge.prompt));
+	let { data }: Props = $props();
 
-	let currentIndex = 0;
-	let confirmModalIsOpen = false;
-	let responses: string[] = [];
-	let form: HTMLFormElement;
+	let { challenge, setHasAnotherChallenge } = $derived(data);
+	let { mainPrompt, prompts } = $derived(JSON.parse(challenge.prompt));
+
+	let currentIndex = $state(0);
+	let confirmModalIsOpen = $state(false);
+	let responses: string[] = $state([]);
+	let form: HTMLFormElement = $state();
 
 	const toggleConfirmModal = () => (confirmModalIsOpen = !confirmModalIsOpen);
 
@@ -106,11 +112,11 @@
 	/>
 	<button
 		type="submit"
-		on:click|preventDefault={!responses[currentIndex]
+		onclick={preventDefault(!responses[currentIndex]
 			? () => form.reportValidity()
 			: currentIndex !== prompts.length - 1
 			? handleNext
-			: handleSubmit}
+			: handleSubmit)}
 		class="bg-green-700 text-white font-bold py-3 px-6 rounded w-full text-lg mt-8 block"
 	>
 		{#if currentIndex !== prompts.length - 1}
@@ -124,7 +130,7 @@
 		value={setHasAnotherChallenge ? NEXT_INPUT_VALUE : SUBMIT_INPUT_VALUE}
 		name="submit_action"
 		class="bg-christmasRed text-white font-bold py-3 px-6 rounded w-full text-lg my-8 block"
-		on:click|preventDefault={toggleConfirmModal}
+		onclick={preventDefault(toggleConfirmModal)}
 	>
 		STOP
 	</button>

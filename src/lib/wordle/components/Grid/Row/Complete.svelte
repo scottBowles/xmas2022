@@ -3,8 +3,12 @@
 	import { CELL_ANIMATION_DELAY } from '$lib/wordle/constants/settings';
 	import Tile from '../Tile.svelte';
 
-	export let guess: CharValue[];
-	export let statuses: CharStatus[];
+	interface Props {
+		guess: CharValue[];
+		statuses: CharStatus[];
+	}
+
+	let { guess, statuses }: Props = $props();
 </script>
 
 <div class="grid grid-cols-5 gap-1">

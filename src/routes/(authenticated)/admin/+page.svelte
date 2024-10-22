@@ -7,11 +7,15 @@
 	import { urls } from '$lib/utils';
 	import type { ActionData, PageData } from './$types';
 
-	export let data: PageData;
-	export let form: ActionData;
+	interface Props {
+		data: PageData;
+		form: ActionData;
+	}
 
-	$: ({ users, surveyYears } = data);
-	$: ({ year } = $page.params);
+	let { data, form }: Props = $props();
+
+	let { users, surveyYears } = $derived(data);
+	let { year } = $derived($page.params);
 
 	const handleSurveyYearSelect = (e: Event) => {
 		const surveyYear = parseInt((e.target as HTMLSelectElement).value);
@@ -20,7 +24,7 @@
 </script>
 
 <PageMargin>
-	<div class="h-12" />
+	<div class="h-12"></div>
 	<form
 		class="flex flex-col justify-between grow sm:justify-start"
 		method="POST"
@@ -52,12 +56,12 @@
 		<p>Error: {form.recalculateError}</p>
 	{/if}
 
-	<div class="h-12" />
+	<div class="h-12"></div>
 	<div>
 		<select
 			name="surveyId"
 			class="w-full m-1 p-2 border rounded cursor-pointer"
-			on:change={handleSurveyYearSelect}
+			onchange={handleSurveyYearSelect}
 		>
 			<option value="">All Surveys</option>
 			{#each surveyYears as surveyYear (surveyYear)}

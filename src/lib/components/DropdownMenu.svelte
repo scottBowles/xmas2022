@@ -2,7 +2,13 @@
 	import { slide } from 'svelte/transition';
 	import { logout } from '$lib/utils/clientOnly/logout';
 
-	export let isAdmin = false;
+	/**
+	 * @typedef {Object} Props
+	 * @property {boolean} [isAdmin]
+	 */
+
+	/** @type {Props} */
+	let { isAdmin = false } = $props();
 </script>
 
 <div class="container" transition:slide>
@@ -13,7 +19,7 @@
 		{#if isAdmin}
 			<a href="/admin" data-sveltekit-preload-data="hover"><li>Admin</li></a>
 		{/if}
-		<button on:click={logout}><li>Logout</li></button>
+		<button onclick={logout}><li>Logout</li></button>
 	</ul>
 </div>
 

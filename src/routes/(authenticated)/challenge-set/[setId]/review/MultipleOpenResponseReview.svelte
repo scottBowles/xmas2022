@@ -3,12 +3,16 @@
 	import { multipleOpenResponse } from '$lib/prisma/models/challenge/challengeTypeFns';
 	import { CldImage } from 'svelte-cloudinary';
 
-	export let challenge: PageData['challenges'][number];
+	interface Props {
+		challenge: PageData['challenges'][number];
+	}
 
-	$: ({ mainPrompt, inputPrompts } = JSON.parse(challenge.prompt));
-	$: correctValues = challenge.correctAnswer;
-	$: givenValues = JSON.parse(challenge.responses[0]?.response || '[]');
-	$: points = multipleOpenResponse.scoreChallenge(challenge, { elfNameChallengeResponse: null });
+	let { challenge }: Props = $props();
+
+	let { mainPrompt, inputPrompts } = $derived(JSON.parse(challenge.prompt));
+	let correctValues = $derived(challenge.correctAnswer);
+	let givenValues = $derived(JSON.parse(challenge.responses[0]?.response || '[]'));
+	let points = $derived(multipleOpenResponse.scoreChallenge(challenge, { elfNameChallengeResponse: null }));
 </script>
 
 <form class="flex flex-col justify-between grow sm:justify-start">

@@ -2,11 +2,21 @@
 	import FaCaretUp from 'svelte-icons/fa/FaCaretUp.svelte';
 	import FaCaretDown from 'svelte-icons/fa/FaCaretDown.svelte';
 
-	export let contentHtml = '';
-	export let hideContentLabel = 'Hide Instructions';
-	export let showContentLabel = 'Review Instructions';
+	interface Props {
+		contentHtml?: string;
+		hideContentLabel?: string;
+		showContentLabel?: string;
+		children?: import('svelte').Snippet;
+	}
 
-	let showInstructions = false;
+	let {
+		contentHtml = '',
+		hideContentLabel = 'Hide Instructions',
+		showContentLabel = 'Review Instructions',
+		children
+	}: Props = $props();
+
+	let showInstructions = $state(false);
 	function toggleInstructions() {
 		showInstructions = !showInstructions;
 	}
@@ -14,8 +24,8 @@
 
 {#if showInstructions}
 	<div
-		on:click={toggleInstructions}
-		on:keydown={toggleInstructions}
+		onclick={toggleInstructions}
+		onkeydown={toggleInstructions}
 		class="italic text-blue-400 cursor-pointer flex items-center"
 	>
 		<div class="h-4 w-4"><FaCaretUp /></div>
@@ -23,11 +33,11 @@
 	</div>
 
 	<p class="italic text-green-700">{@html contentHtml}</p>
-	<slot />
+	{@render children?.()}
 {:else}
 	<div
-		on:click={toggleInstructions}
-		on:keydown={toggleInstructions}
+		onclick={toggleInstructions}
+		onkeydown={toggleInstructions}
 		class="italic text-blue-400 cursor-pointer flex items-center"
 	>
 		<div class="h-4 w-4"><FaCaretDown /></div>

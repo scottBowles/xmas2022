@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import Settings from '$lib/wordle/components/Modal/Settings.svelte';
 	import Help from '$lib/wordle/components/Modal/Help.svelte';
 	// import StatsModal from '$lib/wordle/components/Modal/__Stats.svelte';
@@ -15,7 +17,9 @@
 		// watchHighContrast
 	} from '$lib/wordle/stores/theme';
 
-	$: watchDarkMode($darkModeStore);
+	run(() => {
+		watchDarkMode($darkModeStore);
+	});
 	// $: watchHighContrast($highContrastStore);
 </script>
 

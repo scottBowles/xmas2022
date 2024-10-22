@@ -1,9 +1,13 @@
 <script lang="ts">
 	import { isEmpty } from 'ramda';
 
-	export let days: string[];
-	export let dayShown: string;
-	export let onDayChange: (e: Event) => void;
+	interface Props {
+		days: string[];
+		dayShown: string;
+		onDayChange: (e: Event) => void;
+	}
+
+	let { days, dayShown, onDayChange }: Props = $props();
 </script>
 
 {#if isEmpty(days)}
@@ -12,7 +16,7 @@
 	</div>
 {:else}
 	<div class="flex justify-evenly h-10 mt-1">
-		<select class="text-lg text-green-800" on:change={onDayChange}>
+		<select class="text-lg text-green-800" onchange={onDayChange}>
 			{#each days as dayOption}
 				<option value={dayOption} selected={dayOption === dayShown}>
 					{dayOption === 'total' ? 'Total' : `Day ${days.indexOf(dayOption) + 1}`}

@@ -1,9 +1,13 @@
 <script lang="ts">
 	import { isEmpty } from 'ramda';
 
-	export let onYearChange: (e: Event) => void;
-	export let years: number[];
-	export let year: string;
+	interface Props {
+		onYearChange: (e: Event) => void;
+		years: number[];
+		year: string;
+	}
+
+	let { onYearChange, years, year }: Props = $props();
 </script>
 
 {#if isEmpty(years)}
@@ -12,7 +16,7 @@
 	</div>
 {:else}
 	<div class="flex justify-evenly h-10 mt-1">
-		<select class="text-lg text-green-800" on:change={onYearChange}>
+		<select class="text-lg text-green-800" onchange={onYearChange}>
 			{#each years as yearOption}
 				<option value={yearOption} selected={yearOption === Number(year)}>
 					{yearOption}

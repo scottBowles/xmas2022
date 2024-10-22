@@ -7,13 +7,17 @@
 	import mailroom from '$lib/assets/santas_workshop_mailroom.png';
 	import runway from '$lib/assets/santas_workshop_runway.png';
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
 
-	$: ({ challenge, setHasAnotherChallenge } = data);
-	$: ({ assistants, helpers, managers } = JSON.parse(challenge.prompt));
+	let { data }: Props = $props();
 
-	let answer = ['', '', '', '', '', '', '', '', '', '', '', ''];
-	$: answerJson = JSON.stringify(answer);
+	let { challenge, setHasAnotherChallenge } = $derived(data);
+	let { assistants, helpers, managers } = $derived(JSON.parse(challenge.prompt));
+
+	let answer = $state(['', '', '', '', '', '', '', '', '', '', '', '']);
+	let answerJson = $derived(JSON.stringify(answer));
 
 	const workshopAreaImgData = [
 		{ src: controlRoom, alt: 'Control room' },

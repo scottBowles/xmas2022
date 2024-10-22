@@ -6,7 +6,11 @@
 	import { menu } from '$lib/stores';
 	import type { JwtUser } from '$lib/utils/types';
 
-	export let user: JwtUser | null;
+	interface Props {
+		user: JwtUser | null;
+	}
+
+	let { user }: Props = $props();
 
 	const menuIsOpen = menu();
 

@@ -1,7 +1,11 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 
-	export let challenge: PageData['challenges'][number];
+	interface Props {
+		challenge: PageData['challenges'][number];
+	}
+
+	let { challenge }: Props = $props();
 </script>
 
 <form>

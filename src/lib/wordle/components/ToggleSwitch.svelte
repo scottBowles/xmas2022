@@ -1,14 +1,22 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { tweened } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
 
-	export let checked = false;
-	export let label: string;
-	export let disabled = false;
+	interface Props {
+		checked?: boolean;
+		label: string;
+		disabled?: boolean;
+	}
+
+	let { checked = $bindable(false), label, disabled = false }: Props = $props();
 
 	const transformTween = tweened(0, { easing: cubicOut, duration: 200 });
 
-	$: checked ? transformTween.set(1) : transformTween.set(0);
+	run(() => {
+		checked ? transformTween.set(1) : transformTween.set(0);
+	});
 </script>
 
 <div class="toggle-switch flex items-center justify-between">
@@ -33,7 +41,7 @@
 				class:bg-gray-50={disabled}
 				class="h-6 w-6 rounded-full shadow-md"
 				aria-disabled={disabled}
-			/>
+			></div>
 		</div>
 	</label>
 </div>

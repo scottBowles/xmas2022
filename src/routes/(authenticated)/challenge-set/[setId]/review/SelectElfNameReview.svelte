@@ -1,9 +1,13 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 
-	export let challenge: PageData['challenges'][number];
+	interface Props {
+		challenge: PageData['challenges'][number];
+	}
 
-	$: ({ ownElfName, allElfNames } = challenge);
+	let { challenge }: Props = $props();
+
+	let { ownElfName, allElfNames } = $derived(challenge);
 </script>
 
 <div>

@@ -1,31 +1,37 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { ELF_FIRST_NAMES, ELF_LAST_NAMES, SUBMIT_INPUT_VALUE } from './constants';
 	import type { PageData, ActionData } from './$types';
 	import { enhance } from '$app/forms';
 	import { toastStore } from '$lib/wordle/components/Toast/store';
 
-	export let data: PageData;
-	export let form: ActionData;
+	interface Props {
+		data: PageData;
+		form: ActionData;
+	}
 
-	let selectedFirstName: string;
-	let selectedLastName: string;
+	let { data, form }: Props = $props();
 
-	$: availableFirstNames = ELF_FIRST_NAMES.filter((name) => {
+	let selectedFirstName: string = $state();
+	let selectedLastName: string = $state();
+
+	let availableFirstNames = $derived(ELF_FIRST_NAMES.filter((name) => {
 		const nameIsTaken =
 			form?.type === 'NAME_TAKEN' && form.takenFirstNames
 				? form.takenFirstNames.includes(name)
 				: data.takenElfFirstNames?.includes(name);
 		return !nameIsTaken;
-	});
-	$: availableLastNames = ELF_LAST_NAMES.filter((name) => {
+	}));
+	let availableLastNames = $derived(ELF_LAST_NAMES.filter((name) => {
 		const nameIsTaken =
 			form?.type === 'NAME_TAKEN' && form.takenLastNames
 				? form.takenLastNames.includes(name)
 				: data.takenElfLastNames?.includes(name);
 		return !nameIsTaken;
-	});
+	}));
 
-	$: {
+	run(() => {
 		if (form?.message) {
 			toastStore.show({
 				dismissible: false,
@@ -34,7 +40,7 @@
 				timeout: 3000,
 			});
 		}
-	}
+	});
 </script>
 
 <!-- create a ui where a user can select a first name and a last name
@@ -79,7 +85,7 @@ radio inputs, but the user should just see names that get highlighted when selec
 		</div>
 	</div>
 
-	<div class="mt-12" />
+	<div class="mt-12"></div>
 
 	<input
 		type="submit"

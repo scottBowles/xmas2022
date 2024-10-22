@@ -14,9 +14,13 @@
 	import Wordle2023Review from './Wordle2023Review.svelte';
 	import YourElfNameWorthReview from './YourElfNameWorthReview.svelte';
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
 
-	$: ({ challengeSet, challenges, timeTaken, points } = data);
+	let { data }: Props = $props();
+
+	let { challengeSet, challenges, timeTaken, points } = $derived(data);
 </script>
 
 <PageMargin>

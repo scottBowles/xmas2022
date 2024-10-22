@@ -4,25 +4,31 @@
 	import Tile from '../Grid/Tile.svelte';
 	import Modal from './Base.svelte';
 
-	/** Modal Visiblity */
-	export let isOpen = false;
-	/** Toggle Modal visibility */
-	export let toggleIsOpen = (value: boolean) => {
+	
+	
+	interface Props {
+		Modal Visiblity
+		isOpen?: boolean;
+		Toggle Modal visibility
+		toggleIsOpen?: any;
+	}
+
+	let { isOpen = $bindable(false), toggleIsOpen = (value: boolean) => {
 		isOpen = value;
-	};
+	} }: Props = $props();
 
 	const scale = spring(1);
 </script>
 
 <button
 	class="ml-2 mr-1 h-6 w-6 rounded-full hover:text-gray-500 focus:text-gray-500 focus:outline-none focus:ring focus:ring-violet-300 dark:hover:text-slate-400 dark:focus:text-slate-400 md:mx-2"
-	on:click={() => toggleIsOpen(true)}
-	on:mousedown={() => scale.set(0.8)}
-	on:touchstart={() => scale.set(0.8)}
-	on:mouseup={() => scale.set(1)}
-	on:touchend={() => scale.set(1)}
-	on:mouseenter={() => scale.set(1.3)}
-	on:mouseleave={() => scale.set(1)}
+	onclick={() => toggleIsOpen(true)}
+	onmousedown={() => scale.set(0.8)}
+	ontouchstart={() => scale.set(0.8)}
+	onmouseup={() => scale.set(1)}
+	ontouchend={() => scale.set(1)}
+	onmouseenter={() => scale.set(1.3)}
+	onmouseleave={() => scale.set(1)}
 >
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
@@ -41,60 +47,64 @@
 </button>
 
 <Modal {isOpen} {toggleIsOpen}>
-	<h3 slot="header" class="text-center text-lg font-medium leading-6">How to play</h3>
-	<div slot="content">
-		<section>
-			<p>
-				Guess the word in {MAX_CHALLENGES} tries. Each guess must be a valid {MAX_WORD_LENGTH} letter
-				word.
-			</p>
-			<p>
-				Hit the enter button to submit. You can use the provided onscreen keyboard or a connected
-				keyboard.
-			</p>
-			<p>
-				After each guess, the color of the tiles will change to show how close your guess was to the
-				word.
-			</p>
-		</section>
-		<hr class="my-3 border-t-2 dark:border-slate-400" />
-		<section>
-			<div class="demo-row">
-				<Tile heightClass="h-12" widthClass="w-12" letter="W" status="correct" />
-				<Tile heightClass="h-12" widthClass="w-12" letter="E" />
-				<Tile heightClass="h-12" widthClass="w-12" letter="A" />
-				<Tile heightClass="h-12" widthClass="w-12" letter="R" />
-				<Tile heightClass="h-12" widthClass="w-12" letter="Y" />
-			</div>
-			<p>
-				The letter <strong>W</strong> is in the word and in the correct spot.
-			</p>
-			<div class="demo-row">
-				<Tile heightClass="h-12" widthClass="w-12" letter="P" />
-				<Tile heightClass="h-12" widthClass="w-12" letter="I" />
-				<Tile heightClass="h-12" widthClass="w-12" letter="L" status="present" />
-				<Tile heightClass="h-12" widthClass="w-12" letter="O" />
-				<Tile heightClass="h-12" widthClass="w-12" letter="T" />
-			</div>
-			<p>
-				The letter <strong>L</strong> is in the word but in the wrong spot.
-			</p>
-			<div class="demo-row">
-				<Tile heightClass="h-12" widthClass="w-12" letter="V" />
-				<Tile heightClass="h-12" widthClass="w-12" letter="A" />
-				<Tile heightClass="h-12" widthClass="w-12" letter="G" />
-				<Tile heightClass="h-12" widthClass="w-12" letter="U" status="absent" />
-				<Tile heightClass="h-12" widthClass="w-12" letter="E" />
-			</div>
-			<p>
-				The letter <strong>U</strong> is not in the word in any spot.
-			</p>
-		</section>
-		<hr class="my-3 border-t-2 dark:border-slate-400" />
-		<section>
-			<p>A new word will be available to guess every day!</p>
-		</section>
-	</div>
+	{#snippet header()}
+		<h3  class="text-center text-lg font-medium leading-6">How to play</h3>
+	{/snippet}
+	{#snippet content()}
+		<div >
+			<section>
+				<p>
+					Guess the word in {MAX_CHALLENGES} tries. Each guess must be a valid {MAX_WORD_LENGTH} letter
+					word.
+				</p>
+				<p>
+					Hit the enter button to submit. You can use the provided onscreen keyboard or a connected
+					keyboard.
+				</p>
+				<p>
+					After each guess, the color of the tiles will change to show how close your guess was to the
+					word.
+				</p>
+			</section>
+			<hr class="my-3 border-t-2 dark:border-slate-400" />
+			<section>
+				<div class="demo-row">
+					<Tile heightClass="h-12" widthClass="w-12" letter="W" status="correct" />
+					<Tile heightClass="h-12" widthClass="w-12" letter="E" />
+					<Tile heightClass="h-12" widthClass="w-12" letter="A" />
+					<Tile heightClass="h-12" widthClass="w-12" letter="R" />
+					<Tile heightClass="h-12" widthClass="w-12" letter="Y" />
+				</div>
+				<p>
+					The letter <strong>W</strong> is in the word and in the correct spot.
+				</p>
+				<div class="demo-row">
+					<Tile heightClass="h-12" widthClass="w-12" letter="P" />
+					<Tile heightClass="h-12" widthClass="w-12" letter="I" />
+					<Tile heightClass="h-12" widthClass="w-12" letter="L" status="present" />
+					<Tile heightClass="h-12" widthClass="w-12" letter="O" />
+					<Tile heightClass="h-12" widthClass="w-12" letter="T" />
+				</div>
+				<p>
+					The letter <strong>L</strong> is in the word but in the wrong spot.
+				</p>
+				<div class="demo-row">
+					<Tile heightClass="h-12" widthClass="w-12" letter="V" />
+					<Tile heightClass="h-12" widthClass="w-12" letter="A" />
+					<Tile heightClass="h-12" widthClass="w-12" letter="G" />
+					<Tile heightClass="h-12" widthClass="w-12" letter="U" status="absent" />
+					<Tile heightClass="h-12" widthClass="w-12" letter="E" />
+				</div>
+				<p>
+					The letter <strong>U</strong> is not in the word in any spot.
+				</p>
+			</section>
+			<hr class="my-3 border-t-2 dark:border-slate-400" />
+			<section>
+				<p>A new word will be available to guess every day!</p>
+			</section>
+		</div>
+	{/snippet}
 </Modal>
 
 <style lang="postcss">

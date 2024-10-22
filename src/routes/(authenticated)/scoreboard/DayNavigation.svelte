@@ -1,10 +1,19 @@
 <script lang="ts">
 	import { urls } from '$lib/utils';
 
-	export let group: string;
-	export let year: string;
-	export let days: string[];
-	export let dayShown: string;
+	interface Props {
+		group: string;
+		year: string;
+		days: string[];
+		dayShown: string;
+	}
+
+	let {
+		group,
+		year,
+		days,
+		dayShown
+	}: Props = $props();
 </script>
 
 <div class="days flex justify-evenly w-full h-10">

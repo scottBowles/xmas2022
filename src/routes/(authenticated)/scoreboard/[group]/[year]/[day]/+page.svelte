@@ -13,10 +13,10 @@
 	import YearSelect from '../../../YearSelect.svelte';
 	import DaySelect from '../../../DaySelect.svelte';
 
-	export let data;
+	let { data } = $props();
 
-	$: ({ challengeSets, playerScores, players, groupNames, group, years, year, days, dayShown } =
-		data);
+	let { challengeSets, playerScores, players, groupNames, group, years, year, days, dayShown } =
+		$derived(data);
 
 	const onGroupChange = (e: Event) => {
 		const groupName = (e.target as HTMLSelectElement).value;
@@ -66,7 +66,7 @@
 			<table class="w-full overflow-x-auto">
 				<thead>
 					<tr>
-						<th />
+						<th></th>
 
 						{#each challengeSets.filter(hasScoreboardStats) as challengeSet}
 							<th
@@ -82,7 +82,7 @@
 						</th>
 					</tr>
 					<tr class="row">
-						<th />
+						<th></th>
 						{#each challengeSets as challengeSet}
 							{#if challengeSet.isTimed}
 								<th class="odd:text-green-700 even:text-christmasRed">
@@ -159,7 +159,7 @@
 							</tr>
 						{/each}
 					{:else}
-						Data isn't loading. Something might be wrong here!
+						<tr><td colspan="10"> Data isn't loading. Something might be wrong here! </td></tr>
 					{/if}
 				</tbody>
 			</table>

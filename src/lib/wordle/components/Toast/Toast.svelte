@@ -3,8 +3,13 @@
   import { spring } from 'svelte/motion';
   import { fly } from 'svelte/transition';
 
-  export let dismissible = true;
-  export let type = 'success';
+  interface Props {
+    dismissible?: boolean;
+    type?: string;
+    children?: import('svelte').Snippet;
+  }
+
+  let { dismissible = true, type = 'success', children }: Props = $props();
 
   const dispatch = createEventDispatcher();
   const scale = spring(1);
@@ -16,17 +21,17 @@
   role="alert"
   transition:fly={{ x: -100, duration: 300 }}
 >
-  <div class:mr-4={dismissible} class:grow={dismissible}><slot /></div>
+  <div class:mr-4={dismissible} class:grow={dismissible}>{@render children?.()}</div>
   {#if dismissible}
     <button
       class="font-bold"
-      on:click={() => dispatch('dismiss')}
-      on:mousedown={() => scale.set(0.8)}
-      on:touchstart={() => scale.set(0.8)}
-      on:mouseup={() => scale.set(1)}
-      on:touchend={() => scale.set(1)}
-      on:mouseenter={() => scale.set(1.3)}
-      on:mouseleave={() => scale.set(1)}
+      onclick={() => dispatch('dismiss')}
+      onmousedown={() => scale.set(0.8)}
+      ontouchstart={() => scale.set(0.8)}
+      onmouseup={() => scale.set(1)}
+      ontouchend={() => scale.set(1)}
+      onmouseenter={() => scale.set(1.3)}
+      onmouseleave={() => scale.set(1)}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

@@ -4,14 +4,14 @@
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import urls from '$lib/utils/urls.js';
 
-	export let data;
+	let { data, children } = $props();
 
-	$: ({ surveyYears } = data);
-	$: year = parseInt($page.params.year);
-	$: path = $page.url.pathname;
-	$: byQuestionOrResponse = (path.includes('by-question') ? 'question' : 'response') as
+	let { surveyYears } = $derived(data);
+	let year = $derived(parseInt($page.params.year));
+	let path = $derived($page.url.pathname);
+	let byQuestionOrResponse = $derived((path.includes('by-question') ? 'question' : 'response') as
 		| 'question'
-		| 'response';
+		| 'response');
 
 	const handleSurveyYearSelect = (e: Event) => {
 		const selectedYear = parseInt((e.target as HTMLSelectElement).value);
@@ -31,7 +31,7 @@
 		<select
 			name="surveyId"
 			class="w-full m-1 p-2 border rounded cursor-pointer"
-			on:change={handleSurveyYearSelect}
+			onchange={handleSurveyYearSelect}
 		>
 			<option value="">All Surveys</option>
 			{#each surveyYears as surveyYear (surveyYear)}
@@ -43,11 +43,11 @@
 		<select
 			name="byQuestionOrResponse"
 			class="w-full m-1 p-2 border rounded cursor-pointer"
-			on:change={handleDisplaySelect}
+			onchange={handleDisplaySelect}
 		>
 			<option value="response" selected={byQuestionOrResponse === 'response'}>By Response</option>
 			<option value="question" selected={byQuestionOrResponse === 'question'}>By Question</option>
 		</select>
 	</div>
-	<slot />
+	{@render children?.()}
 </PageMargin>

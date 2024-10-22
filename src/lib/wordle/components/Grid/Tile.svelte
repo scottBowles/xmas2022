@@ -5,11 +5,21 @@
 	import { backOut } from 'svelte/easing';
 	import { scale } from 'svelte/transition';
 
-	export let letter: string | undefined = undefined;
-	export let status: CharStatus | undefined = undefined;
-	export let heightClass = 'h-16';
-	export let widthClass = 'w-16 max-w-[100%]';
-	export let delay = 1;
+	interface Props {
+		letter?: string | undefined;
+		status?: CharStatus | undefined;
+		heightClass?: string;
+		widthClass?: string;
+		delay?: number;
+	}
+
+	let {
+		letter = undefined,
+		status = undefined,
+		heightClass = 'h-16',
+		widthClass = 'w-16 max-w-[100%]',
+		delay = 1
+	}: Props = $props();
 
 	const animate = (node: HTMLElement, args?: any): any => {
 		if (status) {
@@ -34,12 +44,12 @@
 	class:correct={status === 'correct'}
 	class:present={status === 'present'}
 	in:animate
-	on:introstart={(e) => {
+	onintrostart={(e) => {
 		if (status) {
 			e.currentTarget.classList.add('revealing');
 		}
 	}}
-	on:introend={(e) => {
+	onintroend={(e) => {
 		if (status) {
 			e.currentTarget.classList.remove('revealing');
 		}

@@ -3,16 +3,33 @@
 	import { spring } from 'svelte/motion';
 	import { fade, fly } from 'svelte/transition';
 
-	/** Modal Visiblity */
-	export let isOpen = false;
-	/** Toggle Modal visibility */
-	export let toggleIsOpen = (value: boolean) => {
-		isOpen = value;
-	};
-	/** element to focus on after closing */
-	export let focusAfterClosed: HTMLElement | undefined = undefined;
+	
+	
+	
+	interface Props {
+		Modal Visiblity
+		isOpen?: boolean;
+		Toggle Modal visibility
+		toggleIsOpen?: any;
+		/** element to focus on after closing */
+		focusAfterClosed?: HTMLElement | undefined;
+		header?: import('svelte').Snippet;
+		content?: import('svelte').Snippet;
+		footer?: import('svelte').Snippet;
+	}
 
-	let modalNode: HTMLElement;
+	let {
+		isOpen = $bindable(false),
+		toggleIsOpen = (value: boolean) => {
+		isOpen = value;
+	},
+		focusAfterClosed = undefined,
+		header,
+		content,
+		footer
+	}: Props = $props();
+
+	let modalNode: HTMLElement = $state();
 	let ignoresFocusChange: boolean;
 	let lastFocus: Element | null;
 
@@ -107,24 +124,24 @@
 	<div class="modal" use:modalAction tabindex="-1" bind:this={modalNode}>
 		<div
 			class="backdrop"
-			on:click={() => toggleIsOpen(false)}
-			on:keyup={() => toggleIsOpen(false)}
+			onclick={() => toggleIsOpen(false)}
+			onkeyup={() => toggleIsOpen(false)}
 			transition:fade
-		/>
+		></div>
 
 		<div class="modal-dialog">
 			<div class="content-wrapper" transition:fly={{ y: -100, duration: 300 }}>
 				<div class="modal-header">
-					<slot name="header" />
+					{@render header?.()}
 					<button
 						class="absolute top-2 right-2 flex rounded-full font-bold hover:text-gray-500 focus:text-gray-500 focus:outline-none focus:ring focus:ring-violet-300 dark:hover:text-slate-400 dark:focus:text-slate-400"
-						on:click={() => toggleIsOpen(false)}
-						on:mousedown={() => scale.set(0.8)}
-						on:touchstart={() => scale.set(0.8)}
-						on:mouseup={() => scale.set(1)}
-						on:touchend={() => scale.set(1)}
-						on:mouseenter={() => scale.set(1.3)}
-						on:mouseleave={() => scale.set(1)}
+						onclick={() => toggleIsOpen(false)}
+						onmousedown={() => scale.set(0.8)}
+						ontouchstart={() => scale.set(0.8)}
+						onmouseup={() => scale.set(1)}
+						ontouchend={() => scale.set(1)}
+						onmouseenter={() => scale.set(1.3)}
+						onmouseleave={() => scale.set(1)}
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -144,10 +161,10 @@
 				</div>
 
 				<div class="modal-body">
-					<slot name="content" />
+					{@render content?.()}
 				</div>
 
-				<slot name="footer" />
+				{@render footer?.()}
 			</div>
 		</div>
 	</div>

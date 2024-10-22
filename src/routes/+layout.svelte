@@ -6,7 +6,7 @@
 
 	injectSpeedInsights();
 
-	export let data;
+	let { data, children } = $props();
 </script>
 
 <svelte:head>
@@ -18,7 +18,7 @@
 <ToastContainer />
 
 <main>
-	<slot />
+	{@render children?.()}
 </main>
 
 <style>

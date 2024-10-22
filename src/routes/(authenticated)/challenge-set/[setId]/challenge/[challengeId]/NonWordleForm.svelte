@@ -3,12 +3,16 @@
 	import type { PageData } from './$types';
 	import { NEXT_INPUT_VALUE, SUBMIT_INPUT_VALUE } from './constants';
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
 
-	$: ({ challenge, setHasAnotherChallenge } = data);
-	$: response = challenge?.responses[0]?.response ?? '';
+	let { data }: Props = $props();
 
-	let textInput: HTMLInputElement;
+	let { challenge, setHasAnotherChallenge } = $derived(data);
+	let response = $derived(challenge?.responses[0]?.response ?? '');
+
+	let textInput: HTMLInputElement = $state();
 </script>
 
 <form class="flex flex-col justify-between grow sm:justify-start" method="POST" use:enhance>

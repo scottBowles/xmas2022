@@ -6,18 +6,23 @@
 	import Current from './Row/Current.svelte';
 	import Empty from './Row/Empty.svelte';
 
-	export let currentGuess: CharValue[];
-	/**
+	
+	interface Props {
+		currentGuess: CharValue[];
+		/**
 	 * Same type as Guess from `$lib/wordle/stores/guess`
 	 *
 	 * can alternatively use the `guessStore` here directly as opposed to making it a prop
 	 */
-	export let allGuesses: { guess: CharValue[]; statuses: CharStatus[] }[];
+		allGuesses: { guess: CharValue[]; statuses: CharStatus[] }[];
+	}
 
-	$: empties =
-		allGuesses.length < MAX_CHALLENGES - 1
+	let { currentGuess, allGuesses }: Props = $props();
+
+	let empties =
+		$derived(allGuesses.length < MAX_CHALLENGES - 1
 			? Array.from(Array(MAX_CHALLENGES - 1 - allGuesses.length))
-			: [];
+			: []);
 </script>
 
 <div class="mt-2 grid grid-rows-6 gap-1">

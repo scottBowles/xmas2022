@@ -11,11 +11,10 @@
 	import MultipleOpenResponse from './MultipleOpenResponse.svelte';
 	import WinLoseOrStopForm from './WinLoseOrStopForm.svelte';
 
-	export let data;
-	export let form;
+	let { data, form } = $props();
 
-	$: ({ challenge, challengeSet } = data);
-	$: ({ instructions } = challengeSet);
+	let { challenge, challengeSet } = $derived(data);
+	let { instructions } = $derived(challengeSet);
 
 	let textInput: HTMLInputElement;
 

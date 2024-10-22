@@ -10,9 +10,13 @@
 	import YearSelect from '../../../YearSelect.svelte';
 	import DaySelect from '../../../DaySelect.svelte';
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
 
-	$: ({ userTotals, group, groupNames, year, years, days } = data);
+	let { data }: Props = $props();
+
+	let { userTotals, group, groupNames, year, years, days } = $derived(data);
 
 	const onGroupChange = (e: Event) => {
 		const groupName = (e.target as HTMLSelectElement).value;
@@ -57,7 +61,7 @@
 					</th>
 				</tr>
 				<tr class="row">
-					<th />
+					<th></th>
 					<th class="odd:text-green-700 even:text-christmasRed">
 						<div class="flex justify-center items-center">
 							<div class="h-5 w-5">
@@ -90,7 +94,7 @@
 						</tr>
 					{/each}
 				{:else}
-					Data isn't loading. Something might be wrong here!
+					<tr><td colspan="10"> Data isn't loading. Something might be wrong here! </td></tr>
 				{/if}
 			</tbody>
 		</table>

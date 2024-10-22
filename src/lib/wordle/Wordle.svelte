@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { browser } from '$app/environment';
 	import type { CharValue } from '$lib/wordle/status';
 	import { isWordInWordList } from '$lib/wordle/words';
@@ -28,9 +30,13 @@
 	} from '$lib/wordle/constants/strings';
 	import Container from '$lib/wordle/components/Toast/Container.svelte';
 
-	export let solution: string;
-	export let storageKey: string;
-	export let onCompletion: (guessesString: string) => void;
+	interface Props {
+		solution: string;
+		storageKey: string;
+		onCompletion: (guessesString: string) => void;
+	}
+
+	let { solution, storageKey, onCompletion }: Props = $props();
 
 	const stores = gameStores.getOrInit(storageKey, solution);
 	const { guessStore, gameStateStore } = stores;
@@ -40,7 +46,7 @@
 
 	const isWinningWord = (word: string) => word === solution;
 
-	let currentGuess: CharValue[] = [];
+	let currentGuess: CharValue[] = $state([]);
 	const RESPONSE_TIMEOUT = KEYBOARD_DELAY + CELL_ANIMATION_DURATION;
 
 	const getGuessesString = (store: typeof $guessStore) =>
@@ -50,34 +56,40 @@
 
 	// consider moving into onMount function
 	// GAME WON
-	$: if ($gameStateStore.gameWon) {
-		toastStore.show({
-			dismissible: false,
-			message: WIN_MESSAGES[$guessStore.length - 1],
-			id: 'wintoast',
-			timeout: 3000
-		});
-		setTimeout(() => statsModalState.set(true), 3000);
-		onCompletion(getGuessesString($guessStore));
-	}
+	run(() => {
+		if ($gameStateStore.gameWon) {
+			toastStore.show({
+				dismissible: false,
+				message: WIN_MESSAGES[$guessStore.length - 1],
+				id: 'wintoast',
+				timeout: 3000
+			});
+			setTimeout(() => statsModalState.set(true), 3000);
+			onCompletion(getGuessesString($guessStore));
+		}
+	});
 	// GAME LOST
-	$: if ($gameStateStore.gameLost) {
-		toastStore.show({
-			dismissible: false,
-			message: CORRECT_WORD_MSG(solution),
-			type: 'error',
-			id: 'losetoast',
-			timeout: 3000
-		});
-		setTimeout(() => statsModalState.set(true), 3000);
-		onCompletion(getGuessesString($guessStore));
-	}
-	$: if (browser) {
-		saveGameToLocalStorage(storageKey, {
-			solution,
-			guesses: $guessStore.map((store) => store.guess.join(''))
-		});
-	}
+	run(() => {
+		if ($gameStateStore.gameLost) {
+			toastStore.show({
+				dismissible: false,
+				message: CORRECT_WORD_MSG(solution),
+				type: 'error',
+				id: 'losetoast',
+				timeout: 3000
+			});
+			setTimeout(() => statsModalState.set(true), 3000);
+			onCompletion(getGuessesString($guessStore));
+		}
+	});
+	run(() => {
+		if (browser) {
+			saveGameToLocalStorage(storageKey, {
+				solution,
+				guesses: $guessStore.map((store) => store.guess.join(''))
+			});
+		}
+	});
 
 	const onChar = (value: string) => {
 		if (

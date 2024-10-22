@@ -2,8 +2,12 @@
 	import type { PageData } from './$types';
 	import { offline } from '$lib/prisma/models/challenge/challengeTypeFns';
 
-	export let challenge: PageData['challenges'][number];
-	$: points = offline.scoreChallenge(challenge, { elfNameChallengeResponse: null });
+	interface Props {
+		challenge: PageData['challenges'][number];
+	}
+
+	let { challenge }: Props = $props();
+	let points = $derived(offline.scoreChallenge(challenge, { elfNameChallengeResponse: null }));
 </script>
 
 <!-- eslint-disable-next-line svelte/no-at-html-tags -->

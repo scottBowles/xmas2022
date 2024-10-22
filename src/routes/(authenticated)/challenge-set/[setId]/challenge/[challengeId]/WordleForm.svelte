@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { applyAction } from '$app/forms';
 	import type { PageData } from './$types';
 	import Wordle from '$lib/wordle/Wordle.svelte';
@@ -7,17 +9,23 @@
 	import { urls } from '$lib/utils';
 	import { goto } from '$app/navigation';
 
-	export let data: PageData;
-
-	$: ({ challenge, challengeSet, setHasAnotherChallenge } = data);
-
-	let isComplete = false;
-
-	$: if (isComplete) {
-		setTimeout(() => {
-			goto(urls.challengeSetReview(challengeSet.id), { replaceState: true });
-		}, 3000);
+	interface Props {
+		data: PageData;
 	}
+
+	let { data }: Props = $props();
+
+	let { challenge, challengeSet, setHasAnotherChallenge } = $derived(data);
+
+	let isComplete = $state(false);
+
+	run(() => {
+		if (isComplete) {
+			setTimeout(() => {
+				goto(urls.challengeSetReview(challengeSet.id), { replaceState: true });
+			}, 3000);
+		}
+	});
 
 	const onCompletion = async (guessesString: string) => {
 		const formData = new FormData();

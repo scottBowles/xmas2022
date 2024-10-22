@@ -5,16 +5,20 @@
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { enhance } from '$app/forms';
 
-	export let data: PageData;
-	export let form: ActionData;
+	interface Props {
+		data: PageData;
+		form: ActionData;
+	}
 
-	let mode: 'login' | 'signup' = 'login';
-	let googleError: string = '';
+	let { data, form }: Props = $props();
+
+	let mode: 'login' | 'signup' = $state('login');
+	let googleError: string = $state('');
 
 	const toggleMode = () => (mode = mode === 'login' ? 'signup' : 'login');
 	const onGoogleError = (message: string) => (googleError = message);
 
-	$: ({ title, heading, action, toggleMessage } = {
+	let { title, heading, action, toggleMessage } = $derived({
 		login: {
 			title: 'Login',
 			action: '?/login',
@@ -29,8 +33,8 @@
 		}
 	}[mode]);
 
-	$: errorMessage =
-		form?.error &&
+	let errorMessage =
+		$derived(form?.error &&
 		{
 			[LoginError.INVALID]: 'Invalid email or password',
 			[SignupError.VALIDATION]: 'Invalid email or password',
@@ -38,7 +42,7 @@
 			[LoginError.EMAIL_MISSING]: 'Email and password required.',
 			[LoginError.UNKNOWN]: 'Unknown error',
 			[SignupError.UNKNOWN]: 'Unknown error'
-		}[form.error];
+		}[form.error]);
 </script>
 
 <svelte:head>
@@ -79,8 +83,8 @@
 			<div class="pt-4"><GoogleButton {onGoogleError} /></div>
 
 			<button
-				on:click={toggleMode}
-				on:keyup={toggleMode}
+				onclick={toggleMode}
+				onkeyup={toggleMode}
 				class="text-green-700 pt-4 cursor-pointer hover:underline"
 				type="button"
 			>

@@ -8,11 +8,15 @@
 	import ShowHideToggle from '$lib/components/ShowHideToggle.svelte';
 	import { normalize } from '$lib/prisma/models/challenge/utils';
 
-	export let challenge: PageData['challenges'][number];
+	interface Props {
+		challenge: PageData['challenges'][number];
+	}
 
-	$: ({ assistants, helpers, managers } = JSON.parse(challenge.prompt));
-	$: givenAnswer = JSON.parse(challenge.response || '[]');
-	$: correctAnswer = JSON.parse(challenge.correctAnswer || '[]');
+	let { challenge }: Props = $props();
+
+	let { assistants, helpers, managers } = $derived(JSON.parse(challenge.prompt));
+	let givenAnswer = $derived(JSON.parse(challenge.response || '[]'));
+	let correctAnswer = $derived(JSON.parse(challenge.correctAnswer || '[]'));
 
 	const workshopAreaImgData = [
 		{ src: controlRoom, alt: 'Control room' },

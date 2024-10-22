@@ -2,10 +2,14 @@
 	import type { PageData } from './$types';
 	import { match } from '$lib/prisma/models/challenge/challengeTypeFns';
 
-	export let challenge: PageData['challenges'][number];
-	$: correctValues = JSON.parse(challenge.correctAnswer || '[]');
-	$: givenValues = JSON.parse(challenge.responses[0]?.response || '[]');
-	$: points = match.scoreChallenge(challenge, { elfNameChallengeResponse: null });
+	interface Props {
+		challenge: PageData['challenges'][number];
+	}
+
+	let { challenge }: Props = $props();
+	let correctValues = $derived(JSON.parse(challenge.correctAnswer || '[]'));
+	let givenValues = $derived(JSON.parse(challenge.responses[0]?.response || '[]'));
+	let points = $derived(match.scoreChallenge(challenge, { elfNameChallengeResponse: null }));
 </script>
 
 <form class="flex flex-col justify-between grow sm:justify-start">

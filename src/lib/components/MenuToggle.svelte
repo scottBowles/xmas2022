@@ -1,16 +1,20 @@
 <script lang="ts">
 	import type { MenuStore } from '$lib/stores';
 
-	export let size = 25;
-	export let menuIsOpen: MenuStore;
-	export let handleKeydown: (e: KeyboardEvent) => void;
+	interface Props {
+		size?: number;
+		menuIsOpen: MenuStore;
+		handleKeydown: (e: KeyboardEvent) => void;
+	}
+
+	let { size = 25, menuIsOpen, handleKeydown }: Props = $props();
 </script>
 
 <button
 	class="menu"
 	class:opened={$menuIsOpen}
-	on:click={menuIsOpen.toggle}
-	on:keydown={handleKeydown}
+	onclick={menuIsOpen.toggle}
+	onkeydown={handleKeydown}
 	aria-label="Main Menu"
 >
 	<svg width={size} height={size} viewBox="0 0 100 100">

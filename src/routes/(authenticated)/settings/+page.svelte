@@ -2,8 +2,7 @@
 	import { enhance } from '$app/forms';
 	import PageMargin from '$lib/components/PageMargin.svelte';
 
-	export let data;
-	export let form;
+	let { data, form } = $props();
 </script>
 
 <PageMargin>
@@ -150,6 +149,6 @@
 				<p class="text-green-700">Group joined</p>
 			{/if}
 		</form>
-		<div class="h-40" />
+		<div class="h-40"></div>
 	</div>
 </PageMargin>

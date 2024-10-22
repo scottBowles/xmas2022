@@ -1,25 +1,31 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 	import { NEXT_INPUT_VALUE, SUBMIT_INPUT_VALUE } from './constants';
 	import { CldImage } from 'svelte-cloudinary';
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
 
-	$: ({ challenge, setHasAnotherChallenge } = data);
-	$: ({ mainPrompt, inputPrompts } = JSON.parse(challenge.prompt));
+	let { data }: Props = $props();
 
-	let answer: string[] = [];
+	let { challenge, setHasAnotherChallenge } = $derived(data);
+	let { mainPrompt, inputPrompts } = $derived(JSON.parse(challenge.prompt));
+
+	let answer: string[] = $state([]);
 
 	const clearInputs = () => {
 		answer = [];
 	};
 
-	$: {
+	run(() => {
 		if (challenge.id) {
 			clearInputs();
 		}
-	}
+	});
 </script>
 
 <form class="flex flex-col justify-between grow sm:justify-start" method="POST" use:enhance>

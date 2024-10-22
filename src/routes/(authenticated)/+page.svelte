@@ -6,7 +6,11 @@
 	import * as CS from '$lib/prisma/models/challengeSet';
 	import PastYearsChallengeSet from '$lib/components/PastYearsChallengeSet.svelte';
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
+
+	let { data }: Props = $props();
 
 	const { pastChallengeSets, currentChallengeSets, futureChallengeSets, user } = data;
 	type TChallengeSet = (typeof currentChallengeSets)[0];
@@ -18,13 +22,13 @@
 		return { class: '', text: '' };
 	}
 
-	$: groupedPastChallengeSets = R.groupBy(CS.year, pastChallengeSets);
+	let groupedPastChallengeSets = $derived(R.groupBy(CS.year, pastChallengeSets));
 	const currentYear = new Date().getFullYear();
-	$: thisYearsPastChallengeSets = groupedPastChallengeSets[currentYear] ?? [];
-	$: pastYearsChallengeSets = R.omit([currentYear.toString()], groupedPastChallengeSets) as Record<
+	let thisYearsPastChallengeSets = $derived(groupedPastChallengeSets[currentYear] ?? []);
+	let pastYearsChallengeSets = $derived(R.omit([currentYear.toString()], groupedPastChallengeSets) as Record<
 		string,
 		PageData['pastChallengeSets']
-	>;
+	>);
 </script>
 
 <svelte:head>

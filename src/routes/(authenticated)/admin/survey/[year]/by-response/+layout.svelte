@@ -4,10 +4,10 @@
 	import { displayName } from '$lib/prisma/models/user.js';
 	import urls from '$lib/utils/urls.js';
 
-	export let data;
-	$: ({ playersWithSurveyResponseInYear } = data);
+	let { data, children } = $props();
+	let { playersWithSurveyResponseInYear } = $derived(data);
 
-	$: ({ year, playerId } = $page.params);
+	let { year, playerId } = $derived($page.params);
 
 	const handleResponseSelect = (e: Event) => {
 		const selectedPlayerId = parseInt((e.target as HTMLSelectElement).value);
@@ -18,7 +18,7 @@
 {#if !playersWithSurveyResponseInYear.length}
 	<p class="text-lg mt-3 mb-1">No responses found.</p>
 {:else}
-	<select class="w-full m-1 p-2 border rounded cursor-pointer" on:change={handleResponseSelect}>
+	<select class="w-full m-1 p-2 border rounded cursor-pointer" onchange={handleResponseSelect}>
 		<option value="" selected={playerId === undefined} disabled>Choose a response</option>
 		{#each playersWithSurveyResponseInYear as player (player.id)}
 			<option value={player.id} selected={player.id === parseInt(playerId)}>
@@ -28,4 +28,4 @@
 	</select>
 {/if}
 
-<slot />
+{@render children?.()}

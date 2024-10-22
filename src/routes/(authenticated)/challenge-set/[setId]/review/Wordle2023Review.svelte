@@ -4,19 +4,23 @@
 	import { createGuessStore } from '$lib/wordle/stores/guess';
 	import type { PageData } from './$types';
 
-	export let challenge: PageData['challenges'][number];
-	export let storageKey: string;
+	interface Props {
+		challenge: PageData['challenges'][number];
+		storageKey: string;
+	}
 
-	$: guesses = challenge.response?.split(',');
-	$: showCorrectAnswer = guesses && !guesses.includes(challenge.correctAnswer || '');
+	let { challenge, storageKey }: Props = $props();
 
-	$: gameStateStore = createGameStateStore();
-	$: guessStore = createGuessStore(
+	let guesses = $derived(challenge.response?.split(','));
+	let showCorrectAnswer = $derived(guesses && !guesses.includes(challenge.correctAnswer || ''));
+
+	let gameStateStore = $derived(createGameStateStore());
+	let guessStore = $derived(createGuessStore(
 		gameStateStore,
 		challenge.correctAnswer || '',
 		storageKey,
 		guesses
-	);
+	));
 </script>
 
 <div class="flex grow flex-col items-center justify-center">
