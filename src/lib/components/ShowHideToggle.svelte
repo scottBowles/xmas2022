@@ -13,7 +13,7 @@
 		contentHtml = '',
 		hideContentLabel = 'Hide Instructions',
 		showContentLabel = 'Review Instructions',
-		children
+		children,
 	}: Props = $props();
 
 	let showInstructions = $state(false);
@@ -27,6 +27,8 @@
 		onclick={toggleInstructions}
 		onkeydown={toggleInstructions}
 		class="italic text-blue-400 cursor-pointer flex items-center"
+		role="button"
+		tabindex="0"
 	>
 		<div class="h-4 w-4"><FaCaretUp /></div>
 		{hideContentLabel}
@@ -39,6 +41,8 @@
 		onclick={toggleInstructions}
 		onkeydown={toggleInstructions}
 		class="italic text-blue-400 cursor-pointer flex items-center"
+		role="button"
+		tabindex="0"
 	>
 		<div class="h-4 w-4"><FaCaretDown /></div>
 		{showContentLabel}
