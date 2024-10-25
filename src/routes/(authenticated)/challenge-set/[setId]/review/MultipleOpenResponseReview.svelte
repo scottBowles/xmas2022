@@ -12,7 +12,9 @@
 	let { mainPrompt, inputPrompts } = $derived(JSON.parse(challenge.prompt));
 	let correctValues = $derived(challenge.correctAnswer);
 	let givenValues = $derived(JSON.parse(challenge.responses[0]?.response || '[]'));
-	let points = $derived(multipleOpenResponse.scoreChallenge(challenge, { elfNameChallengeResponse: null }));
+	let points = $derived(
+		multipleOpenResponse.scoreChallenge(challenge, { elfNameChallengeResponse: null })
+	);
 </script>
 
 <form class="flex flex-col justify-between grow sm:justify-start">

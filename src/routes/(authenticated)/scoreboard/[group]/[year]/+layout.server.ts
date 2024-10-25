@@ -24,8 +24,8 @@ export const load = async ({ locals, params }) => {
 		lte: locals.user?.isAdmin
 			? new Date(`${year}-12-31`)
 			: now.getTime() < new Date(`${year}-12-31`).getTime()
-			? now
-			: new Date(`${year}-12-31`),
+				? now
+				: new Date(`${year}-12-31`),
 	};
 	const userHasCompletedChallengeSetThisYear = {
 		challengeSetResponses: { some: { completedAt: isTimeWithinYear } },
