@@ -18,7 +18,7 @@ const getSessionCookie: Handle = async ({ event, resolve }) => {
 			const isBadPayload = typeof jwtPayload === 'string';
 			if (isBadPayload) {
 				event.locals.user = null;
-				event.cookies.delete('AuthorizationToken');
+				event.cookies.delete('AuthorizationToken', AUTH_COOKIE_OPTIONS);
 			} else {
 				const jwtUser = jwtUserFactory(jwtPayload);
 				event.locals.user = jwtUser;
