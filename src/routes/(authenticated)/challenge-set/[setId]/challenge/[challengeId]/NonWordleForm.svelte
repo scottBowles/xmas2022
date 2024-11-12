@@ -12,7 +12,7 @@
 	let { challenge, setHasAnotherChallenge } = $derived(data);
 	let response = $derived(challenge?.responses[0]?.response ?? '');
 
-	let textInput: HTMLInputElement = $state();
+	let textInput: HTMLInputElement | undefined = $state();
 </script>
 
 <form class="flex flex-col justify-between grow sm:justify-start" method="POST" use:enhance>
