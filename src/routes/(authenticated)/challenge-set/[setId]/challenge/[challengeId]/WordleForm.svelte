@@ -32,9 +32,9 @@
 			'submit_action',
 			setHasAnotherChallenge ? NEXT_INPUT_VALUE : SUBMIT_INPUT_VALUE
 		);
-		const response = await fetch(`/challenge-set/${challengeSet.id}/challenge/${challenge.id}`, {
+		const response = await fetch(urls.challenge(challengeSet.id, challenge.id), {
 			method: 'POST',
-			body: formData
+			body: formData,
 		});
 		const result: ActionResult = JSON.parse(await response.text());
 		isComplete = true;
