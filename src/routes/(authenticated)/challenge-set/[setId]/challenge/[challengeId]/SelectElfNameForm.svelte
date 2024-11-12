@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { ELF_FIRST_NAMES, ELF_LAST_NAMES, SUBMIT_INPUT_VALUE } from './constants';
 	import type { PageData, ActionData } from './$types';
 	import { enhance } from '$app/forms';
@@ -13,31 +11,34 @@
 
 	let { data, form }: Props = $props();
 
-	let selectedFirstName: string = $state();
-	let selectedLastName: string = $state();
+	let availableFirstNames = $derived(
+		ELF_FIRST_NAMES.filter((name) => {
+			const takenFirstNames =
+				form?.type === 'NAME_TAKEN' && form.takenFirstNames
+					? form.takenFirstNames
+					: (data.takenElfFirstNames ?? []);
+			return !takenFirstNames.includes(name);
+		})
+	);
+	let availableLastNames = $derived(
+		ELF_LAST_NAMES.filter((name) => {
+			const takenLastNames =
+				form?.type === 'NAME_TAKEN' && form.takenLastNames
+					? form.takenLastNames
+					: (data.takenElfLastNames ?? []);
+			return !takenLastNames.includes(name);
+		})
+	);
 
-	let availableFirstNames = $derived(ELF_FIRST_NAMES.filter((name) => {
-		const nameIsTaken =
-			form?.type === 'NAME_TAKEN' && form.takenFirstNames
-				? form.takenFirstNames.includes(name)
-				: data.takenElfFirstNames?.includes(name);
-		return !nameIsTaken;
-	}));
-	let availableLastNames = $derived(ELF_LAST_NAMES.filter((name) => {
-		const nameIsTaken =
-			form?.type === 'NAME_TAKEN' && form.takenLastNames
-				? form.takenLastNames.includes(name)
-				: data.takenElfLastNames?.includes(name);
-		return !nameIsTaken;
-	}));
+	let selectedFirstName: string = $state('');
+	let selectedLastName: string = $state('');
 
-	run(() => {
+	$effect(() => {
 		if (form?.message) {
 			toastStore.show({
 				dismissible: false,
 				message: form.message,
 				id: 'elfnametoast',
-				timeout: 3000,
 			});
 		}
 	});
