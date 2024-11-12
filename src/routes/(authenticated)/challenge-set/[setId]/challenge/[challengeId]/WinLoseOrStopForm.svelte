@@ -22,7 +22,7 @@
 	let currentIndex = $state(0);
 	let confirmModalIsOpen = $state(false);
 	let responses: string[] = $state([]);
-	let form: HTMLFormElement = $state();
+	let form: HTMLFormElement | undefined = $state();
 
 	const toggleConfirmModal = () => (confirmModalIsOpen = !confirmModalIsOpen);
 
@@ -112,11 +112,13 @@
 	/>
 	<button
 		type="submit"
-		onclick={preventDefault(!responses[currentIndex]
-			? () => form.reportValidity()
-			: currentIndex !== prompts.length - 1
-			? handleNext
-			: handleSubmit)}
+		onclick={preventDefault(
+			!responses[currentIndex]
+				? () => form?.reportValidity()
+				: currentIndex !== prompts.length - 1
+					? handleNext
+					: handleSubmit
+		)}
 		class="bg-green-700 text-white font-bold py-3 px-6 rounded w-full text-lg mt-8 block"
 	>
 		{#if currentIndex !== prompts.length - 1}
