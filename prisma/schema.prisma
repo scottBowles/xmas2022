@@ -98,19 +98,28 @@ model Option {
   isCorrect   Boolean   @default(false)
 }
 
+model ResponseSelectElfName {
+  id                Int                @id @default(autoincrement())
+  selectedFirstName String             @db.VarChar(255)
+  selectedLastName  String             @db.VarChar(255)
+  ChallengeResponse ChallengeResponse?
+}
+
 model ChallengeResponse {
-  id                      Int       @id @default(autoincrement())
-  player                  User      @relation(fields: [playerId], references: [id])
+  id                      Int                    @id @default(autoincrement())
+  player                  User                   @relation(fields: [playerId], references: [id])
   playerId                Int
-  challenge               Challenge @relation(fields: [challengeId], references: [id])
+  challenge               Challenge              @relation(fields: [challengeId], references: [id])
   challengeId             Int
-  response                String    @default("") @db.Text
+  response                String                 @default("") @db.Text
+  responseSelectElfName   ResponseSelectElfName? @relation(fields: [responseSelectElfNameId], references: [id])
+  responseSelectElfNameId Int?                   @unique
   pointsEarned            Int?
   pointsManuallyAwarded   Int?
-  createdAt               DateTime  @default(now())
-  updatedAt               DateTime  @updatedAt
-  submittedBeforeSetStart Boolean   @default(false)
-  submittedAfterSetEnd    Boolean   @default(false)
+  createdAt               DateTime               @default(now())
+  updatedAt               DateTime               @updatedAt
+  submittedBeforeSetStart Boolean                @default(false)
+  submittedAfterSetEnd    Boolean                @default(false)
 
   @@unique([playerId, challengeId])
 }
