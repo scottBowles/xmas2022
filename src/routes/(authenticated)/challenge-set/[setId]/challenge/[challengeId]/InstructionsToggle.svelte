@@ -19,6 +19,8 @@
 		onclick={toggleInstructions}
 		onkeydown={toggleInstructions}
 		class="italic text-blue-400 cursor-pointer flex items-center"
+		role="button"
+		tabindex="0"
 	>
 		<div class="h-4 w-4"><FaCaretUp /></div>
 		Hide Instructions
@@ -30,6 +32,8 @@
 		onclick={toggleInstructions}
 		onkeydown={toggleInstructions}
 		class="italic text-blue-400 cursor-pointer flex items-center"
+		role="button"
+		tabindex="0"
 	>
 		<div class="h-4 w-4"><FaCaretDown /></div>
 		Review Instructions
