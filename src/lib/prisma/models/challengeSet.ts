@@ -3,7 +3,6 @@ import type { WithMinimumInput } from '$lib/utils/types';
 import { sum } from 'ramda';
 import type { Challenge } from '@prisma/client';
 
-
 /**
  * TYPES for what follows
  */
@@ -16,7 +15,7 @@ type UserHasCompleted = WithMinimumInput<
 type ResultsUrl = WithMinimumInput<{ id: number }, string>;
 type UserResponseExists = WithMinimumInput<{ challengeSetResponses: unknown[] }, boolean>;
 type NextChallenge = <
-	T extends { challenges: (Pick<Challenge, 'id' | 'type'> & { responses?: unknown[] })[] }
+	T extends { challenges: (Pick<Challenge, 'id' | 'type'> & { responses?: unknown[] })[] },
 >(
 	challengeSet: T,
 	lastChallengeId?: number
@@ -25,7 +24,7 @@ type NextChallengeUrl = <
 	T extends {
 		id: number;
 		challenges: (Pick<Challenge, 'id' | 'type'> & { responses?: unknown[] })[];
-	}
+	},
 >(
 	challengeSet: T,
 	lastChallengeId?: number
@@ -36,7 +35,7 @@ type NumScoreboardStats = <
 		isScored: boolean;
 		hasBonusPoints?: boolean;
 		hasTimeBonusPoints?: boolean;
-	}
+	},
 >(
 	challenge: T
 ) => number;
@@ -46,7 +45,7 @@ type HasScoreboardStats = <
 		isScored: boolean;
 		hasBonusPoints?: boolean;
 		hasTimeBonusPoints?: boolean;
-	}
+	},
 >(
 	challenge: T
 ) => boolean;
