@@ -34,5 +34,5 @@ export default {
 	getForKey,
 	initForKey,
 	getOrInit,
-	...hashedStores
+	...hashedStores,
 };
