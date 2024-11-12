@@ -1,23 +1,21 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import Settings from '$lib/wordle/components/Modal/Settings.svelte';
 	import Help from '$lib/wordle/components/Modal/Help.svelte';
 	// import StatsModal from '$lib/wordle/components/Modal/__Stats.svelte';
 	import {
 		// statsModalState,
 		helpModalState,
-		settingsModalState
+		settingsModalState,
 	} from '$lib/wordle/stores/modals';
 	import { GAME_TITLE } from '$lib/wordle/constants/strings';
 	import {
 		darkModeStore,
 		// highContrastStore,
-		watchDarkMode
+		watchDarkMode,
 		// watchHighContrast
 	} from '$lib/wordle/stores/theme';
 
-	run(() => {
+	$effect(() => {
 		watchDarkMode($darkModeStore);
 	});
 	// $: watchHighContrast($highContrastStore);
