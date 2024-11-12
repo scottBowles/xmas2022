@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 	import { NEXT_INPUT_VALUE, SUBMIT_INPUT_VALUE } from './constants';
@@ -15,7 +13,7 @@
 	let response = $derived(JSON.parse(challenge?.responses[0]?.response ?? '[]'));
 
 	let values: string[] = $state([]);
-	run(() => {
+	$effect(() => {
 		if (values.length === 0 && challenge?.matches?.length > 0) {
 			values = challenge?.matches?.map((_, i) => response[i] ?? '') ?? [];
 		}

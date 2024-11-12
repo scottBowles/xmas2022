@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { applyAction } from '$app/forms';
 	import type { PageData } from './$types';
 	import Wordle from '$lib/wordle/Wordle.svelte';
@@ -19,7 +17,7 @@
 
 	let isComplete = $state(false);
 
-	run(() => {
+	$effect(() => {
 		if (isComplete) {
 			setTimeout(() => {
 				goto(urls.challengeSetReview(challengeSet.id), { replaceState: true });
