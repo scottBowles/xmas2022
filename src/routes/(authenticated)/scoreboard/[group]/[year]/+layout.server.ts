@@ -134,14 +134,14 @@ export const load = async ({ locals, params }) => {
 			)?.timeBonusPoints;
 			return userTimeBonusPoints && userTimeBonusPoints > 0;
 		});
-		console.log(
-			JSON.stringify({
-				userChallengeSetResponses: users.map((u) => u.challengeSetResponses),
-				hasBonusPoints,
-				hasTimeBonusPoints,
-				id: cs.id,
-			})
-		);
+		// console.log(
+		// 	JSON.stringify({
+		// 		userChallengeSetResponses: users.map((u) => u.challengeSetResponses),
+		// 		hasBonusPoints,
+		// 		hasTimeBonusPoints,
+		// 		id: cs.id,
+		// 	})
+		// );
 		return {
 			...cs,
 			hasBonusPoints,

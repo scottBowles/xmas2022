@@ -1,5 +1,4 @@
 import { error, fail, redirect } from '@sveltejs/kit';
-import type { Actions, PageServerLoad } from './$types';
 
 import prisma from '$lib/prisma';
 import { isLast, scoreChallenges } from '$lib/prisma/models/challenge';
@@ -7,7 +6,11 @@ import { isAvailable, nextChallengeUrl } from '$lib/prisma/models/challengeSet';
 import { isLive } from '$lib/prisma/models/challengeSetResponse';
 import { getNow, urls } from '$lib/utils';
 import { SUBMIT_INPUT_VALUE } from './constants';
-import { takenElfNames } from '$lib/prisma/models/challengeResponse';
+import {
+	responseTakenElfNamesResponseSchema,
+	takenElfNames,
+} from '$lib/prisma/models/challengeResponse';
+import type { Actions, PageServerLoad } from './$types';
 
 const TYPES_THAT_HANDLE_THEIR_OWN_REDIRECTS = ['WORDLE', 'WORDLE_2023'];
 
@@ -88,6 +91,10 @@ type FormError =
 			message: string;
 			takenFirstNames: string[] | undefined;
 			takenLastNames: string[] | undefined;
+	  }
+	| {
+			type: 'INVALID_RESPONSE';
+			message: string;
 	  };
 
 const createFormError = (obj: {
@@ -139,9 +146,22 @@ export const actions: Actions = {
 
 		// we aren't currently but we could validate the response here
 
-		// if SELECT_ELF_NAME, check if name is taken
+		// create or update challengeResponse
 		if (challenge.type === 'SELECT_ELF_NAME') {
-			const { selectedFirstName, selectedLastName } = JSON.parse(response ?? '[]');
+			// if SELECT_ELF_NAME, check if name is taken
+			const parsed = responseTakenElfNamesResponseSchema.safeParse(
+				JSON.parse(response ?? '{}') as unknown
+			).data;
+			if (!parsed) {
+				return fail(
+					400,
+					createFormError({
+						type: 'INVALID_RESPONSE',
+						message: 'Something went wrong with the response',
+					})
+				);
+			}
+			const { selectedFirstName, selectedLastName } = parsed;
 			const challengeResponses = await prisma.challengeResponse.findMany({
 				where: { challengeId },
 				select: { response: true },
@@ -158,21 +178,30 @@ export const actions: Actions = {
 							firstNameIsTaken && lastNameIsTaken
 								? 'Both of those names are taken'
 								: firstNameIsTaken
-								? `${selectedFirstName} is taken`
-								: `${selectedLastName} is taken}`,
+									? `${selectedFirstName} is taken`
+									: `${selectedLastName} is taken}`,
 						takenFirstNames,
 						takenLastNames,
 					})
 				);
 			}
+			const responseSelectElfNameId = (
+				await prisma.responseSelectElfName.create({ data: { selectedFirstName, selectedLastName } })
+			).id;
+			await prisma.challengeResponse.upsert({
+				where: { playerId_challengeId: { challengeId, playerId } },
+				update: { responseSelectElfNameId },
+				create: { challengeId, playerId, responseSelectElfNameId },
+			});
+		} else {
+			const res = await prisma.challengeResponse.upsert({
+				where: { playerId_challengeId: { challengeId, playerId } },
+				update: { response },
+				create: { challengeId, playerId, response },
+				include: { responseSelectElfName: true },
+			});
+			res.responseSelectElfName?.selectedFirstName;
 		}
-
-		// create or update challengeResponse
-		await prisma.challengeResponse.upsert({
-			where: { playerId_challengeId: { challengeId, playerId } },
-			update: { response },
-			create: { challengeId, playerId, response },
-		});
 
 		if (submitting) {
 			// end and score the challengeSetResponse

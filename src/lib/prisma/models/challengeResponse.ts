@@ -1,4 +1,17 @@
-type TakenElfNamesMinimalInput = { response: string }[];
+import { isNotNil } from 'ramda';
+import { z } from 'zod';
+
+export const responseTakenElfNamesResponseSchema = z
+	.object({
+		selectedFirstName: z.string(),
+		selectedLastName: z.string(),
+	})
+	.optional();
+
+type TakenElfNamesMinimalInput = {
+	response: string;
+	responseSelectElfName?: { selectedFirstName: string; selectedLastName: string };
+}[];
 type TakenElfNames = <T extends TakenElfNamesMinimalInput>(
 	challengeResponses: T
 ) =>
@@ -8,23 +21,20 @@ type TakenElfNames = <T extends TakenElfNamesMinimalInput>(
 	  }
 	| undefined;
 
-const takenElfNames: TakenElfNames = (challengeResponses) => {
-	const takenElfNames = challengeResponses.map((data) => JSON.parse(data.response) as unknown);
-	if (Array.isArray(takenElfNames)) {
-		const takenFirstNames = takenElfNames.map((name) => {
-			if (typeof name === 'object' && !!name && 'selectedFirstName' in name) {
-				return String(name.selectedFirstName);
-			}
-			return '';
-		});
-		const takenLastNames = takenElfNames.map((name) => {
-			if (typeof name === 'object' && !!name && 'selectedLastName' in name) {
-				return String(name.selectedLastName);
-			}
-			return '';
-		});
-		return { takenFirstNames, takenLastNames };
-	}
-};
+const takenElfNames: TakenElfNames = (challengeResponses) =>
+	challengeResponses
+		.map(
+			({ responseSelectElfName, response }) =>
+				responseSelectElfName ||
+				responseTakenElfNamesResponseSchema.safeParse(JSON.parse(response) as unknown).data
+		)
+		.filter(isNotNil)
+		.reduce(
+			(acc, cur) => ({
+				takenFirstNames: [...acc.takenFirstNames, cur.selectedFirstName],
+				takenLastNames: [...acc.takenLastNames, cur.selectedLastName],
+			}),
+			{ takenFirstNames: [] as string[], takenLastNames: [] as string[] }
+		);
 
 export { takenElfNames };
