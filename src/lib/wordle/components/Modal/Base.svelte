@@ -3,13 +3,10 @@
 	import { spring } from 'svelte/motion';
 	import { fade, fly } from 'svelte/transition';
 
-	
-	
-	
 	interface Props {
-		Modal Visiblity
+		// Modal Visiblity
 		isOpen?: boolean;
-		Toggle Modal visibility
+		// Toggle Modal visibility
 		toggleIsOpen?: any;
 		/** element to focus on after closing */
 		focusAfterClosed?: HTMLElement | undefined;
@@ -21,15 +18,15 @@
 	let {
 		isOpen = $bindable(false),
 		toggleIsOpen = (value: boolean) => {
-		isOpen = value;
-	},
+			isOpen = value;
+		},
 		focusAfterClosed = undefined,
 		header,
 		content,
-		footer
+		footer,
 	}: Props = $props();
 
-	let modalNode: HTMLElement = $state();
+	let modalNode: HTMLElement | undefined = $state();
 	let ignoresFocusChange: boolean;
 	let lastFocus: Element | null;
 
@@ -80,7 +77,7 @@
 		};
 
 		const trapFocus = (e: FocusEvent) => {
-			if (ignoresFocusChange) return;
+			if (ignoresFocusChange || !modalNode) return;
 			if (modalNode.contains(e?.target as Element)) {
 				lastFocus = e.target as Element;
 			} else {
@@ -115,7 +112,7 @@
 				document.removeEventListener('focus', trapFocus, true);
 				node.removeEventListener('keydown', keydown);
 				focusAfterClosed?.focus();
-			}
+			},
 		};
 	};
 </script>
