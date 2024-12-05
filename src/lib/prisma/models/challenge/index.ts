@@ -44,7 +44,7 @@ const scoreChallenge: ScoreChallenge = (challenge, extra) => {
 	if (challenge.type === 'OPEN_RESPONSE') return openResponse.scoreChallenge(challenge, extra);
 	if (challenge.type === 'SELECT_ELF_NAME') return selectElfName.scoreChallenge(challenge, extra);
 	if (challenge.type === 'YOUR_ELF_NAME_WORTH')
-		return yourElfNameWorth.scoreChallenge(challenge, extra.elfNameChallengeResponse);
+		return yourElfNameWorth.scoreChallenge(challenge, extra);
 	if (challenge.type === 'OFFLINE') return offline.scoreChallenge(challenge, extra);
 	if (challenge.type === 'MATCH') return match.scoreChallenge(challenge, extra);
 	if (challenge.type === 'SANTAS_WORKSHOP') return santasWorkshop.scoreChallenge(challenge, extra);

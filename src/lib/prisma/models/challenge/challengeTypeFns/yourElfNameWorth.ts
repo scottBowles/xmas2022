@@ -13,7 +13,7 @@ type CorrectAnswerYourElfNameWorth = <T extends CorrectAnswerMinimalInput>(
 ) => string | false | undefined;
 type ScoreChallengeYourElfNameWorth = <T extends ScoreChallengeMinimalInput>(
 	challenge: T,
-	elfNameChallengeResponse: ChallengeResponse | undefined | null
+	extra: { elfNameChallengeResponse: ChallengeResponse | null }
 ) => number;
 type ResponseIsCorrectYourElfNameWorth = <T extends CorrectAnswersMinimalInput>(
 	challenge: T,
@@ -35,9 +35,9 @@ const responseIsCorrect: ResponseIsCorrectYourElfNameWorth = (
 	parseInt(clean(response(challenge))) ===
 	parseInt(clean(correctAnswer(challenge, elfNameChallengeResponse) || '-9999'));
 
-const scoreChallenge: ScoreChallengeYourElfNameWorth = (challenge, elfNameChallengeResponse) => {
-	if (!elfNameChallengeResponse?.response) return 0;
-	const pointsForCorrect = responseIsCorrect(challenge, elfNameChallengeResponse)
+const scoreChallenge: ScoreChallengeYourElfNameWorth = (challenge, extra) => {
+	if (!extra.elfNameChallengeResponse?.response) return 0;
+	const pointsForCorrect = responseIsCorrect(challenge, extra.elfNameChallengeResponse)
 		? challenge.points
 		: 0;
 	return pointsForCorrect + pointsManuallyAwarded(challenge);
