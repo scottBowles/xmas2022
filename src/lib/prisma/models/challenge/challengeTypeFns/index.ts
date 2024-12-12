@@ -10,3 +10,4 @@ export * as santasWorkshop from './santasWorkshop';
 export * as multipleOpenResponse from './multipleOpenResponse';
 export * as winLoseOrStop from './winLoseOrStop';
 export * as familyFeud from './familyFeud';
+export * as framed from './framed';

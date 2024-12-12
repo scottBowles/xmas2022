@@ -1,4 +1,4 @@
-import { timeTaken } from '$lib/prisma/models/challengeSetResponse';
+import CSR from '$lib/prisma/models/challengeSetResponse';
 import { displayName } from '$lib/prisma/models/user';
 import { HIDDEN_USER_EMAILS } from '../../../utils';
 
@@ -19,7 +19,7 @@ export const load = async ({ locals, parent }) => {
 				.reduce((acc, cur) => acc + cur.points + cur.bonusPoints + cur.timeBonusPoints, 0);
 			const totalTime = user.challengeSetResponses
 				.filter((csr) => csr.challengeSet.isTimed)
-				.reduce((acc, cur) => acc + (timeTaken(cur) ?? 0), 0);
+				.reduce((acc, cur) => acc + (CSR.timeTaken(cur) ?? 0), 0);
 			return {
 				display,
 				score: totalScore,

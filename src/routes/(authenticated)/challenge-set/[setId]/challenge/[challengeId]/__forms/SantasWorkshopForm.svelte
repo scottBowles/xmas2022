@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { PageData } from './$types';
-	import { NEXT_INPUT_VALUE, SUBMIT_INPUT_VALUE } from './constants';
+	import type { PageData } from '../$types';
+	import { NEXT_INPUT_VALUE, SUBMIT_INPUT_VALUE } from '../constants';
 	import controlRoom from '$lib/assets/santas_workshop_controlroom.png';
 	import garage from '$lib/assets/santas_workshop_garage.png';
 	import mailroom from '$lib/assets/santas_workshop_mailroom.png';

@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
 import prisma from '$lib/prisma';
-import { scoreChallenges } from '$lib/prisma/models/challenge';
+import CHLG from '$lib/prisma/models/challenge';
 
 export const load: PageServerLoad = async ({ parent }) => {
 	const { user } = await parent();
@@ -51,9 +51,12 @@ export const actions: Actions = {
 					}),
 				]);
 				const updatePromises = challengeSetResponses.map(async (challengeSetResponse) => {
-					const challengePoints = scoreChallenges(challengeSetResponse.challengeSet.challenges, {
-						elfNameChallengeResponse,
-					});
+					const challengePoints = CHLG.scoreChallenges(
+						challengeSetResponse.challengeSet.challenges,
+						{
+							elfNameChallengeResponse,
+						}
+					);
 					const completionPoints = challengeSetResponse.completedAt
 						? challengeSetResponse.challengeSet.completionPoints
 						: 0;

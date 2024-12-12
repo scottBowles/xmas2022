@@ -1,17 +1,17 @@
 <script lang="ts">
-	import FaRegClock from 'svelte-icons/fa/FaRegClock.svelte';
+	import { goto } from '$app/navigation';
+	import PageMargin from '$lib/components/PageMargin.svelte';
+	import CS from '$lib/prisma/models/challengeSet';
+	import { displayName } from '$lib/prisma/models/user';
+	import { formatDuration, urls } from '$lib/utils';
+	import FaEquals from 'svelte-icons/fa/FaEquals.svelte';
 	import FaHashtag from 'svelte-icons/fa/FaHashtag.svelte';
 	import FaPlus from 'svelte-icons/fa/FaPlus.svelte';
-	import FaEquals from 'svelte-icons/fa/FaEquals.svelte';
-	import PageMargin from '$lib/components/PageMargin.svelte';
-	import { formatDuration, urls } from '$lib/utils';
-	import { displayName } from '$lib/prisma/models/user';
-	import { hasScoreboardStats, numScoreboardStats } from '$lib/prisma/models/challengeSet';
-	import { goto } from '$app/navigation';
+	import FaRegClock from 'svelte-icons/fa/FaRegClock.svelte';
 	import DayNavigation from '../../../DayNavigation.svelte';
+	import DaySelect from '../../../DaySelect.svelte';
 	import GroupSelect from '../../../GroupSelect.svelte';
 	import YearSelect from '../../../YearSelect.svelte';
-	import DaySelect from '../../../DaySelect.svelte';
 
 	let { data } = $props();
 
@@ -68,9 +68,9 @@
 					<tr>
 						<th></th>
 
-						{#each challengeSets.filter(hasScoreboardStats) as challengeSet}
+						{#each challengeSets.filter(CS.hasScoreboardStats) as challengeSet}
 							<th
-								colspan={numScoreboardStats(challengeSet)}
+								colspan={CS.numScoreboardStats(challengeSet)}
 								class="border-x border-solid border-x-green-700"
 							>
 								{challengeSet.title}

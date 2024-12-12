@@ -3,7 +3,7 @@
 	import { urls } from '$lib/utils';
 	import type { PageData } from './$types';
 	import * as R from 'ramda';
-	import * as CS from '$lib/prisma/models/challengeSet';
+	import CS from '$lib/prisma/models/challengeSet';
 	import PastYearsChallengeSet from '$lib/components/PastYearsChallengeSet.svelte';
 
 	interface Props {
@@ -25,10 +25,12 @@
 	let groupedPastChallengeSets = $derived(R.groupBy(CS.year, pastChallengeSets));
 	const currentYear = new Date().getFullYear();
 	let thisYearsPastChallengeSets = $derived(groupedPastChallengeSets[currentYear] ?? []);
-	let pastYearsChallengeSets = $derived(R.omit([currentYear.toString()], groupedPastChallengeSets) as Record<
-		string,
-		PageData['pastChallengeSets']
-	>);
+	let pastYearsChallengeSets = $derived(
+		R.omit([currentYear.toString()], groupedPastChallengeSets) as Record<
+			string,
+			PageData['pastChallengeSets']
+		>
+	);
 </script>
 
 <svelte:head>

@@ -38,3 +38,7 @@ const takenElfNames: TakenElfNames = (challengeResponses) =>
 		);
 
 export { takenElfNames };
+
+const CR = { responseTakenElfNamesResponseSchema, takenElfNames };
+
+export default CR;

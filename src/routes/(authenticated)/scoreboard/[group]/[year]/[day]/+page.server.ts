@@ -1,5 +1,5 @@
+import CS from '$lib/prisma/models/challengeSet';
 import { descend, pick, sort } from 'ramda';
-import { numScoreboardStats } from '$lib/prisma/models/challengeSet';
 import { HIDDEN_USER_EMAILS } from '../../../utils';
 
 export const load = async ({ locals, params, parent }) => {
@@ -13,7 +13,7 @@ export const load = async ({ locals, params, parent }) => {
 
 	const dayShown = days[day ? parseInt(day, 10) : 0];
 
-	const challengeSets = sort(descend(numScoreboardStats), challengeSetsByDate[dayShown] ?? []);
+	const challengeSets = sort(descend(CS.numScoreboardStats), challengeSetsByDate[dayShown] ?? []);
 
 	const getDayShownScore = (player: (typeof users)[number]) =>
 		challengeSets.reduce((acc, cur) => {

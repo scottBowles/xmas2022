@@ -1,7 +1,8 @@
-import { getNow, addKey, urls } from '$lib/utils';
+import { challengeTypeAbbreviations } from '$lib/constants';
+import { getNow, urls } from '$lib/utils';
 import type { WithMinimumInput } from '$lib/utils/types';
-import { sum } from 'ramda';
 import type { Challenge } from '@prisma/client';
+import { sum } from 'ramda';
 
 /**
  * TYPES for what follows
@@ -89,8 +90,11 @@ const nextChallenge: NextChallenge = (challengeSet, thisChallengeId) => {
 	return challenges[0];
 };
 
-const nextChallengeUrl: NextChallengeUrl = (challengeSet, lastChallengeId) =>
-	urls.challenge(challengeSet.id, nextChallenge(challengeSet, lastChallengeId).id);
+const nextChallengeUrl: NextChallengeUrl = (challengeSet, lastChallengeId) => {
+	const { id, type } = nextChallenge(challengeSet, lastChallengeId);
+	const typeAbbr = challengeTypeAbbreviations[type];
+	return urls.challenge(challengeSet.id, id, typeAbbr);
+};
 
 const numScoreboardStats: NumScoreboardStats = ({
 	isTimed,
@@ -106,38 +110,16 @@ const year: YearFn = (challengeSet) => {
 	return new Date(challengeSet.timeAvailableStart).getFullYear().toString();
 };
 
-/**
- * ADD FUNCTIONS
- * Functions to add computed properties to ChallengeSet objects.
- * These all take a partial ChallengeSet object as their sole argument and
- * return a like object with the computed property added.
- */
-const addIsAvailable = addKey('isAvailable', isAvailable);
-const addChallengesExist = addKey('challengesExist', challengesExist);
-const addUserHasCompleted = addKey('userHasCompleted', userHasCompleted);
-const addResultsUrl = addKey('resultsUrl', resultsUrl);
-const addUserResponseExists = addKey('userResponseExists', userResponseExists);
-const addNextChallenge = addKey('nextChallenge', nextChallenge);
-const addNextChallengeUrl = addKey('nextChallengeUrl', nextChallengeUrl);
-const addYear = addKey('year', year);
-
-export {
+const CS = {
 	isAvailable,
-	addIsAvailable,
 	challengesExist,
-	addChallengesExist,
 	userHasCompleted,
-	addUserHasCompleted,
 	resultsUrl,
-	addResultsUrl,
 	userResponseExists,
-	addUserResponseExists,
-	nextChallenge,
-	addNextChallenge,
 	nextChallengeUrl,
-	addNextChallengeUrl,
 	numScoreboardStats,
 	hasScoreboardStats,
 	year,
-	addYear,
 };
+
+export default CS;

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { PageData } from './$types';
-	import { NEXT_INPUT_VALUE, SUBMIT_INPUT_VALUE } from './constants';
+	import type { PageData } from '../$types';
+	import { NEXT_INPUT_VALUE, SUBMIT_INPUT_VALUE } from '../constants';
 
 	interface Props {
 		data: PageData;

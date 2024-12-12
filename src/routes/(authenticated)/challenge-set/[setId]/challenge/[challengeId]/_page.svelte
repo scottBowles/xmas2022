@@ -1,15 +1,15 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { onMount } from 'svelte';
 	import InstructionsToggle from './InstructionsToggle.svelte';
-	import NonWordleForm from './NonWordleForm.svelte';
-	import WordleForm from './WordleForm.svelte';
-	import SelectElfNameForm from './SelectElfNameForm.svelte';
-	import OfflineForm from './OfflineForm.svelte';
-	import MatchForm from './MatchForm.svelte';
-	import SantasWorkshopForm from './SantasWorkshopForm.svelte';
-	import MultipleOpenResponse from './MultipleOpenResponse.svelte';
-	import WinLoseOrStopForm from './WinLoseOrStopForm.svelte';
+	import NonWordleForm from './__forms/NonWordleForm.svelte';
+	import WordleForm from './__forms/WordleForm.svelte';
+	import SelectElfNameForm from './__forms/SelectElfNameForm.svelte';
+	import OfflineForm from './__forms/OfflineForm.svelte';
+	import MatchForm from './__forms/MatchForm.svelte';
+	import SantasWorkshopForm from './__forms/SantasWorkshopForm.svelte';
+	import MultipleOpenResponse from './__forms/MultipleOpenResponseForm.svelte';
+	import WinLoseOrStopForm from './__forms/WinLoseOrStop/WinLoseOrStopForm.svelte';
 
 	let { data, form } = $props();
 
@@ -29,7 +29,7 @@
 
 		{#if ['WORDLE', 'WORDLE_2023'].includes(challenge.type)}
 			<WordleForm {data} />
-		{:else if ['MULTIPLE_CHOICE', 'OPEN_RESPONSE', 'YOUR_ELF_NAME_WORTH', 'FAMILY_FEUD'].includes(challenge.type)}
+		{:else if ['MULTIPLE_CHOICE', 'OPEN_RESPONSE', 'YOUR_ELF_NAME_WORTH', 'FAMILY_FEUD', 'FRAMED'].includes(challenge.type)}
 			<NonWordleForm {data} />
 		{:else if 'MATCH' === challenge.type}
 			<MatchForm {data} />
@@ -48,7 +48,6 @@
 		{/if}
 
 		{#if form?.message}
-			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			<p class="text-christmasRed">{@html form.message}</p>
 		{/if}
 	</div>
@@ -58,4 +57,4 @@
 	.challenge-container {
 		height: calc(100% - var(--nav-height));
 	}
-</style>
+</style> -->

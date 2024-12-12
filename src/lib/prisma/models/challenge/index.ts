@@ -1,21 +1,21 @@
-import { addKey } from '$lib/utils';
 import type { Challenge } from '@prisma/client';
-import { response } from './utils';
 import {
+	familyFeud,
+	framed,
+	match,
 	multipleChoice,
+	multipleOpenResponse,
+	offline,
 	openResponse,
+	santasWorkshop,
 	selectElfName,
+	winLoseOrStop,
 	wordle2022,
 	wordle2023,
 	yourElfNameWorth,
-	offline,
-	match,
-	santasWorkshop,
-	multipleOpenResponse,
-	winLoseOrStop,
-	familyFeud,
 } from './challengeTypeFns';
 import type { ScoreChallenge, ScoreChallenges } from './types';
+import { response } from './utils';
 
 type IsLastMinimalInput = { challenges: Pick<Challenge, 'id' | 'type'>[] };
 type IsLast = <T extends IsLastMinimalInput>(
@@ -52,14 +52,27 @@ const scoreChallenge: ScoreChallenge = (challenge, extra) => {
 		return multipleOpenResponse.scoreChallenge(challenge, extra);
 	if (challenge.type === 'WIN_LOSE_OR_STOP') return winLoseOrStop.scoreChallenge(challenge, extra);
 	if (challenge.type === 'FAMILY_FEUD') return familyFeud.scoreChallenge(challenge, extra);
+	if (challenge.type === 'FRAMED') return framed.scoreChallenge(challenge, extra);
 	return 0;
 };
 
 const scoreChallenges: ScoreChallenges = (challenges, extra) =>
 	challenges.reduce((acc, challenge) => acc + scoreChallenge(challenge, extra), 0);
 
-const addIsLast = <T extends { challenges: { id: number; type: Challenge['type'] }[] }>(
-	challengeSet: T
-) => addKey('isLast', isLast(challengeSet));
+type OrderedChildren = <T extends Challenge>(challenge: { children: T[] }) => T[];
 
-export { isLast, ownElfName, response, scoreChallenge, scoreChallenges, addIsLast };
+// Order children such that those with an order come first, then those without an order.
+// If two children have the same order, sort by createdAt
+const orderedChildren: OrderedChildren = (challenge) =>
+	challenge.children.sort((a, b) => {
+		if (a.order !== null && b.order !== null) {
+			return a.order - b.order;
+		}
+		if (a.order !== null) return -1;
+		if (b.order !== null) return 1;
+		return a.createdAt.getTime() - b.createdAt.getTime();
+	});
+
+const CHLG = { isLast, ownElfName, response, scoreChallenges, orderedChildren };
+
+export default CHLG;

@@ -1,17 +1,12 @@
 <script lang="ts">
 	import { applyAction } from '$app/forms';
-	import type { PageData } from './$types';
 	import Wordle from '$lib/wordle/Wordle.svelte';
-	import { NEXT_INPUT_VALUE, SUBMIT_INPUT_VALUE } from './constants';
+	import { NEXT_INPUT_VALUE, SUBMIT_INPUT_VALUE } from '../constants';
 	import type { ActionResult } from '@sveltejs/kit';
 	import { urls } from '$lib/utils';
 	import { goto } from '$app/navigation';
 
-	interface Props {
-		data: PageData;
-	}
-
-	let { data }: Props = $props();
+	let { data, form } = $props();
 
 	let { challenge, challengeSet, setHasAnotherChallenge } = $derived(data);
 
@@ -32,7 +27,7 @@
 			'submit_action',
 			setHasAnotherChallenge ? NEXT_INPUT_VALUE : SUBMIT_INPUT_VALUE
 		);
-		const response = await fetch(urls.challenge(challengeSet.id, challenge.id), {
+		const response = await fetch(urls.challenge(challengeSet.id, challenge.id, challenge.type), {
 			method: 'POST',
 			body: formData,
 		});
@@ -60,4 +55,8 @@
 			data-sveltekit-preload-data="hover">Scoreboard &rarr;</a
 		>
 	</div>
+{/if}
+
+{#if form?.message}
+	<p class="text-christmasRed">{@html form.message}</p>
 {/if}

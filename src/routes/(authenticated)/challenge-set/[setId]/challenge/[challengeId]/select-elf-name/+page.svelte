@@ -1,15 +1,9 @@
 <script lang="ts">
-	import { ELF_FIRST_NAMES, ELF_LAST_NAMES, SUBMIT_INPUT_VALUE } from './constants';
-	import type { PageData, ActionData } from './$types';
 	import { enhance } from '$app/forms';
 	import { toastStore } from '$lib/wordle/components/Toast/store';
+	import { ELF_FIRST_NAMES, ELF_LAST_NAMES, SUBMIT_INPUT_VALUE } from '../constants';
 
-	interface Props {
-		data: PageData;
-		form: ActionData;
-	}
-
-	let { data, form }: Props = $props();
+	let { data, form } = $props();
 
 	let availableFirstNames = $derived(
 		ELF_FIRST_NAMES.filter((name) => {
@@ -96,3 +90,7 @@ radio inputs, but the user should just see names that get highlighted when selec
 		disabled={!selectedFirstName || !selectedLastName}
 	/>
 </form>
+
+{#if form?.message}
+	<p class="text-christmasRed">{@html form.message}</p>
+{/if}

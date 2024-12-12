@@ -1,8 +1,8 @@
 <script lang="ts">
 	import PageMargin from '$lib/components/PageMargin.svelte';
 	import { formatDuration } from '$lib/utils';
-	import type { PageData } from './$types';
 	import FamilyFeudReview from './FamilyFeudReview.svelte';
+	import FramedReview from './FramedReview.svelte';
 	import MatchReview from './MatchReview.svelte';
 	import MultipleOpenResponseReview from './MultipleOpenResponseReview.svelte';
 	import NonWordleReview from './NonWordleReview.svelte';
@@ -14,11 +14,7 @@
 	import Wordle2023Review from './Wordle2023Review.svelte';
 	import YourElfNameWorthReview from './YourElfNameWorthReview.svelte';
 
-	interface Props {
-		data: PageData;
-	}
-
-	let { data }: Props = $props();
+	let { data } = $props();
 
 	let { challengeSet, challenges, timeTaken, points } = $derived(data);
 </script>
@@ -61,6 +57,8 @@
 				<WinLoseOrStopReview {challenge} />
 			{:else if challenge.type === 'FAMILY_FEUD'}
 				<FamilyFeudReview {challenge} />
+			{:else if challenge.type === 'FRAMED'}
+				<FramedReview {challenge} />
 			{:else}
 				<p>Loading Challenge...</p>
 			{/if}

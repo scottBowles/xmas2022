@@ -1,9 +1,9 @@
-import { pickAll } from 'ramda';
-import { error } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
 import prisma from '$lib/prisma';
-import { timeTaken } from '$lib/prisma/models/challengeSetResponse';
-import { isAvailable } from '$lib/prisma/models/challengeSet';
+import CS from '$lib/prisma/models/challengeSet';
+import CSR from '$lib/prisma/models/challengeSetResponse';
+import { error } from '@sveltejs/kit';
+import { pickAll } from 'ramda';
+import type { PageServerLoad } from './$types';
 import getChallengeData from './getChallengeData';
 
 export const load: PageServerLoad = async ({ params, parent }) => {
@@ -21,11 +21,19 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 			},
 			challenges: {
 				include: {
+					cldImages: true,
 					options: true,
 					responses: {
 						where: { playerId: user.id },
 					},
-					cldImages: true,
+					children: {
+						include: {
+							cldImages: true,
+							responses: {
+								where: { playerId: user.id },
+							},
+						},
+					},
 				},
 				orderBy: { id: 'asc' },
 			},
@@ -46,7 +54,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 	/** Ensure it's ok for the user to see this data */
 	const challengeSetCanBeReviewed =
 		challengeSet &&
-		(user.isAdmin || isAvailable(challengeSet)) &&
+		(user.isAdmin || CS.isAvailable(challengeSet)) &&
 		challengeSetResponse?.completedAt &&
 		challenges;
 
@@ -55,7 +63,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 	return {
 		challengeSet: pickAll(['title', 'timeAvailableStart', 'id'], challengeSet),
 		challenges,
-		timeTaken: timeTaken(challengeSetResponse),
+		timeTaken: CSR.timeTaken(challengeSetResponse),
 		points: challengeSetResponse.points,
 	};
 };

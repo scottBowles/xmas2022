@@ -1,5 +1,5 @@
 import prisma from '$lib/prisma';
-import { timeTaken } from '$lib/prisma/models/challengeSetResponse';
+import CSR from '$lib/prisma/models/challengeSetResponse';
 import { dateToYYYYMMDD, truthy, urls } from '$lib/utils';
 import { redirect } from '@sveltejs/kit';
 import { filter, groupBy, pipe, prop, uniq } from 'ramda';
@@ -109,7 +109,7 @@ export const load = async ({ locals, params }) => {
 				(acc, csr) => ({
 					...acc,
 					[csr.challengeSetId]: {
-						time: timeTaken(csr),
+						time: CSR.timeTaken(csr),
 						points: csr.points,
 						bonusPoints: csr.bonusPoints,
 						timeBonusPoints: csr.timeBonusPoints,

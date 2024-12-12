@@ -2,9 +2,9 @@
 	import { preventDefault } from 'svelte/legacy';
 
 	import { enhance } from '$app/forms';
-	import type { PageData } from './$types';
+	import type { PageData } from '../../$types';
 	import ConfirmModal from './ConfirmModal.svelte';
-	import { NEXT_INPUT_VALUE, SUBMIT_INPUT_VALUE } from './constants';
+	import { NEXT_INPUT_VALUE, SUBMIT_INPUT_VALUE } from '../../constants';
 	import { CldImage } from 'svelte-cloudinary';
 	import { applyAction, deserialize } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';

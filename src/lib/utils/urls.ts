@@ -1,3 +1,4 @@
+import type { ChallengeTypeAbbreviation } from '$lib/constants';
 import { isNil } from 'ramda';
 
 function scoreboard(): string;
@@ -11,8 +12,14 @@ function scoreboard(group?: string, year?: number | string, day?: string | numbe
 
 export default {
 	login: () => '/login',
-	challenge: (challengeSetId: number, challengeId: number) =>
-		`/challenge-set/${challengeSetId}/challenge/${challengeId}`,
+	challenge: (challengeSetId: number, challengeId: number, type: ChallengeTypeAbbreviation) =>
+		`/challenge-set/${challengeSetId}/challenge/${challengeId}/${type}`,
+	challengeChild: (
+		challengeSetId: number,
+		challengeId: number,
+		type: ChallengeTypeAbbreviation,
+		childId: number
+	) => `/challenge-set/${challengeSetId}/challenge/${challengeId}/${type}/${childId}`,
 	challengeSet: (id: number) => `/challenge-set/${id}`,
 	challengeSetResults: (id: number) => `/challenge-set/${id}/results`,
 	challengeSetReview: (id: number) => `/challenge-set/${id}/review`,
