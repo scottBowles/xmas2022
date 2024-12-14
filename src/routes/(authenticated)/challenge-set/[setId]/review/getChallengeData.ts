@@ -166,8 +166,8 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 	if (type === 'FRAMED')
 		return {
 			correctAnswer: challengeTypeFns[type].correctAnswer(challenge),
-			response: challenge.children.map(CHLG.response),
-			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
+			response: CHLG.response(challenge),
+			responseIsCorrect: null,
 			ownElfName: null,
 			allElfNames: null,
 			...challenge,
