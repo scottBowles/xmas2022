@@ -1,10 +1,8 @@
 <script lang="ts">
-	import CHLG from '$lib/prisma/models/challenge';
-	import { capitalize, jsonSafeParse } from '$lib/utils';
+	import { capitalize } from '$lib/utils';
 	import { z } from 'zod';
 	import Img from '../challenge/[challengeId]/framed/Img.svelte';
 	import type { PageData } from './$types';
-	import { normalize } from '$lib/prisma/models/challenge/utils';
 
 	import * as Framed from '$lib/prisma/models/challenge/challengeTypeFns/framed';
 
