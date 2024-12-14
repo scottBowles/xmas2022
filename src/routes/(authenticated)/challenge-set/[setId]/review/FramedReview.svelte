@@ -6,6 +6,8 @@
 	import type { PageData } from './$types';
 	import { normalize } from '$lib/prisma/models/challenge/utils';
 
+	import * as Framed from '$lib/prisma/models/challenge/challengeTypeFns/framed';
+
 	const responsesSchema = z.array(z.string());
 
 	interface Props {
@@ -15,12 +17,10 @@
 	let { challenge }: Props = $props();
 
 	let givenResponses = $derived(
-		(responsesSchema.safeParse(jsonSafeParse(CHLG.response(challenge))).data ?? []).map(
-			(response) => ({
-				response,
-				isCorrect: challenge.acceptedResponsesIfOpen.map(normalize).includes(normalize(response)),
-			})
-		)
+		Framed.parseResponse(challenge).map((response) => ({
+			response,
+			isCorrect: Framed.subResponseIsCorrect(response, challenge),
+		}))
 	);
 
 	const calculatePoints = (responses: { response: string; isCorrect: boolean }[]) => {

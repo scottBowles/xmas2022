@@ -1,18 +1,13 @@
-import {
-	correctAnswerFromAcceptedResponses,
-	normalize,
-	pointsManuallyAwarded,
-	response,
-} from '../utils';
+import { jsonSafeParse } from '$lib/utils';
+import { z } from 'zod';
+import CHLG from '..';
 import type {
 	CorrectAnswer,
 	CorrectAnswersMinimalInput,
 	ResponseIsCorrect,
 	ScoreChallenge,
 } from '../types';
-import { jsonSafeParse } from '$lib/utils';
-import { z } from 'zod';
-import CHLG from '..';
+import { correctAnswerFromAcceptedResponses, normalize } from '../utils';
 
 const responsesSchema = z.array(z.string());
 
@@ -21,17 +16,18 @@ const correctAnswer: CorrectAnswer = correctAnswerFromAcceptedResponses;
 const parseResponse = <T extends CorrectAnswersMinimalInput>(challenge: T) =>
 	responsesSchema.safeParse(jsonSafeParse(CHLG.response(challenge))).data ?? [];
 
+const subResponseIsCorrect = <T extends CorrectAnswersMinimalInput>(
+	response: string,
+	challenge: T
+) => challenge.acceptedResponsesIfOpen.map(normalize).includes(normalize(response));
+
 const responseIsCorrect: ResponseIsCorrect = (challenge) =>
-	parseResponse(challenge).some((response) =>
-		challenge.acceptedResponsesIfOpen.map(normalize).includes(normalize(response))
-	);
+	parseResponse(challenge).some((response) => subResponseIsCorrect(response, challenge));
 
 const scoreChallenge: ScoreChallenge = (challenge) => {
-	const responses = (
-		responsesSchema.safeParse(jsonSafeParse(CHLG.response(challenge))).data ?? []
-	).map((response) => ({
+	const responses = parseResponse(challenge).map((response) => ({
 		response,
-		isCorrect: challenge.acceptedResponsesIfOpen.map(normalize).includes(normalize(response)),
+		isCorrect: subResponseIsCorrect(response, challenge),
 	}));
 
 	const pointsPerRemaining = challenge.points / 6;
@@ -40,4 +36,4 @@ const scoreChallenge: ScoreChallenge = (challenge) => {
 	return pointsPerRemaining * (6 - correctIndex);
 };
 
-export { correctAnswer, responseIsCorrect, scoreChallenge };
+export { correctAnswer, parseResponse, responseIsCorrect, scoreChallenge, subResponseIsCorrect };

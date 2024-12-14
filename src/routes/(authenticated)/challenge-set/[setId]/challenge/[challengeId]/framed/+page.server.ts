@@ -11,6 +11,7 @@ import { SUBMIT_INPUT_VALUE } from '../constants';
 import CSR from '$lib/prisma/models/challengeSetResponse';
 import CS from '$lib/prisma/models/challengeSet';
 import { normalize } from '$lib/prisma/models/challenge/utils';
+import * as Framed from '$lib/prisma/models/challenge/challengeTypeFns/framed';
 
 const responsesSchema = z.array(z.string());
 
@@ -23,13 +24,10 @@ export const load: PageServerLoad = async ({ parent }) => {
 		throw redirect(302, urls.challenge(challengeSet.id, challenge.id, typeAbbr));
 	}
 
-	const response = CHLG.response(challenge);
-	const responses = (responsesSchema.safeParse(jsonSafeParse(response)).data ?? []).map(
-		(response) => ({
-			response,
-			isCorrect: challenge.acceptedResponsesIfOpen.map(normalize).includes(normalize(response)),
-		})
-	);
+	const responses = Framed.parseResponse(challenge).map((response) => ({
+		response,
+		isCorrect: Framed.subResponseIsCorrect(response, challenge),
+	}));
 
 	const challengeWithImagesHidden = {
 		...challenge,
