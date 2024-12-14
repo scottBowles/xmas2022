@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import PageMargin from '$lib/components/PageMargin.svelte';
+	import PageMargin from '@/components/PageMargin.svelte';
 	import CS from '$lib/prisma/models/challengeSet';
 	import { displayName } from '$lib/prisma/models/user';
 	import { formatDuration, urls } from '$lib/utils';

@@ -11,7 +11,7 @@
 	let { isAdmin = false } = $props();
 </script>
 
-<div class="container" transition:slide>
+<div class="menu-container" transition:slide>
 	<ul>
 		<a href="/" data-sveltekit-preload-data="hover"><li>Play!</li></a>
 		<a href="/scoreboard" data-sveltekit-preload-data="hover"><li>Scoreboard</li></a>
@@ -24,7 +24,7 @@
 </div>
 
 <style>
-	.container {
+	.menu-container {
 		position: absolute;
 		right: 0;
 		top: 48px;

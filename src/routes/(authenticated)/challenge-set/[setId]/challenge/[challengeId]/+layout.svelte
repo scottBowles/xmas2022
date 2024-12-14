@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PageMargin from '$lib/components/PageMargin.svelte';
+	import PageMargin from '@/components/PageMargin.svelte';
 	import InstructionsToggle from './InstructionsToggle.svelte';
 
 	let { data, children } = $props();

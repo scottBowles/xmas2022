@@ -2,7 +2,7 @@
 	import { slide } from 'svelte/transition';
 	import MenuToggle from './MenuToggle.svelte';
 	import { clickOutside } from '$lib/actions.js';
-	import DropdownMenu from '$lib/components/DropdownMenu.svelte';
+	import DropdownMenu from '@/components/DropdownMenu.svelte';
 	import { menu } from '$lib/stores';
 	import type { JwtUser } from '$lib/utils/types';
 

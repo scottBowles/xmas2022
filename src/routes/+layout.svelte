@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.css';
-	import Nav from '$lib/components/Nav.svelte';
+	import Nav from '@/components/Nav.svelte';
 	import ToastContainer from '$lib/wordle/components/Toast/Container.svelte';
 	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 

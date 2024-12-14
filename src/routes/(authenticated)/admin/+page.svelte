@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import PageMargin from '$lib/components/PageMargin.svelte';
+	import PageMargin from '@/components/PageMargin.svelte';
 	import { displayName } from '$lib/prisma/models/user';
 	import { urls } from '$lib/utils';
 	import type { ActionData, PageData } from './$types';

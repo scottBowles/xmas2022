@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PageMargin from '$lib/components/PageMargin.svelte';
+	import PageMargin from '@/components/PageMargin.svelte';
 	import { formatDuration } from '$lib/utils';
 	import FamilyFeudReview from './FamilyFeudReview.svelte';
 	import FramedReview from './FramedReview.svelte';

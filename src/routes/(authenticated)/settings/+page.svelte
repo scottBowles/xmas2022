@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import PageMargin from '$lib/components/PageMargin.svelte';
+	import PageMargin from '@/components/PageMargin.svelte';
 
 	let { data, form } = $props();
 </script>

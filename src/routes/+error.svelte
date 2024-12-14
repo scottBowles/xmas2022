@@ -1,6 +1,6 @@
 <script>
 	import { page } from '$app/stores';
-	import PageMargin from '$lib/components/PageMargin.svelte';
+	import PageMargin from '@/components/PageMargin.svelte';
 
 	let { status } = $page;
 

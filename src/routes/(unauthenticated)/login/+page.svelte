@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
 	import { LoginError, SignupError } from './Errors';
-	import GoogleButton from '$lib/components/GoogleButton.svelte';
-	import PageMargin from '$lib/components/PageMargin.svelte';
+	import GoogleButton from '@/components/GoogleButton.svelte';
+	import PageMargin from '@/components/PageMargin.svelte';
 	import { enhance } from '$app/forms';
 
 	interface Props {
@@ -18,31 +18,34 @@
 	const toggleMode = () => (mode = mode === 'login' ? 'signup' : 'login');
 	const onGoogleError = (message: string) => (googleError = message);
 
-	let { title, heading, action, toggleMessage } = $derived({
-		login: {
-			title: 'Login',
-			action: '?/login',
-			heading: 'Login',
-			toggleMessage: 'Need an account? Sign up here.'
-		},
-		signup: {
-			title: 'Create an Account',
-			action: '?/signup',
-			heading: 'Create Account',
-			toggleMessage: 'Have an account? Login here.'
-		}
-	}[mode]);
-
-	let errorMessage =
-		$derived(form?.error &&
+	let { title, heading, action, toggleMessage } = $derived(
 		{
-			[LoginError.INVALID]: 'Invalid email or password',
-			[SignupError.VALIDATION]: 'Invalid email or password',
-			[SignupError.EMAIL_TAKEN]: 'Email already in use.',
-			[LoginError.EMAIL_MISSING]: 'Email and password required.',
-			[LoginError.UNKNOWN]: 'Unknown error',
-			[SignupError.UNKNOWN]: 'Unknown error'
-		}[form.error]);
+			login: {
+				title: 'Login',
+				action: '?/login',
+				heading: 'Login',
+				toggleMessage: 'Need an account? Sign up here.',
+			},
+			signup: {
+				title: 'Create an Account',
+				action: '?/signup',
+				heading: 'Create Account',
+				toggleMessage: 'Have an account? Login here.',
+			},
+		}[mode]
+	);
+
+	let errorMessage = $derived(
+		form?.error &&
+			{
+				[LoginError.INVALID]: 'Invalid email or password',
+				[SignupError.VALIDATION]: 'Invalid email or password',
+				[SignupError.EMAIL_TAKEN]: 'Email already in use.',
+				[LoginError.EMAIL_MISSING]: 'Email and password required.',
+				[LoginError.UNKNOWN]: 'Unknown error',
+				[SignupError.UNKNOWN]: 'Unknown error',
+			}[form.error]
+	);
 </script>
 
 <svelte:head>

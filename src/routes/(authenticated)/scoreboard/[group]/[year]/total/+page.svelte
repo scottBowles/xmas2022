@@ -1,7 +1,7 @@
 <script lang="ts">
 	import FaRegClock from 'svelte-icons/fa/FaRegClock.svelte';
 	import FaHashtag from 'svelte-icons/fa/FaHashtag.svelte';
-	import PageMargin from '$lib/components/PageMargin.svelte';
+	import PageMargin from '@/components/PageMargin.svelte';
 	import { formatDuration, urls } from '$lib/utils';
 	import type { PageData } from './$types';
 	import DayNavigation from '../../../DayNavigation.svelte';

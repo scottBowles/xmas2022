@@ -1,10 +1,10 @@
 <script lang="ts">
-	import PageMargin from '$lib/components/PageMargin.svelte';
+	import PageMargin from '@/components/PageMargin.svelte';
 	import { urls } from '$lib/utils';
 	import type { PageData } from './$types';
 	import * as R from 'ramda';
 	import CS from '$lib/prisma/models/challengeSet';
-	import PastYearsChallengeSet from '$lib/components/PastYearsChallengeSet.svelte';
+	// import PastYearsChallengeSet from '@/components/PastYearsChallengeSet.svelte';
 
 	interface Props {
 		data: PageData;

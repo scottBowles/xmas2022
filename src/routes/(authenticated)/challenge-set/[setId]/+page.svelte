@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PageMargin from '$lib/components/PageMargin.svelte';
+	import PageMargin from '@/components/PageMargin.svelte';
 	import { urls } from '$lib/utils';
 	import type { PageData, ActionData } from './$types';
 

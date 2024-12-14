@@ -5,7 +5,7 @@
 	import garage from '$lib/assets/santas_workshop_garage.png';
 	import mailroom from '$lib/assets/santas_workshop_mailroom.png';
 	import runway from '$lib/assets/santas_workshop_runway.png';
-	import ShowHideToggle from '$lib/components/ShowHideToggle.svelte';
+	import ShowHideToggle from '@/components/ShowHideToggle.svelte';
 	import { normalize } from '$lib/prisma/models/challenge/utils';
 
 	interface Props {
