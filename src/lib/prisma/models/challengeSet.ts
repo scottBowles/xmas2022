@@ -60,6 +60,10 @@ type YearFn = WithMinimumInput<{ timeAvailableStart: Date | null }, string>;
 const isAvailable: IsAvailable = (challengeSet) =>
 	!!challengeSet.timeAvailableStart && challengeSet.timeAvailableStart <= getNow();
 
+const isThisYear: IsAvailable = (challengeSet) =>
+	!!challengeSet.timeAvailableStart &&
+	challengeSet.timeAvailableStart.getFullYear() === getNow().getFullYear();
+
 const challengesExist: ChallengesExist = (challengeSet) => Boolean(challengeSet.challenges.length);
 
 const userHasCompleted: UserHasCompleted = (challengeSet) =>
@@ -112,6 +116,7 @@ const year: YearFn = (challengeSet) => {
 
 const CS = {
 	isAvailable,
+	isThisYear,
 	challengesExist,
 	userHasCompleted,
 	resultsUrl,

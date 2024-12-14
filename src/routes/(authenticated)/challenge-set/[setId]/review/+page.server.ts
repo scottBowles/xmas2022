@@ -52,11 +52,12 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 		));
 
 	/** Ensure it's ok for the user to see this data */
-	const challengeSetCanBeReviewed =
+	const challengeSetCanBeReviewed = !!(
 		challengeSet &&
-		(user.isAdmin || CS.isAvailable(challengeSet)) &&
+		(user.isAdmin || (CS.isAvailable(challengeSet) && CS.isThisYear(challengeSet))) &&
 		challengeSetResponse?.completedAt &&
-		challenges;
+		challenges
+	);
 
 	if (!challengeSetCanBeReviewed) throw error(404, 'Challenge set not found');
 
