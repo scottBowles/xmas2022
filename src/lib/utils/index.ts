@@ -60,3 +60,11 @@ export const getElfNameWorth = (elfName: string) =>
 		.toLowerCase()
 		.split('')
 		.reduce((sum, char) => sum + char.charCodeAt(0) - 96, 0);
+
+export const jsonSafeParse = (json: string) => {
+	try {
+		return JSON.parse(json) as unknown;
+	} catch (e) {
+		return null;
+	}
+};
