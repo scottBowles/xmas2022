@@ -80,12 +80,12 @@
 			{/if}
 
 			<!-- Hiding past years to avoid spoilers. We can bring it back in the future. -->
-			{#if pastYearsChallengeSets && R.keys(pastYearsChallengeSets).length > 0}
+			<!-- {#if pastYearsChallengeSets && R.keys(pastYearsChallengeSets).length > 0}
 				<h2 class="text-2xl mt-32 mb-1">Past Years</h2>
 				{#each R.toPairs(pastYearsChallengeSets) as [year, challengeSets]}
 					<PastYearsChallengeSet {year} {challengeSets} />
 				{/each}
-			{/if}
+			{/if} -->
 
 			<!-- <p class="text-lg mt-3 mb-1">
 	Check out the <a href={"/scoreboard/"} class="text-lg text-blue-500">scoreboard</a>?
