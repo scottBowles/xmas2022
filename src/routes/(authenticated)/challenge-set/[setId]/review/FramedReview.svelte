@@ -1,12 +1,9 @@
 <script lang="ts">
 	import { capitalize } from '$lib/utils';
-	import { z } from 'zod';
 	import Img from '../challenge/[challengeId]/framed/Img.svelte';
 	import type { PageData } from './$types';
 
 	import * as Framed from '$lib/prisma/models/challenge/challengeTypeFns/framed';
-
-	const responsesSchema = z.array(z.string());
 
 	interface Props {
 		challenge: PageData['challenges'][number];
@@ -21,19 +18,10 @@
 		}))
 	);
 
-	const calculatePoints = (responses: { response: string; isCorrect: boolean }[]) => {
-		const pointsPerRemaining = challenge.points / 6;
-		const correctIndex = responses.findIndex((r) => r.isCorrect);
-		if (correctIndex === -1) return 0;
-		return pointsPerRemaining * (6 - correctIndex);
-	};
-
-	let pointsEarned = $derived(calculatePoints(givenResponses));
-
-	let images = $derived(challenge.children.map((child) => child.cldImages[0]));
+	let pointsEarned = $derived(Framed.scoreChallenge(challenge, { elfNameChallengeResponse: null }));
 
 	let displayedImageIndex = $state(5);
-	let displayedImage = $derived(images[displayedImageIndex]);
+	let displayedImage = $derived(challenge.cldImages[displayedImageIndex]);
 </script>
 
 <form>
@@ -43,7 +31,7 @@
 		{@html challenge.prompt}
 	</legend>
 
-	{#if images.length === 0}
+	{#if challenge.cldImages.length === 0}
 		<p class="my-2 text-christmasRed">Something went wrong fetching the images.</p>
 	{:else}
 		<!-- IMAGE -->

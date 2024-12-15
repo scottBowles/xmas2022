@@ -34,6 +34,12 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 							},
 						},
 					},
+					challengeSet: {
+						select: {
+							timeAvailableStart: true,
+							timeAvailableEnd: true,
+						},
+					},
 				},
 				orderBy: { id: 'asc' },
 			},

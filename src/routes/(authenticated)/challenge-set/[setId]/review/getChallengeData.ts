@@ -53,6 +53,10 @@ type ChallengeQuery = {
 		cldImages: QCldImage[];
 		responses: QResponse[];
 	} & Challenge)[];
+	challengeSet: {
+		timeAvailableStart: Date | null;
+		timeAvailableEnd: Date | null;
+	} | null;
 } & Challenge;
 
 const challengeTypeFns = {
