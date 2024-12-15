@@ -20,10 +20,10 @@
 
 <Base {isOpen} {toggleIsOpen}>
 	{#snippet header()}
-		<h3 class="text-center text-lg font-medium text-white leading-6">Confirm</h3>
+		<h3 class="text-center text-lg font-medium leading-6">Confirm</h3>
 	{/snippet}
 	{#snippet content()}
-		<div class="mt-3 text-white text-center">Are you sure you want to submit?</div>
+		<div class="mt-3 text-center">Are you sure you want to submit?</div>
 	{/snippet}
 	{#snippet footer()}
 		<div class="mt-3 flex justify-around">

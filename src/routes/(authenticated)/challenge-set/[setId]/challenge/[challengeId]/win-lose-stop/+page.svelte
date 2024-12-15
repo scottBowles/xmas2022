@@ -6,7 +6,7 @@
 	import { normalize } from '$lib/prisma/models/challenge/utils';
 	import { CldImage } from 'svelte-cloudinary';
 	import { NEXT_INPUT_VALUE, SUBMIT_INPUT_VALUE } from '../constants';
-	import ConfirmModal from './ConfirmModal.svelte';
+	import ConfirmModal from '../ConfirmModal.svelte';
 
 	let { data, form } = $props();
 
