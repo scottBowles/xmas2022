@@ -41,6 +41,7 @@ export type ScoreChallengeMinimalInput = CorrectAnswersMinimalInput &
 		bonusPoints: Challenge['bonusPoints'];
 		type: Challenge['type'];
 		prompt: Challenge['prompt'];
+		challengeSet: { timeAvailableStart: Date | null; timeAvailableEnd: Date | null } | null;
 	};
 export type ScoreChallenge = <T extends ScoreChallengeMinimalInput>(
 	challenge: T,

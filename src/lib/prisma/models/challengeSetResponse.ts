@@ -27,6 +27,9 @@ const endAndScore = async <CS extends { id: number; completionPoints: number }>(
 				responses: {
 					where: { playerId },
 				},
+				challengeSet: {
+					select: { timeAvailableStart: true, timeAvailableEnd: true },
+				},
 			},
 		}),
 		prisma.challengeResponse.findFirst({
