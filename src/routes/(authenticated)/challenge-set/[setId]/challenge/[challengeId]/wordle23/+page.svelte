@@ -5,6 +5,7 @@
 	import type { ActionResult } from '@sveltejs/kit';
 	import { urls } from '$lib/utils';
 	import { goto } from '$app/navigation';
+	import { challengeTypeAbbreviations } from '@/constants';
 
 	let { data, form } = $props();
 
@@ -27,7 +28,8 @@
 			'submit_action',
 			setHasAnotherChallenge ? NEXT_INPUT_VALUE : SUBMIT_INPUT_VALUE
 		);
-		const response = await fetch(urls.challenge(challengeSet.id, challenge.id, challenge.type), {
+		const typeAbbr = challengeTypeAbbreviations[challenge.type];
+		const response = await fetch(urls.challenge(challengeSet.id, challenge.id, typeAbbr), {
 			method: 'POST',
 			body: formData,
 		});

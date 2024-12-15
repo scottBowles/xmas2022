@@ -15,12 +15,9 @@
 	let showCorrectAnswer = $derived(guesses && !guesses.includes(challenge.correctAnswer || ''));
 
 	let gameStateStore = $derived(createGameStateStore());
-	let guessStore = $derived(createGuessStore(
-		gameStateStore,
-		challenge.correctAnswer || '',
-		storageKey,
-		guesses
-	));
+	let guessStore = $derived(
+		createGuessStore(gameStateStore, challenge.correctAnswer || '', storageKey, guesses)
+	);
 </script>
 
 <div class="flex grow flex-col items-center justify-center">

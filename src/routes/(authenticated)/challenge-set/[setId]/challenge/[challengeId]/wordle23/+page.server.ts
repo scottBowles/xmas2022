@@ -11,7 +11,7 @@ import type { Actions, PageServerLoad } from './$types';
 export const load: PageServerLoad = async ({ parent }) => {
 	const { challenge, challengeSet } = await parent();
 
-	if (challenge.type !== ChallengeType.WORDLE) {
+	if (challenge.type !== ChallengeType.WORDLE_2023) {
 		const typeAbbr = challengeTypeAbbreviations[challenge.type];
 		throw redirect(302, urls.challenge(challengeSet.id, challenge.id, typeAbbr));
 	}

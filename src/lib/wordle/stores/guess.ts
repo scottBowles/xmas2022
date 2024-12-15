@@ -11,7 +11,9 @@ export type Guess = {
 	statuses: CharStatus[];
 };
 
-const helper = (guess: CharValue[], solution: string) => {
+export const calcGuessStatuses = (guess: CharValue[], solution: string) => {
+	solution = solution.toUpperCase();
+
 	const splitSolution = solution.split('');
 	//* used to make sure we don't perform the same present check more than once
 	const usedSolutionCharacters = splitSolution.map(() => false);
@@ -70,7 +72,7 @@ export function createGuessStore(
 				gameStateStore.setGameLost(true);
 			}
 			init = loaded.guesses.map((g) => {
-				return helper(g.split('') as CharValue[], solution);
+				return calcGuessStatuses(g.split('') as CharValue[], solution);
 			});
 		}
 	}
@@ -80,11 +82,11 @@ export function createGuessStore(
 		subscribe,
 		addGuess: (guess: CharValue[]) =>
 			update((state) => {
-				const newGuess = helper(guess, solution);
+				const newGuess = calcGuessStatuses(guess, solution);
 				state.push(newGuess);
 				return state;
 			}),
-		reset: () => set([])
+		reset: () => set([]),
 	};
 }
 // NEED TO CREATE STORE IN COMPONENT, PASSING IN SOLUTION
