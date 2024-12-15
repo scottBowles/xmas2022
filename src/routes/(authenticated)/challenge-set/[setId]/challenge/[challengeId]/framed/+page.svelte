@@ -51,6 +51,7 @@
 				<div class="flex justify-center w-full mb-2 mt-1 text-white gap-1">
 					{#each challenge.cldImages as _, i}
 						<button
+							type="button"
 							class={`border-slate-700 py-[2px] sm:text-xl flex-grow ${displayedImageIndex === i ? 'bg-slate-900' : 'bg-slate-400 hover:bg-slate-500'}`}
 							disabled={displayedImageIndex === i}
 							onclick={() => (selectedImageIndex = i)}>{i + 1}</button
