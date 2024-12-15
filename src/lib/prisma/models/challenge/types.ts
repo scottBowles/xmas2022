@@ -12,7 +12,7 @@ export type CorrectAnswerFromOptions = <T extends CorrectAnswerFromOptionsMinima
 ) => string | false | undefined;
 export type CorrectAnswerFromAcceptedResponsesMinimalInput = { acceptedResponsesIfOpen: string[] };
 export type CorrectAnswerFromAcceptedResponses = <
-	T extends CorrectAnswerFromAcceptedResponsesMinimalInput
+	T extends CorrectAnswerFromAcceptedResponsesMinimalInput,
 >(
 	challenge: T
 ) => string | false | undefined;
@@ -38,6 +38,7 @@ export type PointsManuallyAwarded = <T extends PointsManuallyAwardedMinimalInput
 export type ScoreChallengeMinimalInput = CorrectAnswersMinimalInput &
 	PointsManuallyAwardedMinimalInput & {
 		points: Challenge['points'];
+		bonusPoints: Challenge['bonusPoints'];
 		type: Challenge['type'];
 		prompt: Challenge['prompt'];
 	};

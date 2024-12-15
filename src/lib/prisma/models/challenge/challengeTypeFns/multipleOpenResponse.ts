@@ -52,7 +52,9 @@ const scoreChallenge: ScoreChallenge = (challenge) => {
 	const pointsForCorrect =
 		numQuestions &&
 		Math.round((maxIndicesInCommonWithAnAcceptedResponse / numQuestions) * challenge.points);
-	return pointsForCorrect + pointsManuallyAwarded(challenge);
+	const bonusPoints =
+		maxIndicesInCommonWithAnAcceptedResponse === numQuestions ? challenge.bonusPoints : 0;
+	return pointsForCorrect + bonusPoints + pointsManuallyAwarded(challenge);
 };
 
 export { correctAnswer, responseIsCorrect, scoreChallenge, answerIsCorrect };

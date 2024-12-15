@@ -93,6 +93,7 @@ model Challenge {
   responses               ChallengeResponse[]
   type                    ChallengeType       @default(OPEN_RESPONSE)
   points                  Int                 @default(0)
+  bonusPoints             Int                 @default(0)
   matches                 String[]
   matchOptions            String[]
   order                   Int?
