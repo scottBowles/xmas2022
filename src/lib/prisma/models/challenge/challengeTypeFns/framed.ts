@@ -30,10 +30,17 @@ const scoreChallenge: ScoreChallenge = (challenge) => {
 		isCorrect: subResponseIsCorrect(response, challenge),
 	}));
 
-	const pointsPerRemaining = challenge.points / 6;
 	const correctIndex = responses.findIndex((r) => r.isCorrect);
-	if (correctIndex === -1) return 0;
-	return pointsPerRemaining * (6 - correctIndex);
+	if (correctIndex === -1) return 10;
+
+	const gotItIn = correctIndex + 1;
+	if (gotItIn === 1) return 50;
+	if (gotItIn === 2) return 40;
+	if (gotItIn === 3) return 30;
+	if (gotItIn === 4) return 25;
+	if (gotItIn === 5) return 20;
+	if (gotItIn === 6) return 15;
+	return 0; // shouldn't happen
 };
 
 export { correctAnswer, parseResponse, responseIsCorrect, scoreChallenge, subResponseIsCorrect };
