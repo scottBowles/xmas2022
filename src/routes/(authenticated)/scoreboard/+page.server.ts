@@ -21,13 +21,13 @@ export const load: PageServerLoad = async ({ locals }) => {
 				timeAvailableStart: true,
 				isTimed: true,
 				isScored: true,
-				challenges: { select: { id: true }, orderBy: { id: 'asc' } }
-			}
+				challenges: { select: { id: true }, orderBy: { id: 'asc' } },
+			},
 		}),
 		prisma.group.findMany({
 			where: { users: { some: { user: { id: userId } } } },
-			select: { name: true }
-		})
+			select: { name: true },
+		}),
 	]);
 
 	const groupName = groups[0]?.name ?? 'user';
@@ -51,7 +51,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	});
 
 	const latestDay = days.at(-1);
-	const yearShown = latestDay ? new Date(latestDay).getFullYear() : 2023;
+	const yearShown = latestDay ? new Date(latestDay).getFullYear() : 2024;
 	const daysInYear = days.filter((day) => new Date(day).getFullYear() === yearShown);
 
 	const dayShown =
