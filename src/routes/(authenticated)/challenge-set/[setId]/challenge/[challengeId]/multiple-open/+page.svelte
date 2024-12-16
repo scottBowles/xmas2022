@@ -60,6 +60,7 @@
 	class="flex flex-col justify-between grow sm:justify-start"
 	method="POST"
 	use:enhance
+	onsubmit={(e) => e.preventDefault()}
 >
 	<fieldset class="flex flex-col mt-4">
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
@@ -89,7 +90,10 @@
 		value={setHasAnotherChallenge ? NEXT_INPUT_VALUE : SUBMIT_INPUT_VALUE}
 		name="submit_action"
 		class="bg-green-700 text-white font-bold py-3 px-6 rounded w-full text-lg my-8 block"
-		onclick={() => (confirmModalIsOpen = true)}
+		onclick={(e) => {
+			e.preventDefault();
+			confirmModalIsOpen = true;
+		}}
 	/>
 </form>
 
