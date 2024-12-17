@@ -39,6 +39,7 @@ export const actions: Actions = {
 											responses: {
 												where: { playerId: user.id },
 											},
+											challengeSet: true,
 										},
 									},
 								},
