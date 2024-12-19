@@ -71,9 +71,7 @@
 			</p>
 		{/if} -->
 		<div class="mt-4 pb-12 flex justify-between">
-			<a href="/" class="nav-links" data-sveltekit-preload-data="hover">
-				&larr; Back to Challenges</a
-			>
+			<a href="/" class="nav-links" data-sveltekit-preload-data="hover"> &larr; Back to Games</a>
 			<a href="/scoreboard" class="nav-links" data-sveltekit-preload-data="hover">
 				Scoreboard &rarr;</a
 			>

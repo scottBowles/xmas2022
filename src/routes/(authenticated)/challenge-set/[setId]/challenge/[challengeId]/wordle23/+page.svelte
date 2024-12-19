@@ -49,7 +49,7 @@
 	<hr />
 	<div class="my-4 flex justify-between">
 		<a href="/" class="text-christmasRed hover:underline" data-sveltekit-preload-data="hover"
-			>&larr; Back to Challenges</a
+			>&larr; Back to Games</a
 		>
 		<a
 			href="/scoreboard"

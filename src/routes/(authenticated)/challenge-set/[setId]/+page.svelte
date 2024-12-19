@@ -20,7 +20,7 @@
 <PageMargin>
 	{#if userHasCompletedChallengeSet}
 		<h1 class="text-4xl mt-4 mb-1">Instructions</h1>
-		<p>Challenge complete! Click below to review your answers.</p>
+		<p>Game complete! Click below to review your answers.</p>
 		<h2 class="text-2xl mt-4 mb-1">{title}</h2>
 		<p class="mb-2">{@html instructions}</p>
 		<a

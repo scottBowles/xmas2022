@@ -44,9 +44,9 @@
 
 	<div class="flex flex-col">
 		{#if currentChallengeSets?.length > 0 || pastChallengeSets?.length > 0}
-			<h2 class="text-2xl mt-4 mb-1">Today's Challenges</h2>
+			<h2 class="text-2xl mt-4 mb-1">Today's Games</h2>
 			{#if currentChallengeSets.length === 0}
-				<p class="text-lg mt-3 mb-1">No challenges currently available. Check back later!</p>
+				<p class="text-lg mt-3 mb-1">No games currently available. Check back later!</p>
 			{:else}
 				{#each currentChallengeSets as challengeSet (challengeSet.id)}
 					{@const status = getStatus(challengeSet)}
@@ -63,7 +63,7 @@
 				{/each}
 			{/if}
 			{#if thisYearsPastChallengeSets.length > 0}
-				<h2 class="text-2xl mt-16 mb-1">Past Challenges</h2>
+				<h2 class="text-2xl mt-16 mb-1">Past Games</h2>
 				{#each thisYearsPastChallengeSets as challengeSet (challengeSet.id)}
 					{@const status = getStatus(challengeSet)}
 					<span class="mt-3 mb-1">
@@ -91,12 +91,12 @@
 	Check out the <a href={"/scoreboard/"} class="text-lg text-blue-500">scoreboard</a>?
 	</p> -->
 		{:else}
-			<p>No challenge sets yet. Coming soon!</p>
+			<p>No game sets yet. Coming soon!</p>
 		{/if}
 	</div>
 	{#if futureChallengeSets && futureChallengeSets.length > 0}
 		<div class="flex flex-col mt-16">
-			<h2 class="text-2xl mb-1">Future Challenges</h2>
+			<h2 class="text-2xl mb-1">Future Games</h2>
 			{#each futureChallengeSets as challengeSet (challengeSet.id)}
 				{@const status = getStatus(challengeSet)}
 				<span class="mt-3 mb-1">
