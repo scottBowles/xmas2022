@@ -179,24 +179,51 @@ export const makeMultipleOpenResponse = ({
 		}
 	);
 
-// title: string;
-// prompt: string;
-// acceptedResponsesIfOpen?: string[];
-// scoreOnSubmit: boolean;
-// options?: {
-//     createMany: {
-//         data: { text: string; isCorrect: boolean }[];
-//     };
-// };
-// type: ChallengeType;
-// points: number;
-// bonusPoints?: number;
-// matches?: string[];
-// matchOptions?: string[];
-// order?: number;
-// cldImages?: {
-//     publicId: string;
-//     height: number;
-//     width: number;
-//     order?: number;
-// }[];
+export const makeMatchSchema = z.object({
+	day: z.string(),
+	setTitle: z.string(),
+	setInstructions: z.string(),
+	challengeTitle: z.string(),
+	prompt: z.string(),
+	acceptedResponses: z.array(z.array(z.string())),
+	matches: z.array(z.string()),
+	matchOptions: z.array(z.string()),
+	points: z.number(),
+	bonusPoints: z.number(),
+	isTimed: z.boolean(),
+});
+
+export type MakeMatchArgs = z.infer<typeof makeMatchSchema>;
+
+export const makeMatch = ({
+	day,
+	setTitle,
+	setInstructions,
+	challengeTitle,
+	prompt,
+	acceptedResponses,
+	matches,
+	matchOptions,
+	points,
+	bonusPoints,
+	isTimed,
+}: MakeMatchArgs) =>
+	makeChallengeWithOwnChallengeSet(
+		day,
+		{
+			title: setTitle,
+			instructions: setInstructions,
+			isTimed,
+		},
+		{
+			title: challengeTitle,
+			prompt,
+			acceptedResponsesIfOpen: acceptedResponses.map((ar) => JSON.stringify(ar)),
+			scoreOnSubmit: true,
+			type: 'MATCH',
+			points,
+			bonusPoints,
+			matches,
+			matchOptions,
+		}
+	);
