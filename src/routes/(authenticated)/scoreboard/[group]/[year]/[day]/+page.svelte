@@ -12,6 +12,7 @@
 	import DaySelect from '../../../DaySelect.svelte';
 	import GroupSelect from '../../../GroupSelect.svelte';
 	import YearSelect from '../../../YearSelect.svelte';
+	import { innerWidth } from 'svelte/reactivity/window';
 
 	let { data } = $props();
 
@@ -44,6 +45,12 @@
 		}, 0);
 </script>
 
+{#if innerWidth.current && innerWidth.current < 480}
+	<div class="text-center text-sm text-gray-500 mt-2">
+		<small>Rotate your device for a better view</small>
+	</div>
+{/if}
+
 <!-- GROUP SELECT -->
 <GroupSelect {group} {groupNames} {onGroupChange} />
 
@@ -59,7 +66,7 @@
 
 <!-- SCORES TABLE -->
 <PageMargin>
-	<div class="flex flex-col items-center mt-4">
+	<div class="flex flex-col sm:items-center overflow-x-scroll sm:overflow-x-visible mt-4">
 		<!-- <h1 class="text-christmasRed text-2xl">Merry Christmas!</h1>
 		<h3 class="text-green-800 text-lg mb-4">Thanks for playing!</h3> -->
 		{#if challengeSets.length}
