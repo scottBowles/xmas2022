@@ -2,6 +2,8 @@ import { jsonSafeParse } from '@/utils';
 import {
 	makeFramed,
 	makeFramedSchema,
+	makeMatch,
+	makeMatchSchema,
 	makeMultipleOpenResponse,
 	makeMultipleOpenResponseSchema,
 	makeWordle,
@@ -12,7 +14,7 @@ import { z } from 'zod';
 
 const objectWithTypeSchema = z
 	.object({
-		challengeType: z.enum(['framed', 'wordle', 'multipleOpen']),
+		challengeType: z.enum(['framed', 'wordle', 'multipleOpen', 'match']),
 	})
 	.passthrough();
 
@@ -91,6 +93,21 @@ export const actions: Actions = {
 			console.log('parsed successfully');
 			console.log('making challenge');
 			const challenge = await makeMultipleOpenResponse(parsed.data);
+			console.log('made challenge');
+			return { success: true, challenge };
+		}
+
+		if (challengeType === 'match') {
+			console.log('making match');
+			console.log('parsing json');
+			if (!parsedJson) return fail(400, { error: 'Invalid JSON' });
+			const parsed = makeMatchSchema.safeParse(restData);
+			console.log('parsing');
+			console.log('parse result: ' + JSON.stringify(parsed));
+			if (!parsed.data) return fail(400, { error: 'Invalid JSON' });
+			console.log('parsed successfully');
+			console.log('making challenge');
+			const challenge = await makeMatch(parsed.data);
 			console.log('made challenge');
 			return { success: true, challenge };
 		}
