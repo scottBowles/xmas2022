@@ -5757,4 +5757,6 @@ export const WORDS = [
 	'biffy',
 	'pupal',
 	'santa',
+	'jesus',
+	'claus',
 ];
