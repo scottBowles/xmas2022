@@ -82,7 +82,7 @@
 				{#if userTotals.length > 0}
 					{#each userTotals as { display, score, time }, idx}
 						<tr>
-							<td class={idx % 2 ? 'text-christmasRed' : 'text-green-700'}>
+							<td class={`${idx % 2 ? 'text-christmasRed' : 'text-green-700'} text-nowrap`}>
 								{display}
 							</td>
 							<td>

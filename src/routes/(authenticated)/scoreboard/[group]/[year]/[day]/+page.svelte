@@ -141,7 +141,7 @@
 					{#if players.length > 0}
 						{#each players as player, idx}
 							<tr>
-								<td class={idx % 2 ? 'text-christmasRed' : 'text-green-700'}>
+								<td class={`${idx % 2 ? 'text-christmasRed' : 'text-green-700'} text-nowrap`}>
 									{displayName(player)}
 								</td>
 								{#each challengeSets as challengeSet}
