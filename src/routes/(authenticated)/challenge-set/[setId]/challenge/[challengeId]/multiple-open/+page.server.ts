@@ -17,7 +17,12 @@ export const load: PageServerLoad = async ({ parent }) => {
 		throw redirect(302, urls.challenge(challengeSet.id, challenge.id, typeAbbr));
 	}
 
-	return { challengeSet, challenge };
+	const cldImages = await prisma.cldImage.findMany({
+		where: { challenges: { some: { id: challenge.id } } },
+		select: { id: true, alt: true, publicId: true, width: true, height: true },
+	});
+
+	return { challengeSet, challenge: { ...challenge, cldImages } };
 };
 
 type FormError =

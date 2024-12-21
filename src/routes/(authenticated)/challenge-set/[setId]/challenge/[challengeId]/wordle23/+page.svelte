@@ -1,29 +1,41 @@
 <script lang="ts">
-	import { applyAction } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 	import Wordle from '$lib/wordle/Wordle.svelte';
 	import { NEXT_INPUT_VALUE, SUBMIT_INPUT_VALUE } from '../constants';
 	import type { ActionResult } from '@sveltejs/kit';
 	import { urls } from '$lib/utils';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { challengeTypeAbbreviations } from '@/constants';
+	import WordleSafe from '@/wordle/WordleSafe.svelte';
+	import type { CharStatus, CharValue } from '@/wordle/status';
 
 	let { data, form } = $props();
+	$inspect(data);
+	$inspect('form', form);
 
-	let { challenge, challengeSet, setHasAnotherChallenge } = $derived(data);
+	let { challenge, challengeSet, setHasAnotherChallenge, allGuesses } = $derived(data);
 
-	let isComplete = $state(false);
+	let currentGuess: CharValue[] = $state([]);
 
-	$effect(() => {
-		if (isComplete) {
-			setTimeout(() => {
-				goto(urls.challengeSetReview(challengeSet.id), { replaceState: true });
-			}, 3000);
-		}
-	});
+	let formEl: HTMLFormElement;
 
-	const onCompletion = async (guessesString: string) => {
+	// really should handle complete state in case there are ever wordle
+	// challenges that aren't the only challenge in their set
+	// let isComplete = $state(false);
+
+	// $effect(() => {
+	// 	if (isComplete) {
+	// 		setTimeout(() => {
+	// 			goto(urls.challengeSetReview(challengeSet.id), { replaceState: true });
+	// 		}, 3000);
+	// 	}
+	// });
+
+	const onSubmit = async (guess: string) => {
+		// formEl?.submit();
+
 		const formData = new FormData();
-		formData.append('answer', guessesString);
+		formData.append('answer', guess);
 		formData.append(
 			'submit_action',
 			setHasAnotherChallenge ? NEXT_INPUT_VALUE : SUBMIT_INPUT_VALUE
@@ -34,18 +46,28 @@
 			body: formData,
 		});
 		const result: ActionResult = JSON.parse(await response.text());
-		isComplete = true;
-		return applyAction(result);
+		// isComplete = true;
+		await applyAction(result);
+
+		currentGuess = [];
+
+		// refresh the page to show the updated guesses
+		invalidateAll();
 	};
 </script>
 
-<Wordle
-	solution={challenge.acceptedResponsesIfOpen[0].toUpperCase()}
-	storageKey={`${challengeSet.id}|${challenge.id}`}
-	{onCompletion}
-/>
+FORM
+{JSON.stringify(form)}
+MESSAGE
+{JSON.stringify(form?.message)}
 
-{#if isComplete}
+<!-- <form method="POST" use:enhance bind:this={formEl}>
+	<input type="hidden" name="answer" value={currentGuess.join('')} />
+</form> -->
+
+<WordleSafe {allGuesses} {onSubmit} bind:currentGuess />
+
+<!-- {#if isComplete}
 	<hr />
 	<div class="my-4 flex justify-between">
 		<a href="/" class="text-christmasRed hover:underline" data-sveltekit-preload-data="hover"
@@ -57,7 +79,7 @@
 			data-sveltekit-preload-data="hover">Scoreboard &rarr;</a
 		>
 	</div>
-{/if}
+{/if} -->
 
 {#if form?.message}
 	<p class="text-christmasRed">{@html form.message}</p>

@@ -7,7 +7,6 @@
 	let { data, form } = $props();
 
 	let { challenge, setHasAnotherChallenge, responses } = $derived(data);
-	let isComplete = $derived(responses.length === 6 || responses.some((r) => r.isCorrect));
 
 	// if the user selects an image through the image nav, this holds that state
 	let selectedImageIndex = $state<number | null>(null);
@@ -79,7 +78,7 @@
 			value={setHasAnotherChallenge ? NEXT_INPUT_VALUE : SUBMIT_INPUT_VALUE}
 			name="submit_action"
 			class="bg-green-700 text-white font-bold py-3 px-6 rounded w-full text-lg my-8 block"
-			disabled={!response || isComplete}
+			disabled={!response}
 		/>
 
 		<!-- RESPONSES LIST -->
@@ -93,11 +92,6 @@
 						<div>{response}</div>
 					</div>
 				{/each}
-				{#if !isComplete && responses.length > 0}
-					<div class="p-2 border rounded h-7 sm:h-8 mb-2 flex items-center gap-2 border-slate-200">
-						<div></div>
-					</div>
-				{/if}
 			</div>
 		</div>
 	</form>

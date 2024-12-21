@@ -9,10 +9,10 @@
 		CELL_ANIMATION_DURATION,
 		KEYBOARD_DELAY,
 		MAX_CHALLENGES,
-		MAX_WORD_LENGTH
+		MAX_WORD_LENGTH,
 	} from '$lib/wordle/constants/settings';
 	import Keyboard from '$lib/wordle/components/Keyboard/Keyboard.svelte';
-	import Grid from '$lib/wordle/components/Grid/Grid.svelte';
+	import Grid from '@/wordle/components/Grid/GridSafe.svelte';
 	import { toastStore } from '$lib/wordle/components/Toast/store';
 	import { statStore } from '$lib/wordle/stores/stats';
 	import gameStores from '$lib/wordle/stores';
@@ -20,13 +20,13 @@
 		aboutModalState,
 		helpModalState,
 		settingsModalState,
-		statsModalState
+		statsModalState,
 	} from '$lib/wordle/stores/modals';
 	import {
 		CORRECT_WORD_MSG,
 		INVALID_WORD_MSG,
 		NOT_ENOUGH_LETTERS_MSG,
-		WIN_MESSAGES
+		WIN_MESSAGES,
 	} from '$lib/wordle/constants/strings';
 	import Container from '$lib/wordle/components/Toast/Container.svelte';
 
@@ -62,7 +62,7 @@
 				dismissible: false,
 				message: WIN_MESSAGES[$guessStore.length - 1],
 				id: 'wintoast',
-				timeout: 3000
+				timeout: 3000,
 			});
 			setTimeout(() => statsModalState.set(true), 3000);
 			onCompletion(getGuessesString($guessStore));
@@ -76,7 +76,7 @@
 				message: CORRECT_WORD_MSG(solution),
 				type: 'error',
 				id: 'losetoast',
-				timeout: 3000
+				timeout: 3000,
 			});
 			setTimeout(() => statsModalState.set(true), 3000);
 			onCompletion(getGuessesString($guessStore));
@@ -86,7 +86,7 @@
 		if (browser) {
 			saveGameToLocalStorage(storageKey, {
 				solution,
-				guesses: $guessStore.map((store) => store.guess.join(''))
+				guesses: $guessStore.map((store) => store.guess.join('')),
 			});
 		}
 	});
@@ -121,7 +121,7 @@
 				timeout: 3000,
 				dismissible: false,
 				message: NOT_ENOUGH_LETTERS_MSG,
-				type: 'warn'
+				type: 'warn',
 			});
 			return;
 		}
@@ -130,7 +130,7 @@
 				timeout: 3000,
 				dismissible: false,
 				message: INVALID_WORD_MSG,
-				type: 'warn'
+				type: 'warn',
 			});
 			return;
 		}

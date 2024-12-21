@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Grid from '$lib/wordle/components/Grid/Grid.svelte';
+	import Grid from '@/wordle/components/Grid/GridSafe.svelte';
 	import { createGameStateStore } from '$lib/wordle/stores/gameState';
 	import { createGuessStore } from '$lib/wordle/stores/guess';
 	import type { PageData } from './$types';

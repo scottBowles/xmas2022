@@ -15,25 +15,25 @@ export const load: LayoutServerLoad = async ({ params, parent }) => {
 	/** Query challengeSet */
 	const challengeSet = await prisma.challengeSet.findUnique({
 		where: { id: setId },
-		include: {
+		select: {
+			id: true,
+			timeAvailableStart: true,
+			instructions: true,
 			challengeSetResponses: {
 				where: { playerId: user.id },
 				select: { startedAt: true, completedAt: true },
 			},
 			challenges: {
-				include: {
+				select: {
+					id: true,
+					type: true,
+					title: true,
+					prompt: true,
+					matches: true,
+					matchOptions: true,
 					options: true,
 					responses: {
 						where: { playerId: user.id },
-					},
-					cldImages: true,
-					children: {
-						include: {
-							cldImages: true,
-							responses: {
-								where: { playerId: user.id },
-							},
-						},
 					},
 				},
 				orderBy: { id: 'asc' },
@@ -57,5 +57,9 @@ export const load: LayoutServerLoad = async ({ params, parent }) => {
 		throw redirect(302, urls.challengeSetReview(challengeSet.id));
 	}
 
-	return { challengeSet, challenge, setHasAnotherChallenge: !CHLG.isLast(challengeSet)(challenge) };
+	return {
+		challengeSet,
+		challenge,
+		setHasAnotherChallenge: !CHLG.isLast(challengeSet)(challenge),
+	};
 };

@@ -16,7 +16,7 @@ import * as Framed from '$lib/prisma/models/challenge/challengeTypeFns/framed';
 const responsesSchema = z.array(z.string());
 
 export const load: PageServerLoad = async ({ parent }) => {
-	const { challenge, challengeSet } = await parent();
+	const { challenge, challengeSet, user } = await parent();
 
 	const typeAbbr = challengeTypeAbbreviations[challenge.type];
 
@@ -24,14 +24,31 @@ export const load: PageServerLoad = async ({ parent }) => {
 		throw redirect(302, urls.challenge(challengeSet.id, challenge.id, typeAbbr));
 	}
 
-	const responses = Framed.parseResponse(challenge).map((response) => ({
+	const challengeWithAnswersAndImages = await prisma.challenge.findUnique({
+		where: { id: challenge.id },
+		select: {
+			id: true,
+			acceptedResponsesIfOpen: true,
+			options: true,
+			type: true,
+			prompt: true,
+			cldImages: true,
+			responses: { where: { playerId: user.id }, select: { response: true } },
+		},
+	});
+
+	if (!challengeWithAnswersAndImages) {
+		throw error(404, 'Challenge not found');
+	}
+
+	const responses = Framed.parseResponse(challengeWithAnswersAndImages).map((response) => ({
 		response,
-		isCorrect: Framed.subResponseIsCorrect(response, challenge),
+		isCorrect: Framed.subResponseIsCorrect(response, challengeWithAnswersAndImages),
 	}));
 
 	const challengeWithImagesHidden = {
 		...challenge,
-		cldImages: challenge.cldImages.slice(0, responses.length + 1),
+		cldImages: challengeWithAnswersAndImages.cldImages.slice(0, responses.length + 1),
 	};
 
 	return { challenge: challengeWithImagesHidden, challengeSet, responses };
