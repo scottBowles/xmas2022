@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import urls from '$lib/utils/urls.js';
 
 	let { data, children } = $props();
 
 	let { surveyChallengeSet } = $derived(data);
-	let { year, challengeId } = $derived($page.params);
+	let { year, challengeId } = $derived(page.params);
 
 	let challenges = $derived(surveyChallengeSet?.challenges ?? []);
 

@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import PageMargin from '@/components/PageMargin.svelte';
 	import urls from '$lib/utils/urls.js';
 
 	let { data, children } = $props();
 
 	let { surveyYears } = $derived(data);
-	let year = $derived(parseInt($page.params.year));
-	let path = $derived($page.url.pathname);
+	let year = $derived(parseInt(page.params.year));
+	let path = $derived(page.url.pathname);
 	let byQuestionOrResponse = $derived(
 		(path.includes('by-question') ? 'question' : 'response') as 'question' | 'response'
 	);
