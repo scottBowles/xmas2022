@@ -72,13 +72,11 @@
 		{#each values as _, i}
 			<label class="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
 				<span>{i + 1}</span>
-				<!-- svelte-ignore a11y_autofocus -->
 				<input
 					type="text"
 					name={`match_${i}`}
 					class="border border-gray-300 rounded py-2 px-4 w-16"
 					bind:value={values[i]}
-					autofocus={i === 0}
 					required
 				/>
 			</label>
