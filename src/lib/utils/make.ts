@@ -146,6 +146,7 @@ export const makeMultipleOpenResponseSchema = z.object({
 	points: z.number(),
 	bonusPoints: z.number(),
 	isTimed: z.boolean(),
+	images: z.array(z.string()).optional(),
 });
 
 export type MakeMultipleChoiceOpenResponseArgs = z.infer<typeof makeMultipleOpenResponseSchema>;
@@ -160,6 +161,7 @@ export const makeMultipleOpenResponse = ({
 	points,
 	bonusPoints,
 	isTimed,
+	images,
 }: MakeMultipleChoiceOpenResponseArgs) =>
 	makeChallengeWithOwnChallengeSet(
 		day,
@@ -176,6 +178,13 @@ export const makeMultipleOpenResponse = ({
 			type: 'MULTIPLE_OPEN_RESPONSE',
 			points,
 			bonusPoints,
+			cldImages:
+				images?.map((publicId, i) => ({
+					publicId,
+					height: 0,
+					width: 0,
+					order: i + 1,
+				})) || [],
 		}
 	);
 
