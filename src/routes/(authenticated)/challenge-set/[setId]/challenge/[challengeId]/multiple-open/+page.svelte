@@ -31,6 +31,12 @@
 	});
 	$inspect(answer);
 
+	let isImageLoaded = $state<boolean[]>([]);
+
+	const handleImageLoaded = (i: number) => {
+		isImageLoaded[i] = true;
+	};
+
 	async function handleSubmit() {
 		const data = new FormData();
 		const submit_action = setHasAnotherChallenge ? NEXT_INPUT_VALUE : SUBMIT_INPUT_VALUE;
@@ -65,8 +71,18 @@
 	<fieldset class="flex flex-col mt-4">
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 		<legend class="mb-4 text-lg">{@html mainPrompt}</legend>
-		{#each challenge.cldImages as { publicId, alt, width, height }}
-			<CldImage src={publicId} {alt} {width} {height} class="w-full mb-4" />
+		{#each challenge.cldImages as { publicId, alt, width, height }, i}
+			{#if !isImageLoaded[i]}
+				<p class="text-center text-lg">Loading image...</p>
+			{/if}
+			<CldImage
+				onload={() => handleImageLoaded(i)}
+				src={publicId}
+				{alt}
+				{width}
+				{height}
+				class="w-full mb-4"
+			/>
 		{/each}
 		{#key challenge.id}
 			{#each inputPrompts as prompt, i}
