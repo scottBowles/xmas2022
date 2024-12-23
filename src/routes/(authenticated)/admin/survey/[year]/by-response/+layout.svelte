@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { displayName } from '$lib/prisma/models/user.js';
 	import urls from '$lib/utils/urls.js';
 
 	let { data, children } = $props();
 	let { playersWithSurveyResponseInYear } = $derived(data);
 
-	let { year, playerId } = $derived($page.params);
+	let { year, playerId } = $derived(page.params);
 
 	const handleResponseSelect = (e: Event) => {
 		const selectedPlayerId = parseInt((e.target as HTMLSelectElement).value);

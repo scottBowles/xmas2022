@@ -61,9 +61,14 @@
 
 	<ol class="mb-6">
 		{#each challenge.matchOptions as matchOption, i}
+			{@const optionIsAlreadyGuessed = values
+				.map((v) => v.toLowerCase())
+				.includes(String.fromCharCode(97 + i))}
 			<li class="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
 				<!-- as above, but use lowercase letters instead of numbers for enumerating (a., b., c. instead of 1., 2., 3.) -->
-				<p>{String.fromCharCode(97 + i)}. {matchOption}</p>
+				<p class:line-through={optionIsAlreadyGuessed}>
+					{String.fromCharCode(97 + i)}. {matchOption}
+				</p>
 			</li>{/each}
 	</ol>
 
@@ -72,13 +77,11 @@
 		{#each values as _, i}
 			<label class="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
 				<span>{i + 1}</span>
-				<!-- svelte-ignore a11y_autofocus -->
 				<input
 					type="text"
 					name={`match_${i}`}
 					class="border border-gray-300 rounded py-2 px-4 w-16"
 					bind:value={values[i]}
-					autofocus={i === 0}
 					required
 				/>
 			</label>

@@ -12,7 +12,6 @@
 	import DaySelect from '../../../DaySelect.svelte';
 	import GroupSelect from '../../../GroupSelect.svelte';
 	import YearSelect from '../../../YearSelect.svelte';
-	import { innerWidth } from 'svelte/reactivity/window';
 
 	let { data } = $props();
 
@@ -44,12 +43,6 @@
 			return acc + mainPoints + bonusPoints + timeBonusPoints;
 		}, 0);
 </script>
-
-{#if innerWidth.current && innerWidth.current < 480}
-	<div class="text-center text-sm text-gray-500 mt-2">
-		<small>Rotate your device for a better view</small>
-	</div>
-{/if}
 
 <!-- GROUP SELECT -->
 <GroupSelect {group} {groupNames} {onGroupChange} />

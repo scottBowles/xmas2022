@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import PageMargin from '@/components/PageMargin.svelte';
 	import { displayName } from '$lib/prisma/models/user';
 	import { urls } from '$lib/utils';
@@ -15,7 +15,7 @@
 	let { data, form }: Props = $props();
 
 	let { users, surveyYears } = $derived(data);
-	let { year } = $derived($page.params);
+	let { year } = $derived(page.params);
 
 	const handleSurveyYearSelect = (e: Event) => {
 		const surveyYear = parseInt((e.target as HTMLSelectElement).value);

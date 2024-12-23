@@ -40,7 +40,8 @@
 <PageMargin>
 	<h1 class="text-4xl mt-4 mb-1">Welcome, {user.displayName}!</h1>
 
-	<h2 class="text-2xl mt-4 mb-1 text-green-700">Good luck!</h2>
+	<h2 class="text-2xl mt-4 mb-1 text-green-700">Thanks for playing!</h2>
+	<h2 class="text-2xl mt-4 mb-1 text-christmasRed">Merry Christmas!</h2>
 
 	<div class="flex flex-col">
 		{#if currentChallengeSets?.length > 0 || pastChallengeSets?.length > 0}
