@@ -1,5 +1,5 @@
 import { ChallengeType } from '@prisma/client';
-import { fail, redirect } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import { z } from 'zod';
 
 import prisma from '$lib/prisma';
