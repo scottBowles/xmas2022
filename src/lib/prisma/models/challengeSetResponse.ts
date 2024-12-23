@@ -48,6 +48,50 @@ const endAndScore = async <CS extends { id: number; completionPoints: number }>(
 	});
 };
 
+// ACCOUNT FOR GROUPS
+const calculateTimeBonusByNumBetterThan = async (challengeSetId: number) => {
+	const challengeSet = await prisma.challengeSet.findUnique({
+		where: { id: challengeSetId },
+		include: {
+			challengeSetResponses: {
+				where: { completedAt: { not: null } },
+				select: { id: true, playerId: true, points: true, startedAt: true, completedAt: true },
+			},
+		},
+	});
+
+	if (!challengeSet) {
+		throw new Error(`No challenge set found with id ${challengeSetId}`);
+	}
+
+	const { challengeSetResponses } = challengeSet;
+
+	const timesTaken = challengeSetResponses.reduce(
+		(acc, csr) => {
+			const time = timeTaken(csr);
+			if (time) {
+				acc.push({ id: csr.id, timeTaken: time });
+			}
+			return acc;
+		},
+		[] as { id: number; timeTaken: number }[]
+	);
+
+	const timeBonuses = timesTaken.map((us) => ({
+		id: us.id,
+		timeBonus: timesTaken.filter((them) => us.timeTaken < them.timeTaken).length,
+	}));
+
+	return Promise.all(
+		timeBonuses.map(({ id, timeBonus }) =>
+			prisma.challengeSetResponse.update({
+				where: { id },
+				data: { timeBonusPoints: timeBonus },
+			})
+		)
+	);
+};
+
 const CSR = { isLive, timeTaken, endAndScore };
 
 export default CSR;
