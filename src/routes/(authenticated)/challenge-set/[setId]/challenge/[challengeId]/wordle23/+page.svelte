@@ -31,39 +31,14 @@
 	// 	}
 	// });
 
-	const onSubmit = async (guess: string) => {
-		// formEl?.submit();
-
-		const formData = new FormData();
-		formData.append('answer', guess);
-		formData.append(
-			'submit_action',
-			setHasAnotherChallenge ? NEXT_INPUT_VALUE : SUBMIT_INPUT_VALUE
-		);
-		const typeAbbr = challengeTypeAbbreviations[challenge.type];
-		const response = await fetch(urls.challenge(challengeSet.id, challenge.id, typeAbbr), {
-			method: 'POST',
-			body: formData,
-		});
-		const result: ActionResult = JSON.parse(await response.text());
-		// isComplete = true;
-		await applyAction(result);
-
-		currentGuess = [];
-
-		// refresh the page to show the updated guesses
-		invalidateAll();
+	const onSubmit = () => {
+		formEl?.submit();
 	};
 </script>
 
-FORM
-{JSON.stringify(form)}
-MESSAGE
-{JSON.stringify(form?.message)}
-
-<!-- <form method="POST" use:enhance bind:this={formEl}>
+<form method="POST" use:enhance bind:this={formEl}>
 	<input type="hidden" name="answer" value={currentGuess.join('')} />
-</form> -->
+</form>
 
 <WordleSafe {allGuesses} {onSubmit} bind:currentGuess />
 
