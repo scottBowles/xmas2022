@@ -10,8 +10,6 @@
 	import type { CharStatus, CharValue } from '@/wordle/status';
 
 	let { data, form } = $props();
-	$inspect(data);
-	$inspect('form', form);
 
 	let { challenge, challengeSet, setHasAnotherChallenge, allGuesses } = $derived(data);
 

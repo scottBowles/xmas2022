@@ -17,6 +17,30 @@ import { error } from '@sveltejs/kit';
 
 const responsesSchema = z.array(z.string());
 
+const charsFromWord = (word: string): CharValue[] =>
+	word
+		.toUpperCase()
+		.split('')
+		.filter((char) => char.match(/[A-Z]/)) as CharValue[];
+
+const getStatuses = (guessChars: CharValue[], answerChars: CharValue[]): CharStatus[] => {
+	const charCount = {} as Record<CharValue, number>;
+	return guessChars.map((char, i) => {
+		if (answerChars[i] === char) {
+			charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
+			return 'correct';
+		}
+		const charIsPresent = answerChars.includes(char);
+		const numInCorrectAnswer = answerChars.filter((c) => c === char).length;
+		const allOfCharAreAlreadyMarkedPresent = (charCount[char] ?? 0) >= numInCorrectAnswer;
+		if (charIsPresent && !allOfCharAreAlreadyMarkedPresent) {
+			charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
+			return 'present';
+		}
+		return 'absent';
+	});
+};
+
 /**
  *
  * We can move the wordlist to here and check whether the submitted word is in the wordlist.
@@ -47,36 +71,18 @@ export const load: PageServerLoad = async ({ parent }) => {
 			where: { id: challenge.id },
 			select: { acceptedResponsesIfOpen: true },
 		})
-	)?.acceptedResponsesIfOpen;
+	)?.acceptedResponsesIfOpen[0];
 
 	if (!correctAnswer) {
 		throw error(404, 'Challenge not found');
 	}
 
+	const answerChars = charsFromWord(correctAnswer);
 	const guesses = responsesSchema.safeParse(jsonSafeParse(CHLG.response(challenge))).data ?? [];
 
-	const allGuesses = guesses.map((response) => {
-		const guess = response
-			.toUpperCase()
-			.split('')
-			.filter((char) => char.match(/[A-Z]/)) as CharValue[];
-		const charCount = {} as Record<CharValue, number>;
-		const statuses = guess.map((char) => {
-			if (correctAnswer[0] === char) {
-				charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
-				return 'correct';
-			}
-			const charIsPresent = correctAnswer.includes(char);
-			const allOfCharAreAlreadyMarkedPresent =
-				(charCount[char] ?? 0) < correctAnswer.filter((c) => c === char).length;
-			if (charIsPresent && !allOfCharAreAlreadyMarkedPresent) {
-				charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
-				return 'present';
-			}
-			return 'absent';
-		});
-		return { guess, statuses };
-	});
+	const allGuesses = guesses
+		.map(charsFromWord)
+		.map((guessChars) => ({ guess: guessChars, statuses: getStatuses(guessChars, answerChars) }));
 
 	return { challengeSet, challenge, allGuesses };
 };
