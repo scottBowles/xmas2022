@@ -31,8 +31,8 @@ const getStatuses = (guessChars: CharValue[], answerChars: CharValue[]): CharSta
 			return 'correct';
 		}
 		const charIsPresent = answerChars.includes(char);
-		const numInCorrectAnswer = answerChars.filter((c) => c === char).length;
-		const allOfCharAreAlreadyMarkedPresent = (charCount[char] ?? 0) >= numInCorrectAnswer;
+		const numOfThisCharInCorrectAnswer = answerChars.filter((c) => c === char).length;
+		const allOfCharAreAlreadyMarkedPresent = (charCount[char] ?? 0) >= numOfThisCharInCorrectAnswer;
 		if (charIsPresent && !allOfCharAreAlreadyMarkedPresent) {
 			charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
 			return 'present';
