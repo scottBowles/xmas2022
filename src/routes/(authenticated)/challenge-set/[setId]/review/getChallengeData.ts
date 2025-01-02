@@ -16,7 +16,10 @@ import {
 	yourElfNameWorth,
 } from '$lib/prisma/models/challenge/challengeTypeFns';
 import { displayName } from '$lib/prisma/models/user';
+import { jsonSafeParse } from '@/utils';
+import { charsFromWord, getStatuses } from '@/wordle/status';
 import type { Challenge } from '@prisma/client';
+import { z } from 'zod';
 
 type QOption = {
 	id: number;
@@ -84,6 +87,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
 			ownElfName: null,
 			allElfNames: null,
+			allGuesses: null,
 			...challenge,
 		};
 	if (type === 'WORDLE')
@@ -93,17 +97,29 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
 			ownElfName: null,
 			allElfNames: null,
+			allGuesses: null,
 			...challenge,
 		};
-	if (type === 'WORDLE_2023')
+	if (type === 'WORDLE_2023') {
+		const responsesSchema = z.array(z.string());
+		const guesses = responsesSchema.safeParse(jsonSafeParse(CHLG.response(challenge))).data ?? [];
+		const correctAnswer = challengeTypeFns[type].correctAnswer(challenge);
+		const allGuesses = correctAnswer
+			? guesses.map(charsFromWord).map((guessChars) => ({
+					guess: guessChars,
+					statuses: getStatuses(guessChars, charsFromWord(correctAnswer)),
+				}))
+			: [];
 		return {
-			correctAnswer: challengeTypeFns[type].correctAnswer(challenge),
+			correctAnswer,
 			response: CHLG.response(challenge),
 			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
 			ownElfName: null,
 			allElfNames: null,
+			allGuesses,
 			...challenge,
 		};
+	}
 	if (type === 'MULTIPLE_CHOICE')
 		return {
 			correctAnswer: challengeTypeFns[type].correctAnswer(challenge),
@@ -111,6 +127,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
 			ownElfName: null,
 			allElfNames: null,
+			allGuesses: null,
 			...challenge,
 		};
 	if (type === 'OPEN_RESPONSE')
@@ -120,6 +137,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
 			ownElfName: null,
 			allElfNames: null,
+			allGuesses: null,
 			...challenge,
 		};
 	if (type === 'MATCH')
@@ -129,6 +147,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
 			ownElfName: null,
 			allElfNames: null,
+			allGuesses: null,
 			...challenge,
 		};
 	if (type === 'MULTIPLE_OPEN_RESPONSE')
@@ -138,6 +157,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
 			ownElfName: null,
 			allElfNames: null,
+			allGuesses: null,
 			...challenge,
 		};
 	if (type === 'SANTAS_WORKSHOP')
@@ -147,6 +167,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
 			ownElfName: null,
 			allElfNames: null,
+			allGuesses: null,
 			...challenge,
 		};
 	if (type === 'WIN_LOSE_OR_STOP')
@@ -156,6 +177,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
 			ownElfName: null,
 			allElfNames: null,
+			allGuesses: null,
 			...challenge,
 		};
 	if (type === 'FAMILY_FEUD')
@@ -165,6 +187,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
 			ownElfName: null,
 			allElfNames: null,
+			allGuesses: null,
 			...challenge,
 		};
 	if (type === 'FRAMED')
@@ -174,6 +197,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: null,
 			ownElfName: null,
 			allElfNames: null,
+			allGuesses: null,
 			...challenge,
 		};
 	if (type === 'SELECT_ELF_NAME') {
@@ -204,6 +228,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: challengeTypeFns[type].responseIsCorrect(challenge),
 			ownElfName: CHLG.ownElfName(challenge),
 			allElfNames,
+			allGuesses: null,
 			...challenge,
 		};
 	}
@@ -220,6 +245,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 			responseIsCorrect: yourElfNameWorth.responseIsCorrect(challenge, elfNameResponse),
 			ownElfName: elfName,
 			allElfNames: null,
+			allGuesses: null,
 			...challenge,
 		};
 	}
@@ -229,6 +255,7 @@ const getChallengeData = async (challenge: ChallengeQuery, user: JwtUser) => {
 		responseIsCorrect: null,
 		ownElfName: null,
 		allElfNames: null,
+		allGuesses: null,
 		...challenge,
 	};
 };

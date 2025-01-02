@@ -38,7 +38,7 @@
 			{#if challenge.type === 'WORDLE'}
 				<Wordle2022Review {challenge} />
 			{:else if challenge.type === 'WORDLE_2023'}
-				<Wordle2023Review {challenge} storageKey={`${challengeSet.id}|${challenge.id}`} />
+				<Wordle2023Review {challenge} />
 			{:else if ['MULTIPLE_CHOICE', 'OPEN_RESPONSE'].includes(challenge.type)}
 				<NonWordleReview {challenge} />
 			{:else if challenge.type === 'MATCH'}

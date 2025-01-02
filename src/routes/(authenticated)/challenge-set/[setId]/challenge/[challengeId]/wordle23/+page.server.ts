@@ -11,35 +11,11 @@ import CHLG from '@/prisma/models/challenge';
 import { z } from 'zod';
 import { normalize } from '@/prisma/models/challenge/utils';
 import CS from '@/prisma/models/challengeSet';
-import type { CharStatus, CharValue } from '@/wordle/status';
+import { charsFromWord, getStatuses } from '@/wordle/status';
 import { isWordInWordList } from '$lib/wordle/words';
 import { error } from '@sveltejs/kit';
 
 const responsesSchema = z.array(z.string());
-
-const charsFromWord = (word: string): CharValue[] =>
-	word
-		.toUpperCase()
-		.split('')
-		.filter((char) => char.match(/[A-Z]/)) as CharValue[];
-
-const getStatuses = (guessChars: CharValue[], answerChars: CharValue[]): CharStatus[] => {
-	const charCount = {} as Record<CharValue, number>;
-	return guessChars.map((char, i) => {
-		if (answerChars[i] === char) {
-			charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
-			return 'correct';
-		}
-		const charIsPresent = answerChars.includes(char);
-		const numOfThisCharInCorrectAnswer = answerChars.filter((c) => c === char).length;
-		const allOfCharAreAlreadyMarkedPresent = (charCount[char] ?? 0) >= numOfThisCharInCorrectAnswer;
-		if (charIsPresent && !allOfCharAreAlreadyMarkedPresent) {
-			charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
-			return 'present';
-		}
-		return 'absent';
-	});
-};
 
 /**
  *

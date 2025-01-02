@@ -1,5 +1,9 @@
 import { correctAnswerFromAcceptedResponses, pointsManuallyAwarded, response } from '../utils';
 import type { CorrectAnswer, ResponseIsCorrect, ScoreChallenge } from '../types';
+import { jsonSafeParse } from '@/utils';
+import { z } from 'zod';
+
+const responsesSchema = z.array(z.string());
 
 const correctAnswer: CorrectAnswer = correctAnswerFromAcceptedResponses;
 
@@ -7,7 +11,7 @@ const responseIsCorrect: ResponseIsCorrect = (challenge) => {
 	const givenResponse = response(challenge);
 	const answer = correctAnswer(challenge);
 	if (!givenResponse || !answer) return false;
-	const guesses = givenResponse.split(',');
+	const guesses = responsesSchema.safeParse(jsonSafeParse(givenResponse)).data ?? [];
 	return guesses.includes(answer);
 };
 
