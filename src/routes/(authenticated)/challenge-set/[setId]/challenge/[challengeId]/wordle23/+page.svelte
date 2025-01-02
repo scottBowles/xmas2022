@@ -36,6 +36,11 @@
 
 <form method="POST" use:enhance bind:this={formEl}>
 	<input type="hidden" name="answer" value={currentGuess.join('')} />
+	<input
+		type="hidden"
+		name="submit_action"
+		value={setHasAnotherChallenge ? NEXT_INPUT_VALUE : SUBMIT_INPUT_VALUE}
+	/>
 </form>
 
 <WordleSafe {allGuesses} {onSubmit} bind:currentGuess />
